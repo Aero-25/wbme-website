@@ -70,16 +70,19 @@ img{display:block;max-width:100%}
 .morph:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(0deg,rgba(8,16,26,.6),transparent 60%)}
 
 /* ===== PANELS ===== */
-.panel{position:fixed;inset:0;z-index:80;background:var(--ink);overflow-y:auto;overflow-x:hidden;opacity:0;visibility:hidden;transition:opacity .4s ease}
+.panel-backdrop{position:fixed;inset:0;z-index:78;background:rgba(6,11,20,.55);backdrop-filter:blur(7px);opacity:0;visibility:hidden;transition:opacity .45s ease}
+.panel-backdrop.open{opacity:1;visibility:visible}
+.panel{position:fixed;left:50%;top:7vh;transform:translateX(-50%);width:min(1100px,92vw);height:86vh;z-index:80;background:var(--ink);border-radius:26px;overflow:hidden;box-shadow:0 50px 120px rgba(0,0,0,.62);opacity:0;visibility:hidden;transition:opacity .4s ease;display:flex;flex-direction:column}
 .panel.open{opacity:1;visibility:visible}
-.panel-hero{position:relative;min-height:46vh;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:46px 56px}
-.panel-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--ink) 2%,rgba(12,23,38,.35) 45%,rgba(12,23,38,.55))}
+.panel-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.panel-hero{position:relative;min-height:280px;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:40px 44px}
+.panel-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--ink) 2%,rgba(12,23,38,.3) 50%,rgba(12,23,38,.5))}
 .panel-hero .in{position:relative;z-index:2;max-width:760px}
-.panel-hero .ey{font-family:'Archivo';font-weight:600;font-size:.74rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:12px}
-.panel-hero .ti{font-family:'Anton';font-size:clamp(3rem,8vw,7rem);line-height:.92;text-transform:uppercase}
-.panel-close{position:fixed;top:24px;right:28px;z-index:95;width:54px;height:54px;border-radius:50%;background:rgba(12,23,38,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s}
+.panel-hero .ey{font-family:'Archivo';font-weight:600;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:10px}
+.panel-hero .ti{font-family:'Anton';font-size:clamp(2.6rem,6vw,5rem);line-height:.92;text-transform:uppercase}
+.panel-close{position:absolute;top:18px;right:18px;z-index:95;width:48px;height:48px;border-radius:50%;background:rgba(6,11,20,.5);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:1.35rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s}
 .panel-close:hover{background:var(--gold);border-color:var(--gold);color:var(--ink);transform:rotate(90deg)}
-.panel-body{max-width:1120px;margin:0 auto;padding:64px 56px 100px}
+.panel-body{max-width:880px;margin:0 auto;padding:48px 48px 70px}
 .p-rv{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
 .panel.shown .p-rv{opacity:1;transform:none}
 .panel.shown .p-rv:nth-child(2){transition-delay:.06s}
@@ -169,15 +172,16 @@ img{display:block;max-width:100%}
   .copy{left:24px;right:24px;top:120px;transform:none;max-width:none}
   .copy .ti{font-size:3.7rem}
   .copy .de{font-size:.95rem;max-width:260px}
-  .rail-wrap{left:0;right:0;width:100%;bottom:120px;-webkit-mask-image:none;mask-image:none;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .rail-wrap{left:0;right:0;width:100%;bottom:120px;-webkit-mask-image:linear-gradient(90deg,#000 86%,transparent);mask-image:linear-gradient(90deg,#000 86%,transparent);overflow:hidden}
   .rail{padding:0 24px}
   .card{flex:0 0 132px;height:188px}
   .card .lbl .b{font-size:1.05rem}
   .prog{left:24px;right:24px;width:auto;bottom:74px}
   .count{left:24px;bottom:90px}
   .hint{display:none}
-  .panel-hero{padding:34px 24px;min-height:40vh}
-  .panel-body{padding:40px 24px 80px}
+  .panel{top:4vh;width:94vw;height:92vh;border-radius:20px}
+  .panel-hero{padding:26px 22px;min-height:200px}
+  .panel-body{padding:34px 22px 64px}
   .lead-row,.contact-grid{grid-template-columns:1fr;gap:26px}
   .lead-row .media img{height:300px}
   .svc-grid,.gal{grid-template-columns:1fr 1fr}
