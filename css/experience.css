@@ -43,7 +43,8 @@ img{display:block;max-width:100%}
 .copy .de{font-size:1.1rem;color:#dbe2ec;max-width:420px;margin:20px 0 28px;line-height:1.6}
 .explore{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.45);padding:15px 30px;border-radius:40px;font-family:'Archivo';font-weight:600;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:.25s;color:#fff;background:none}
 .explore:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}
-.copy .swap{opacity:0;transform:translateY(16px);animation:rise .7s forwards}
+.copy .swap{opacity:1}
+.copy.first .swap{opacity:0;transform:translateY(16px);animation:rise .7s forwards}
 @keyframes rise{to{opacity:1;transform:none}}
 
 /* rail */
@@ -229,9 +230,9 @@ img{display:block;max-width:100%}
 .localtime b{color:var(--gold-lt)}
 
 /* card intro + tilt + water reflection */
-.rail-wrap{perspective:1300px;height:486px;display:flex;align-items:flex-start}
-.rail{-webkit-box-reflect:below 10px linear-gradient(transparent,transparent 56%,rgba(255,255,255,.13))}
-.card{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .35s ease,box-shadow .5s;transform-style:preserve-3d}
+.rail-wrap{perspective:1300px;height:392px;display:flex;align-items:flex-start}
+.rail{will-change:transform;transform:translateZ(0)}
+.card{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .35s ease,box-shadow .5s;transform-style:preserve-3d;backface-visibility:hidden}
 body.ready .card{opacity:1;transform:translateY(0)}
 .card img{transition:transform .35s ease}
 

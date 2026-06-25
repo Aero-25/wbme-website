@@ -75,7 +75,7 @@
     if (!current && !paused && !dragging) offset += speed;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
-    rail.style.transform = 'translateX(' + (-x) + 'px)';
+    rail.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
     var active = ((Math.round(offset / cardStep) % N) + N) % N;
     if (active !== lastActive) { lastActive = active; setVisual(active); }
     requestAnimationFrame(loop);
@@ -85,7 +85,9 @@
   /* ===== CORE START (guaranteed, before enhancements) ===== */
   document.body.classList.add('ready');
   if (progB) progB.style.width = (100 / N) + '%';
+  if (copy) copy.classList.add('first');
   setVisual(0);
+  setTimeout(function () { if (copy) copy.classList.remove('first'); }, 900);
   requestAnimationFrame(loop);
 
   /* ===== GRAB TO SCROLL (mouse + touch) ===== */
@@ -97,7 +99,7 @@
     window.addEventListener('pointermove', function (e) {
       if (!pdown) return;
       var dx = e.clientX - dragStartX; dragMoved = Math.abs(dx);
-      if (dragMoved > 4) { dragging = true; railWrap.classList.add('grabbing'); offset = dragStartOffset - dx * 1.15; }
+      if (dragMoved > 4) { dragging = true; railWrap.classList.add('grabbing'); offset = dragStartOffset - dx; }
     });
     var endDrag = function () { pdown = false; if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
     window.addEventListener('pointerup', endDrag);
@@ -299,6 +301,7 @@
       el.addEventListener('mouseenter', grow(true));
       el.addEventListener('mouseleave', function () { shrink(); el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
       el.addEventListener('mousemove', function (e) {
+        if (dragging) return;
         var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
         el.style.transform = 'perspective(800px) rotateY(' + (px * 11) + 'deg) rotateX(' + (-py * 11) + 'deg) translateY(-8px)';
         var im = el.querySelector('img'); if (im) im.style.transform = 'scale(1.12) translate(' + (px * -14) + 'px,' + (py * -14) + 'px)';
