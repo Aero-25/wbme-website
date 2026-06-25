@@ -41,6 +41,8 @@
     railCards = rail.querySelectorAll('.card');
     railCards.forEach(function (el) {
       el.addEventListener('click', function () { openPanel(el.dataset.key, el); });
+      el.addEventListener('mouseenter', function () { paused = true; });
+      el.addEventListener('mouseleave', function () { paused = false; });
     });
   })();
 
@@ -67,9 +69,9 @@
   }
 
   /* continuous drift loop */
-  var offset = 0, speed = 0.7, paused = false, lastActive = -1, ready = false;
+  var offset = 0, speed = 0.9, paused = false, lastActive = -1, ready = false;
   function loop () {
-    if (!reduce && !current && !paused) offset += speed;
+    if (!current && !paused) offset += speed;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translateX(' + (-x) + 'px)';
@@ -77,11 +79,6 @@
     if (active !== lastActive) { lastActive = active; setVisual(active); }
     requestAnimationFrame(loop);
   }
-  if (railWrap) {
-    railWrap.addEventListener('mouseenter', function () { paused = true; });
-    railWrap.addEventListener('mouseleave', function () { paused = false; });
-  }
-
   navA.forEach(function (a) { a.addEventListener('click', function () { openPanel(a.dataset.key, firstCard(a.dataset.key)); }); });
 
   /* ===== CORE START (guaranteed, before enhancements) ===== */
