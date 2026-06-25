@@ -63,9 +63,9 @@
   }
 
   /* continuous drift loop */
-  var offset = 0, speed = 0.7, paused = false, lastActive = -1;
+  var offset = 0, speed = 0.7, paused = false, lastActive = -1, ready = false;
   function loop () {
-    if (!reduce && !current && !paused) offset += speed;
+    if (ready && !reduce && !current && !paused) offset += speed;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translateX(' + (-x) + 'px)';
@@ -113,6 +113,7 @@
     requestAnimationFrame(function () { panel.classList.add('shown'); });
     var sc = panel.querySelector('.panel-scroll'); if (sc) sc.scrollTop = 0;
     panel.setAttribute('aria-hidden', 'false');
+    var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.width = '0%'; }
     var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
     panel.querySelectorAll('[data-count]').forEach(function (el) {
       var to = +el.dataset.count, sf = el.dataset.suffix || '', c = 0, st = Math.max(1, Math.ceil(to / 26));
@@ -150,6 +151,7 @@
   function doClose () {
     var key = current, panel = panelEl(key); if (!panel) return;
     backdrop.classList.remove('open');
+    var mp = document.getElementById('modalProgress'); if (mp) mp.classList.remove('on');
     var cardEl = firstCard(key);
     if (reduce || !cardEl) { panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true'); unlock(); return; }
     var r = cardEl.getBoundingClientRect(), M = modalRect();
@@ -243,6 +245,87 @@
       i.addEventListener('input', function () { i.closest('.field').classList.remove('invalid'); });
     });
   }
+
+  /* ===== PRELOADER ===== */
+  (function preload () {
+    var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
+    if (!pre) { ready = true; document.body.classList.add('ready'); return; }
+    if (reduce) { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; return; }
+    var n = 0;
+    var t = setInterval(function () {
+      n += Math.floor(Math.random() * 8) + 5;
+      if (n >= 100) { n = 100; clearInterval(t); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 260); }
+      if (bar) bar.style.width = n + '%';
+    }, 80);
+  })();
+
+  /* ===== CURSOR · MAGNETIC · CARD TILT ===== */
+  if (window.matchMedia('(hover:hover)').matches) {
+    var cursor = document.getElementById('cursor');
+    if (cursor) {
+      var cx = window.innerWidth / 2, cy = window.innerHeight / 2, tx = cx, ty = cy;
+      window.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; cursor.classList.add('show'); });
+      (function cl () { cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2; cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; requestAnimationFrame(cl); })();
+    }
+    var grow = function (txt) { return function () { if (cursor) { cursor.classList.add('grow'); if (txt) cursor.classList.add('txt'); } }; };
+    var shrink = function () { if (cursor) cursor.classList.remove('grow', 'txt'); };
+    railCards.forEach(function (el) {
+      el.addEventListener('mouseenter', grow(true));
+      el.addEventListener('mouseleave', function () { shrink(); el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
+      el.addEventListener('mousemove', function (e) {
+        var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'perspective(800px) rotateY(' + (px * 11) + 'deg) rotateX(' + (-py * 11) + 'deg) translateY(-8px)';
+        var im = el.querySelector('img'); if (im) im.style.transform = 'scale(1.12) translate(' + (px * -14) + 'px,' + (py * -14) + 'px)';
+      });
+    });
+    var mag = function (el, k) {
+      el.addEventListener('mouseenter', grow(false));
+      el.addEventListener('mousemove', function (e) { var r = el.getBoundingClientRect(); el.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * k) + 'px,' + ((e.clientY - r.top - r.height / 2) * k) + 'px)'; });
+      el.addEventListener('mouseleave', function () { shrink(); el.style.transform = ''; });
+    };
+    navA.forEach(function (a) { mag(a, 0.3); });
+  }
+
+  /* ===== EMBERS ===== */
+  (function embers () {
+    var cv = document.getElementById('embers'); if (!cv || reduce) return;
+    var ctx = cv.getContext('2d'), parts = [];
+    function resize () { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (var i = 0; i < 40; i++) parts.push({ x: Math.random() * cv.width, y: Math.random() * cv.height, r: Math.random() * 1.5 + 0.4, s: Math.random() * 0.4 + 0.12, o: Math.random() * 0.5 + 0.15, d: Math.random() * 6.28 });
+    (function draw () {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i]; p.y -= p.s; p.d += 0.01; p.x += Math.sin(p.d) * 0.3;
+        if (p.y < -6) { p.y = cv.height + 6; p.x = Math.random() * cv.width; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283);
+        ctx.fillStyle = 'rgba(227,195,114,' + (p.o * (0.55 + 0.45 * Math.sin(p.d * 3))) + ')'; ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    })();
+  })();
+
+  /* ===== LOCAL TIME (Walvis Bay) ===== */
+  (function clock () {
+    var lt = document.getElementById('localtime'); if (!lt) return;
+    function up () {
+      var s;
+      try { s = new Date().toLocaleTimeString('en-GB', { timeZone: 'Africa/Windhoek', hour: '2-digit', minute: '2-digit' }); }
+      catch (e) { s = ''; }
+      lt.innerHTML = s ? ('Walvis Bay <b>' + s + '</b> · 22°57′S') : 'Walvis Bay · Namibia';
+    }
+    up(); setInterval(up, 15000);
+  })();
+
+  /* ===== MODAL SCROLL: parallax hero + progress ===== */
+  document.querySelectorAll('.panel-scroll').forEach(function (sc) {
+    sc.addEventListener('scroll', function () {
+      var hero = sc.querySelector('.panel-hero');
+      if (hero) hero.style.backgroundPosition = 'center calc(50% + ' + (sc.scrollTop * 0.12) + 'px)';
+      var mp = document.getElementById('modalProgress');
+      if (mp) { var max = sc.scrollHeight - sc.clientHeight; mp.querySelector('i').style.width = (max > 0 ? (sc.scrollTop / max * 100) : 0) + '%'; }
+    });
+  });
 
   /* ===== INIT ===== */
   setVisual(0);
