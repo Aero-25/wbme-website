@@ -1,38 +1,35 @@
 # Walvis Bay Marine Engineering (WBME) — Website
 
-A full redesign of the WBME marketing website — modern, clean and professional, in the company's **blue + brass/gold** brand colours.
+A cinematic, immersive single-page experience for WBME — a marine & metal engineering firm in Walvis Bay, Namibia (est. 1999).
 
-**Demo build** — static HTML/CSS/JS, no build step required.
+**Demo build** — static HTML/CSS/JS, no build step.
 
-## Pages
-| Page | File |
-|------|------|
-| Home | `index.html` |
-| About | `about.html` |
-| Services | `services.html` |
-| Projects | `projects.html` |
-| Contact | `contact.html` |
+## The experience
+A full-bleed cinematic hero with a **looping rail of four cards** — **About · Services · Projects · Contact**. The background cross-fades to the focused card. Click a card and it **morphs and expands** into a closeable full-screen panel holding that section's content; close to shrink it back.
+
+- Same look on desktop and mobile (reflowed for portrait; swipeable card rail, hamburger nav).
+- Deep-linkable panels (`/#services`), back-button friendly, `prefers-reduced-motion` aware.
+- Blue + brass/gold, dark cinematic, ANTON display titles.
 
 ## Structure
 ```
-├── index.html / about.html / services.html / projects.html / contact.html
-├── css/styles.css      # shared design system (brand: navy + brass/gold)
-├── js/main.js          # reveals, count-ups, mobile menu, lightbox, form validation
-├── images/             # logo, photography, service icons
-└── docs/superpowers/specs/   # design spec
+├── index.html              # the cinematic experience (stage + 4 content panels)
+├── css/experience.css      # design system + morph + panels + mobile reflow
+├── js/experience.js        # loop, card-morph (FLIP), deep-links, lightbox, form
+├── images/                 # logo, photography, service icons
+└── docs/superpowers/specs/ # design specs
 ```
+> The earlier clean multi-page version (`about.html`, `services.html`, … , `css/styles.css`, `js/main.js`) remains in the repo and git history.
 
 ## Run locally
-Open `index.html` directly, or serve the folder:
+Serve the folder (don't open via `file://` — the experience uses History/hash routing):
 ```bash
-python -m http.server 8000
-# then visit http://localhost:8000
+python -m http.server 8000   # then http://localhost:8000
 ```
 
 ## Notes
-- Fully responsive (mobile drawer menu included).
-- Contact form opens the visitor's email client to `info@wbme.com.na` (swap for a hosted form endpoint for in-page sending).
+- Contact form opens the visitor's email client to `info@wbme.com.na` (swap for a hosted endpoint for in-page sending).
 - Placeholder logo lockup + demo photography; real brand assets to be dropped in.
 
 ---
-*Walvis Bay Marine Engineering — established 1999. "No job too big, no job too small."*
+*Walvis Bay Marine Engineering — "No job too big, no job too small."*

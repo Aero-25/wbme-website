@@ -3,197 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WBME — Walvis Bay Marine Engineering | Ship Repair & Fabrication</title>
-<meta name="description" content="Walvis Bay Marine Engineering — ship repair, steel fabrication, rigging, machining and welding for the marine & mining industries. Namibia, since 1999. No job too big, no job too small.">
+<title>Walvis Bay Marine Engineering — WBME | Ship Repair & Fabrication, Namibia</title>
+<meta name="description" content="Walvis Bay Marine Engineering (WBME) — ship repair, steel fabrication, rigging, machining and welding for the marine & mining industries. Namibia, since 1999. No job too big, no job too small.">
 <meta property="og:title" content="Walvis Bay Marine Engineering">
-<meta property="og:description" content="Precision marine engineering since 1999 — no job too big or small.">
+<meta property="og:description" content="Cinematic marine engineering — since 1999. No job too big, no job too small.">
 <meta property="og:type" content="website">
 <link rel="icon" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/experience.css">
 </head>
 <body>
 
-<!-- mobile drawer -->
+<!-- ===== STAGE ===== -->
+<main class="stage" id="stage">
+  <div class="bg" data-i="0"></div><div class="bg" data-i="1"></div><div class="bg" data-i="2"></div><div class="bg" data-i="3"></div>
+  <div class="scrim"></div>
+
+  <header class="hdr">
+    <div class="brand">WB<b>ME</b></div>
+    <nav class="nav" id="nav">
+      <a data-key="about">About</a><a data-key="services">Services</a><a data-key="projects">Projects</a><a data-key="contact">Contact</a>
+      <a data-key="contact" style="color:var(--gold-lt)">Enquire</a>
+    </nav>
+    <div class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></div>
+  </header>
+
+  <div class="copy" id="copy"></div>
+
+  <div class="rail-wrap"><div class="rail" id="rail"></div></div>
+  <div class="prog"><i id="progBar"></i></div>
+  <div class="count"><b id="cn">01</b> &nbsp;/&nbsp; 04</div>
+  <div class="hint">Walvis Bay · Namibia</div>
+</main>
+
+<!-- ===== PANELS ===== -->
+<!-- ABOUT -->
+<section class="panel" id="panel-about" data-key="about" aria-hidden="true">
+  <button class="panel-close" data-close aria-label="Close">&times;</button>
+  <div class="panel-hero" style="background-image:url('images/1.jpg')">
+    <div class="in"><div class="ey">Est. 1999 · Walvis Bay</div><h2 class="ti">About Us</h2></div>
+  </div>
+  <div class="panel-body">
+    <div class="lead-row p-rv">
+      <div>
+        <span class="eyebrow">Our Story</span>
+        <h3>Built on craftsmanship &amp; character</h3>
+        <p>Walvis Bay Marine Engineering was established by the late Mr. Uwe Crüys in the latter part of 1999, and officially registered in October 2000. We are a well-established company offering high standards of workmanship to the marine and mining industries.</p>
+        <p>From his example of never saying no to anyone in need — technical, personal or social — together with the company's belief in the Lord Jesus Christ, came our motto: <b style="color:#fff">no job too big, no job too small.</b></p>
+        <div class="verse">"I can do all things through Christ Jesus who strengthens me." — Philippians 4:13</div>
+      </div>
+      <div class="media"><img src="images/uwe_cruys_img.gif" alt="Founder Mr. Uwe Crüys"></div>
+    </div>
+    <div class="statline p-rv">
+      <div><div class="n" data-count="25" data-suffix="+">0</div><div class="l">Years of service</div></div>
+      <div><div class="n">6</div><div class="l">Core disciplines</div></div>
+      <div><div class="n">1999</div><div class="l">Established</div></div>
+      <div><div class="n">100%</div><div class="l">Commitment</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="panel" id="panel-services" data-key="services" aria-hidden="true">
+  <button class="panel-close" data-close aria-label="Close">&times;</button>
+  <div class="panel-hero" style="background-image:url('images/6.jpg')">
+    <div class="in"><div class="ey">Six disciplines · In-house</div><h2 class="ti">Services</h2></div>
+  </div>
+  <div class="panel-body">
+    <div class="p-rv" style="max-width:680px"><span class="eyebrow">What we do</span><h3>Full-service marine &amp; metal engineering</h3><p>An extensive array of services in ship repair and maintenance — yet never limited to any one area. As long as the work calls for metal-engineering skills, we have the resources to get it done.</p></div>
+    <div class="svc-grid p-rv">
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon1.png" alt=""></div><h4>Rigging</h4><p>Propeller shafts, rudder shafts, engines, alternators and generators.</p><div class="tags"><span>Shafts</span><span>Engines</span><span>Generators</span></div></div>
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon2.png" alt=""></div><h4>Fitting &amp; Turning</h4><p>Strip, overhaul, repair, new parts, re-assembly and installation.</p><div class="tags"><span>Overhaul</span><span>New parts</span><span>Install</span></div></div>
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon3.png" alt=""></div><h4>Boiler Making</h4><p>Structural steelwork — renewal, modification or complete new builds.</p><div class="tags"><span>Renewal</span><span>New build</span></div></div>
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon4.png" alt=""></div><h4>Fabrication</h4><p>General structural steel, modifications and new construction.</p><div class="tags"><span>Structural</span><span>Custom</span></div></div>
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon5.png" alt=""></div><h4>Pipe Works</h4><p>Renewal, modification, new installs, initial design and jigs.</p><div class="tags"><span>Design</span><span>Install</span><span>Jigs</span></div></div>
+      <div class="svc"><div class="ic"><img src="images/icon-image/service-icon6.png" alt=""></div><h4>Welding</h4><p>Gas, brazing, silver soldering, MIG, TIG and arc welding.</p><div class="tags"><span>MIG</span><span>TIG</span><span>Arc</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="panel" id="panel-projects" data-key="projects" aria-hidden="true">
+  <button class="panel-close" data-close aria-label="Close">&times;</button>
+  <div class="panel-hero" style="background-image:url('images/2.jpg')">
+    <div class="in"><div class="ey">Our work</div><h2 class="ti">Projects</h2></div>
+  </div>
+  <div class="panel-body">
+    <div class="p-rv" style="max-width:680px"><span class="eyebrow">Gallery</span><h3>Engineering in action</h3><p>From the machine shop to the dry dock — a look at the work that keeps Namibia's fleet moving. Click any image to view it larger.</p></div>
+    <div class="gal p-rv">
+      <div class="g" data-lb="images/2.jpg"><img src="images/2.jpg" alt="Dry-dock works"></div>
+      <div class="g" data-lb="images/3.jpg"><img src="images/3.jpg" alt="Machining"></div>
+      <div class="g" data-lb="images/4.jpg"><img src="images/4.jpg" alt="Fabrication"></div>
+      <div class="g" data-lb="images/1.jpg"><img src="images/1.jpg" alt="Fitting and turning"></div>
+      <div class="g" data-lb="images/5.jpg"><img src="images/5.jpg" alt="Pipe works"></div>
+      <div class="g" data-lb="images/6.jpg"><img src="images/6.jpg" alt="Welding"></div>
+      <div class="g" data-lb="images/bg1.jpg"><img src="images/bg1.jpg" alt="Propeller works"></div>
+      <div class="g" data-lb="images/bg2.jpg"><img src="images/bg2.jpg" alt="Marine repair"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="panel" id="panel-contact" data-key="contact" aria-hidden="true">
+  <button class="panel-close" data-close aria-label="Close">&times;</button>
+  <div class="panel-hero" style="background-image:url('images/5.jpg')">
+    <div class="in"><div class="ey">Get in touch</div><h2 class="ti">Contact</h2></div>
+  </div>
+  <div class="panel-body">
+    <div class="contact-grid">
+      <div class="info p-rv">
+        <span class="eyebrow">Reach us</span>
+        <h3>Let's talk</h3>
+        <div class="row"><div class="ic">📍</div><div><b>Visit</b><span>8th Street East, Industrial Area<br>Walvis Bay, Namibia</span></div></div>
+        <div class="row"><div class="ic">📞</div><div><b>Call</b><span><a href="tel:064285700">(064) 285 700</a> · Fax (064) 209350</span></div></div>
+        <div class="row"><div class="ic">✉️</div><div><b>Email</b><span><a href="mailto:info@wbme.com.na">info@wbme.com.na</a></span></div></div>
+        <div class="row"><div class="ic">🕑</div><div><b>Hours</b><span>Mon–Fri 07:00–17:00 · Sat closed · Sun by arrangement</span></div></div>
+      </div>
+      <div class="formcard p-rv">
+        <form id="contactForm" novalidate>
+          <div class="frow">
+            <div class="field"><label for="cname">Name</label><input id="cname" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
+            <div class="field"><label for="cemail">Email</label><input id="cemail" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
+          </div>
+          <div class="frow">
+            <div class="field"><label for="cphone">Phone</label><input id="cphone" name="phone" placeholder="+264 …"></div>
+            <div class="field"><label for="cservice">Service</label><select id="cservice" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
+          </div>
+          <div class="field"><label for="cmsg">Message</label><textarea id="cmsg" name="message" required placeholder="Describe the work you need…"></textarea><span class="err">Please add a short message.</span></div>
+          <button type="submit" class="btn-lime">Send request →</button>
+          <p class="form-note">Opens your email app addressed to info@wbme.com.na. Prefer to call? (064) 285 700.</p>
+        </form>
+        <div class="form-ok">✓ Thanks! Your email app should open with your request ready to send.</div>
+      </div>
+    </div>
+    <div class="map p-rv"><iframe title="WBME location" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
+  </div>
+</section>
+
+<!-- ===== MOBILE DRAWER ===== -->
 <div class="drawer" id="drawer">
-  <div class="top">
-    <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-    <button class="close" data-close aria-label="Close menu">&times;</button>
-  </div>
-  <a href="index.html">Home</a>
-  <a href="services.html">Services</a>
-  <a href="projects.html">Projects</a>
-  <a href="about.html">About</a>
-  <a href="contact.html">Contact</a>
-  <div class="dr-foot">
-    <a href="tel:064285700">(064) 285 700</a>
-    <a href="mailto:info@wbme.com.na">info@wbme.com.na</a>
-    <a href="#">Mon–Fri 07:00–17:00</a>
-  </div>
+  <div class="top"><div class="brand">WB<b style="color:var(--gold-lt)">ME</b></div><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
+  <a data-key="about">About</a><a data-key="services">Services</a><a data-key="projects">Projects</a><a data-key="contact">Contact</a>
+  <div class="df"><a href="tel:064285700">(064) 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><span>8th Street East, Walvis Bay</span></div>
 </div>
 
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-card">
-      <div class="hero-bg" style="background-image:url('images/bg2.jpg')"></div>
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox" id="lightbox">
+  <span class="lc" aria-label="Close">&times;</span>
+  <span class="ln lp" aria-label="Previous">&#8249;</span>
+  <img src="" alt="Project image">
+  <span class="ln lnx" aria-label="Next">&#8250;</span>
+</div>
 
-      <nav class="hero-nav">
-        <div class="logo on">
-          <div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div>
-        </div>
-        <div class="menu">
-          <a href="index.html" class="on">Home</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-        </div>
-        <div class="r">
-          <span class="ph">📞 (064) 285 700</span>
-          <a href="contact.html" class="btn btn-lime">Get a Quote</a>
-          <button class="burger" data-burger aria-label="Open menu"><span></span><span></span><span></span></button>
-        </div>
-      </nav>
-
-      <div class="hero-body">
-        <span class="eyebrow">Walvis Bay Marine Engineering · Since 1999</span>
-        <h1>We Build &amp; Repair<br>Reliable Marine Engineering</h1>
-        <div class="hero-row">
-          <div class="chip">
-            <div class="avs"><img src="images/5.jpg" alt=""><img src="images/1.jpg" alt=""><img src="images/2.jpg" alt=""></div>
-            <small>Trusted by the <b>Walvis Bay marine industry</b> for over 25 years.</small>
-          </div>
-          <a href="projects.html" class="play"><span class="ic">▶</span><span>See our work</span></a>
-        </div>
-      </div>
-
-      <div class="hero-cards">
-        <div class="hc-photo"><img src="images/5.jpg" alt="WBME engineers at work"></div>
-        <div class="hc-text">
-          <p>We are passionate about marine engineering that performs under pressure — ship repair, fabrication and precision machining you can rely on. Let us be your partner, no job too big or small.</p>
-          <div class="hc-stats">
-            <div><div class="n">25+</div><div class="l">Years experience</div></div>
-            <div><div class="n">6</div><div class="l">Core disciplines</div></div>
-            <div><div class="n">1999</div><div class="l">Established</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SERVICES (scroll showcase) ===== -->
-<section id="services">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <div><span class="eyebrow">Our Services</span><h2 style="margin-top:14px">Engineering strength,<br>crafting reliability</h2></div>
-      <p class="lead">Scroll through our six core disciplines — each one handled in-house, on one team and one timeline.</p>
-    </div>
-    <div class="show">
-      <div class="show-media">
-        <div class="layer active" data-i="0" style="background-image:url('images/2.jpg')"></div>
-        <div class="layer" data-i="1" style="background-image:url('images/1.jpg')"></div>
-        <div class="layer" data-i="2" style="background-image:url('images/4.jpg')"></div>
-        <div class="layer" data-i="3" style="background-image:url('images/3.jpg')"></div>
-        <div class="layer" data-i="4" style="background-image:url('images/5.jpg')"></div>
-        <div class="layer" data-i="5" style="background-image:url('images/6.jpg')"></div>
-        <div class="count"><b id="cNow">01</b> / 06</div>
-      </div>
-      <div class="show-list">
-        <div class="item active" data-i="0"><div class="num">01</div><h3>Rigging</h3><p>Propeller shafts, rudder shafts, engines, alternators and generators — handled end to end.</p><div class="tags"><span>Shafts</span><span>Engines</span><span>Generators</span></div></div>
-        <div class="item" data-i="1"><div class="num">02</div><h3>Fitting &amp; Turning</h3><p>Strip, overhaul and repair, new parts, re-assembly and installation — to fine tolerance.</p><div class="tags"><span>Overhaul</span><span>New parts</span><span>Install</span></div></div>
-        <div class="item" data-i="2"><div class="num">03</div><h3>Boiler Making</h3><p>Structural steelwork — renewal, modification or complete new builds, built to last.</p><div class="tags"><span>Renewal</span><span>Modify</span><span>New build</span></div></div>
-        <div class="item" data-i="3"><div class="num">04</div><h3>Fabrication</h3><p>General structural steel — from modifications to full new builds, fabricated in-house.</p><div class="tags"><span>Structural</span><span>Custom</span><span>In-house</span></div></div>
-        <div class="item" data-i="4"><div class="num">05</div><h3>Pipe Works</h3><p>Renewal, modification and complete new installations — including initial design and jigs.</p><div class="tags"><span>Design</span><span>Install</span><span>Jigs</span></div></div>
-        <div class="item" data-i="5"><div class="num">06</div><h3>Welding</h3><p>Every type — gas, brazing, silver soldering, MIG, TIG and arc — by certified hands.</p><div class="tags"><span>MIG</span><span>TIG</span><span>Arc</span><span>Braze</span></div></div>
-      </div>
-    </div>
-    <div class="center" style="margin-top:46px"><a href="services.html" class="btn btn-out">View all services →</a></div>
-  </div>
-</section>
-
-<!-- ===== ABOUT ===== -->
-<section class="about" id="about">
-  <div class="wrap about-grid">
-    <div class="about-media rv"><img src="images/1.jpg" alt="WBME workshop">
-      <div class="badge"><span>25+</span><small>YEARS</small></div>
-    </div>
-    <div class="rv" data-d="1">
-      <span class="eyebrow">About WBME</span>
-      <h2>Built on craftsmanship,<br>trusted since 1999.</h2>
-      <p>Established by the late Mr. Uwe Crüys in 1999, Walvis Bay Marine Engineering serves the local marine industry and beyond. We esteem the customer, the person and the relationship — and we take pride in the small things.</p>
-      <ul class="points">
-        <li>Highest quality of workmanship at competitive prices</li>
-        <li>Engineering results delivered on schedule and within budget</li>
-        <li>Practical, innovative solutions that reduce project cost</li>
-      </ul>
-      <a href="about.html" class="btn btn-dark">Our story →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PROJECTS ===== -->
-<section id="projects">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <div><span class="eyebrow">Our Work</span><h2 style="margin-top:14px">Recent projects</h2></div>
-      <a href="projects.html" class="btn btn-out">View all →</a>
-    </div>
-    <div class="proj-grid">
-      <div class="proj big rv"><img src="images/2.jpg" alt="Dry-dock works"><div class="ov"><div><b>Dry-dock works</b><span>Walvis Bay</span></div></div></div>
-      <div class="proj rv" data-d="1"><img src="images/3.jpg" alt="Machining"><div class="ov"><div><b>Machining</b><span>In-house</span></div></div></div>
-      <div class="proj rv" data-d="2"><img src="images/4.jpg" alt="Fabrication"><div class="ov"><div><b>Fabrication</b><span>Workshop</span></div></div></div>
-      <div class="proj rv"><img src="images/1.jpg" alt="Fitting & turning"><div class="ov"><div><b>Fitting &amp; turning</b><span>Precision</span></div></div></div>
-      <div class="proj wide rv" data-d="1"><img src="images/6.jpg" alt="Welding"><div class="ov"><div><b>Welding</b><span>Certified</span></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== WHY ===== -->
-<section>
-  <div class="wrap">
-    <div class="why rv">
-      <div class="top">
-        <div><span class="eyebrow" style="color:#e3c372">Why WBME</span><h2 style="margin-top:14px">The standard we hold ourselves to</h2></div>
-        <p class="lead">No job too big, no job too small. We go the extra mile on the details others overlook.</p>
-      </div>
-      <div class="why-grid">
-        <div class="it"><div class="n">01</div><h4>Quality &amp; value</h4><p>Top-tier workmanship at genuinely competitive prices.</p></div>
-        <div class="it"><div class="n">02</div><h4>On time, on budget</h4><p>Delivered to your time frame and within budget.</p></div>
-        <div class="it"><div class="n">03</div><h4>Smart solutions</h4><p>Practical thinking that lowers overall project cost.</p></div>
-        <div class="it"><div class="n">04</div><h4>Real experience</h4><p>Decades of field expertise across marine &amp; mining.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== CTA ===== -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="cta-card rv">
-      <h2>Have a project in mind?</h2>
-      <p>From a single weld to a full refit — tell us what you need and we'll get back to you quickly.</p>
-      <a href="contact.html" class="btn btn-dark">Request a Quote →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="col">
-        <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-        <p>Ship repair, fabrication &amp; precision engineering for the marine and mining industries. Walvis Bay, Namibia.</p>
-      </div>
-      <div class="col"><h4>Visit</h4><p>8th Street East<br>Industrial Area<br>Walvis Bay, Namibia</p></div>
-      <div class="col"><h4>Contact</h4><a href="tel:064285700">(064) 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><a href="#">Mon–Fri 07:00–17:00</a></div>
-      <div class="col"><h4>Pages</h4><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
-    </div>
-    <div class="foot-bot"><span>© <span id="year">2026</span> Walvis Bay Marine Engineering</span><span>No job too big · No job too small</span></div>
-  </div>
-</footer>
-
-<script src="js/main.js"></script>
+<script src="js/experience.js"></script>
 </body>
 </html>
