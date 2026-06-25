@@ -40,7 +40,7 @@
     rail.innerHTML = html;
     railCards = rail.querySelectorAll('.card');
     railCards.forEach(function (el) {
-      el.addEventListener('click', function () { openPanel(el.dataset.key, el); });
+      el.addEventListener('click', function () { if (dragMoved > 6) return; openPanel(el.dataset.key, el); });
       el.addEventListener('mouseenter', function () { paused = true; });
       el.addEventListener('mouseleave', function () { paused = false; });
     });
@@ -69,9 +69,10 @@
   }
 
   /* continuous drift loop */
-  var offset = 0, speed = 0.9, paused = false, lastActive = -1, ready = false;
+  var offset = 0, speed = 1.3, paused = false, lastActive = -1, ready = false;
+  var dragging = false, dragStartX = 0, dragStartOffset = 0, dragMoved = 0;
   function loop () {
-    if (!current && !paused) offset += speed;
+    if (!current && !paused && !dragging) offset += speed;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translateX(' + (-x) + 'px)';
@@ -86,6 +87,23 @@
   if (progB) progB.style.width = (100 / N) + '%';
   setVisual(0);
   requestAnimationFrame(loop);
+
+  /* ===== GRAB TO SCROLL (mouse + touch) ===== */
+  if (railWrap) {
+    railWrap.addEventListener('pointerdown', function (e) {
+      dragging = true; dragStartX = e.clientX; dragStartOffset = offset; dragMoved = 0;
+      railWrap.classList.add('grabbing');
+      try { railWrap.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - dragStartX; dragMoved = Math.abs(dx);
+      offset = dragStartOffset - dx * 1.15;
+    });
+    var endDrag = function () { if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+  }
 
   /* ===== PANEL (modal morph) ===== */
   var current = null, animating = false;
