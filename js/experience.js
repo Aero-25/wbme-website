@@ -69,7 +69,7 @@
   /* continuous drift loop */
   var offset = 0, speed = 0.7, paused = false, lastActive = -1, ready = false;
   function loop () {
-    if (ready && !reduce && !current && !paused) offset += speed;
+    if (!reduce && !current && !paused) offset += speed;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translateX(' + (-x) + 'px)';
@@ -83,6 +83,12 @@
   }
 
   navA.forEach(function (a) { a.addEventListener('click', function () { openPanel(a.dataset.key, firstCard(a.dataset.key)); }); });
+
+  /* ===== CORE START (guaranteed, before enhancements) ===== */
+  document.body.classList.add('ready');
+  if (progB) progB.style.width = (100 / N) + '%';
+  setVisual(0);
+  requestAnimationFrame(loop);
 
   /* ===== PANEL (modal morph) ===== */
   var current = null, animating = false;
@@ -250,6 +256,8 @@
     });
   }
 
+  /* ===== ENHANCEMENTS (optional; never block the core) ===== */
+  try {
   /* ===== PRELOADER ===== */
   (function preload () {
     var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
@@ -331,10 +339,9 @@
     });
   });
 
-  /* ===== INIT ===== */
-  if (progB) progB.style.width = (100 / N) + '%';
-  setVisual(0);
-  requestAnimationFrame(loop);
+  } catch (err) { /* enhancements are optional — core experience already running */ }
+
+  /* ===== DEEP LINK ===== */
   var initKey = location.hash ? location.hash.slice(1) : '';
   if (initKey && panelEl(initKey)) {
     current = initKey;
