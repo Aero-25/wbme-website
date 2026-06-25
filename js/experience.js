@@ -5,10 +5,14 @@
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
 
   var cards = [
-    { key:'about',    bg:'images/1.jpg',   img:'images/1.jpg', s:'Est. 1999 · Walvis Bay', t:'About',    d:'Marine engineering built on craftsmanship since 1999 — no job too big, no job too small.' },
-    { key:'services', bg:'images/bg1.jpg', img:'images/6.jpg', s:'Six disciplines',        t:'Services', d:'Rigging, fabrication, machining and welding — full-service marine engineering under one roof.' },
-    { key:'projects', bg:'images/2.jpg',   img:'images/2.jpg', s:'Our work',               t:'Projects', d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
-    { key:'contact',  bg:'images/5.jpg',   img:'images/5.jpg', s:'Get in touch',           t:'Contact',  d:'8th Street East, Walvis Bay. Tell us about your project — we will get back fast.' }
+    { key:'about',      bg:'images/1.jpg',   img:'images/1.jpg', s:'Est. 1999 · Walvis Bay', t:'About',      d:'Marine engineering built on craftsmanship since 1999 — no job too big, no job too small.' },
+    { key:'why',        bg:'images/bg2.jpg', img:'images/4.jpg', s:'The standard',           t:'Why WBME',   d:'Quality, on-time delivery, fair prices and decades of field experience — the standard we hold.' },
+    { key:'services',   bg:'images/bg1.jpg', img:'images/6.jpg', s:'Six disciplines',        t:'Services',   d:'Rigging, fabrication, machining and welding — full-service marine engineering under one roof.' },
+    { key:'industries', bg:'images/3.jpg',   img:'images/3.jpg', s:'Who we serve',           t:'Industries', d:'Fishing, shipping, mining, offshore and ports — engineering across the blue economy.' },
+    { key:'safety',     bg:'images/6.jpg',   img:'images/6.jpg', s:'Quality assured',        t:'Safety',     d:'Every job planned to its time, safety and quality frame — done right, done safely.' },
+    { key:'projects',   bg:'images/2.jpg',   img:'images/2.jpg', s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
+    { key:'reviews',    bg:'images/bg2.jpg', img:'images/5.jpg', s:'In their words',         t:'Reviews',    d:'A few words from the operators and contractors we work with around Walvis Bay.' },
+    { key:'contact',    bg:'images/5.jpg',   img:'images/5.jpg', s:'Get in touch',           t:'Contact',    d:'8th Street East, Walvis Bay. Tell us about your project — we will get back fast.' }
   ];
   var N = cards.length;
 
@@ -328,6 +332,7 @@
   });
 
   /* ===== INIT ===== */
+  if (progB) progB.style.width = (100 / N) + '%';
   setVisual(0);
   requestAnimationFrame(loop);
   var initKey = location.hash ? location.hash.slice(1) : '';
