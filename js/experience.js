@@ -90,17 +90,16 @@
 
   /* ===== GRAB TO SCROLL (mouse + touch) ===== */
   if (railWrap) {
+    var pdown = false;
     railWrap.addEventListener('pointerdown', function (e) {
-      dragging = true; dragStartX = e.clientX; dragStartOffset = offset; dragMoved = 0;
-      railWrap.classList.add('grabbing');
-      try { railWrap.setPointerCapture(e.pointerId); } catch (_) {}
+      pdown = true; dragStartX = e.clientX; dragStartOffset = offset; dragMoved = 0; dragging = false;
     });
     window.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
+      if (!pdown) return;
       var dx = e.clientX - dragStartX; dragMoved = Math.abs(dx);
-      offset = dragStartOffset - dx * 1.15;
+      if (dragMoved > 4) { dragging = true; railWrap.classList.add('grabbing'); offset = dragStartOffset - dx * 1.15; }
     });
-    var endDrag = function () { if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
+    var endDrag = function () { pdown = false; if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
   }
