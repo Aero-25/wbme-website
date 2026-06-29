@@ -40,7 +40,10 @@
     rail.innerHTML = html;
     railCards = rail.querySelectorAll('.card');
     railCards.forEach(function (el) {
+      el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'Open ' + cards[+el.dataset.i].t);
       el.addEventListener('click', function () { if (didDrag) return; openPanel(el.dataset.key, el); });
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(el.dataset.key, el); } });
       el.addEventListener('mouseenter', function () { paused = true; });
       el.addEventListener('mouseleave', function () { paused = false; });
     });
@@ -60,7 +63,7 @@
   function setVisual (i) {
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
     var c = cards[i];
-    copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><h1 class="ti">' + c.t + '</h1>' +
+    copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
       '<p class="de">' + c.d + '</p><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
@@ -94,7 +97,12 @@
     if (active !== lastActive) { lastActive = active; setVisual(active); }
     requestAnimationFrame(loop);
   }
-  navA.forEach(function (a) { a.addEventListener('click', function () { openPanel(a.dataset.key, firstCard(a.dataset.key)); }); });
+  function keyActivate (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }
+  navA.forEach(function (a) {
+    a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button');
+    a.addEventListener('click', function () { openPanel(a.dataset.key, firstCard(a.dataset.key)); });
+    a.addEventListener('keydown', keyActivate);
+  });
 
   /* ===== CORE START (guaranteed, before enhancements) ===== */
   document.body.classList.add('ready');
@@ -122,7 +130,8 @@
   }
 
   /* ===== PANEL (modal morph) ===== */
-  var current = null, animating = false;
+  var current = null, animating = false, lastTrigger = null;
+  function restoreFocus () { if (lastTrigger && lastTrigger.focus) { try { lastTrigger.focus(); } catch (_) {} } }
   function panelEl (key) { return document.getElementById('panel-' + key); }
   function firstCard (key) { return document.querySelector('.card[data-key="' + key + '"]'); }
   function cardImg (key) { for (var i = 0; i < N; i++) if (cards[i].key === key) return cards[i].img; return ''; }
@@ -194,7 +203,7 @@
     backdrop.classList.remove('open');
     var mp = document.getElementById('modalProgress'); if (mp) mp.classList.remove('on');
     var cardEl = firstCard(key);
-    if (reduce || !cardEl) { panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true'); unlock(); return; }
+    if (reduce || !cardEl) { panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true'); unlock(); restoreFocus(); return; }
     var r = cardEl.getBoundingClientRect(), M = modalRect();
     var m = makeMorph(key, M);
     m.style.transition = 'none';
@@ -208,13 +217,14 @@
       m.style.transform = cardToModalTransform(r, M);
       m.style.borderRadius = '14px';
     });
-    var fin = function () { if (m.parentNode) m.parentNode.removeChild(m); animating = false; unlock(); };
+    var fin = function () { if (m.parentNode) m.parentNode.removeChild(m); animating = false; unlock(); restoreFocus(); };
     m.addEventListener('transitionend', function (e) { if (e.propertyName === 'transform') fin(); });
     setTimeout(function () { if (animating) fin(); }, 720);
   }
 
   function openPanel (key, cardEl) {
     if (animating || current === key || !panelEl(key)) return;
+    lastTrigger = cardEl || document.activeElement;
     current = key;
     history.pushState({ panel: key }, '', '#' + key);
     doOpen(key, cardEl);
@@ -238,6 +248,18 @@
     if (drawer.classList.contains('open')) return closeDrawer();
     if (current) closePanel();
   });
+  document.addEventListener('keydown', function (e) {
+    var ae = document.activeElement;
+    if ((e.key === 'Enter' || e.key === ' ') && ae && ae.hasAttribute && ae.hasAttribute('data-lb')) { e.preventDefault(); ae.click(); return; }
+    if (e.key === 'Tab' && current) {               // focus trap inside the open panel
+      var panel = panelEl(current); if (!panel) return;
+      var f = Array.prototype.filter.call(panel.querySelectorAll('button,a[href],input,textarea,select,[tabindex]:not([tabindex="-1"])'), function (el) { return el.offsetParent !== null; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && ae === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && ae === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
   /* ===== DRAWER ===== */
   var drawer = document.getElementById('drawer');
@@ -246,7 +268,9 @@
   document.getElementById('burger').addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
   drawer.querySelectorAll('a[data-key]').forEach(function (a) {
+    a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button');
     a.addEventListener('click', function () { closeDrawer(); var k = a.dataset.key; setTimeout(function () { openPanel(k, firstCard(k)); }, 280); });
+    a.addEventListener('keydown', keyActivate);
   });
 
   /* ===== LIGHTBOX ===== */
