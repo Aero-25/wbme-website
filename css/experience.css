@@ -347,3 +347,28 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 @keyframes titleIn{from{opacity:0;filter:blur(10px);transform:translateY(14px)}to{opacity:1;filter:blur(0);transform:none}}
 .copy.anim .swap{animation:titleIn .6s var(--ease-out)}
 @media (prefers-reduced-motion: reduce){.copy.anim .swap{animation:none}.card img,.bg,.panel-hero{filter:none}}
+
+/* ===========================================================
+   BRIGHTEN PASS — lift the hero + lighten the popups
+   =========================================================== */
+/* hero: let more photography through, softer vignette */
+.scrim{background:
+  radial-gradient(72% 62% at 15% 44%, rgba(227,195,114,.10), transparent 60%),
+  linear-gradient(90deg,rgba(8,16,26,.72) 0%,rgba(8,16,26,.38) 46%,rgba(8,16,26,.06) 100%),
+  linear-gradient(0deg,rgba(8,16,26,.7),transparent 58%)}
+.vignette{box-shadow:inset 0 0 190px rgba(0,0,0,.5)}
+.bg{filter:saturate(.98) contrast(1.02) brightness(1.06)}
+.card img{filter:saturate(.95) contrast(1.04) brightness(1.04)}
+.card:before{background:linear-gradient(145deg,rgba(227,195,114,.22),transparent 50%,rgba(10,20,42,.32))}
+.card:after{background:linear-gradient(0deg,rgba(8,16,26,.78),transparent 58%)}
+
+/* popups: lighter navy surface + brighter text */
+.panel{background:#1b2e4d}
+.morph:after{background:linear-gradient(0deg,rgba(27,46,77,.5),transparent 62%)}
+.panel-hero:after{background:linear-gradient(0deg,#1b2e4d 2%,rgba(27,46,77,.14) 56%,rgba(27,46,77,.3))}
+.panel-body{color:#e9eef5}
+.panel-body p{color:#c9d4e3}
+.svc,.quote-card,.ind,.formcard{background:rgba(255,255,255,.065);border-color:rgba(255,255,255,.14)}
+.svc p,.ind span,.quote-card .by span,.statline .l{color:#aebccd}
+.field input,.field textarea,.field select{background:rgba(255,255,255,.06)}
+.why-grid .it{background:rgba(255,255,255,.06)}
