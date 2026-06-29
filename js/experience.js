@@ -65,6 +65,7 @@
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
     railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
+    if (copy) copy.classList.toggle('anim', !dragging && Math.abs(velocity) < speed * 1.7);
     if (cnEl) cnEl.textContent = '0' + (i + 1);
     if (progB) progB.style.transform = 'translateX(' + (i * 100) + '%)';
   }
