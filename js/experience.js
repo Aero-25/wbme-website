@@ -40,7 +40,7 @@
     rail.innerHTML = html;
     railCards = rail.querySelectorAll('.card');
     railCards.forEach(function (el) {
-      el.addEventListener('click', function () { if (dragMoved > 6) return; openPanel(el.dataset.key, el); });
+      el.addEventListener('click', function () { if (didDrag) return; openPanel(el.dataset.key, el); });
       el.addEventListener('mouseenter', function () { paused = true; });
       el.addEventListener('mouseleave', function () { paused = false; });
     });
@@ -64,18 +64,31 @@
       '<p class="de">' + c.d + '</p><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
+    railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
     if (cnEl) cnEl.textContent = '0' + (i + 1);
     if (progB) progB.style.transform = 'translateX(' + (i * 100) + '%)';
   }
 
   /* continuous drift loop */
   var offset = 0, speed = 1.3, paused = false, lastActive = -1, ready = false;
-  var dragging = false, dragStartX = 0, dragStartOffset = 0, dragMoved = 0;
+  var dragging = false, dragStartX = 0, dragStartOffset = 0, didDrag = false;
+  var velocity = speed, lastOffset = 0;
   function loop () {
-    if (!current && !paused && !dragging) offset += speed;
+    if (dragging) {
+      velocity = offset - lastOffset;               // capture fling velocity
+    } else {
+      var target = (current || paused || reduce) ? 0 : speed;
+      velocity += (target - velocity) * 0.05;        // momentum eases back into the ambient drift
+      offset += velocity;
+    }
+    lastOffset = offset;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
+    if (copy) {                                       // motion blur on the headline at speed
+      var b = reduce ? 0 : Math.min(6, Math.max(0, (Math.abs(velocity) - speed) * 0.5));
+      copy.style.filter = b > 0.3 ? 'blur(' + b.toFixed(2) + 'px)' : '';
+    }
     var active = ((Math.round(offset / cardStep) % N) + N) % N;
     if (active !== lastActive) { lastActive = active; setVisual(active); }
     requestAnimationFrame(loop);
@@ -90,16 +103,17 @@
   setTimeout(function () { if (copy) copy.classList.remove('first'); }, 900);
   requestAnimationFrame(loop);
 
-  /* ===== GRAB TO SCROLL (mouse + touch) ===== */
+  /* ===== GRAB TO SCROLL (mouse + touch) with momentum ===== */
   if (railWrap) {
     var pdown = false;
-    railWrap.addEventListener('pointerdown', function (e) {
-      pdown = true; dragStartX = e.clientX; dragStartOffset = offset; dragMoved = 0; dragging = false;
-    });
+    railWrap.addEventListener('pointerdown', function (e) { pdown = true; didDrag = false; dragStartX = e.clientX; });
     window.addEventListener('pointermove', function (e) {
       if (!pdown) return;
-      var dx = e.clientX - dragStartX; dragMoved = Math.abs(dx);
-      if (dragMoved > 4) { dragging = true; railWrap.classList.add('grabbing'); offset = dragStartOffset - dx; }
+      if (!dragging) {
+        if (Math.abs(e.clientX - dragStartX) <= 4) return;
+        dragging = true; didDrag = true; dragStartX = e.clientX; dragStartOffset = offset; railWrap.classList.add('grabbing');
+      }
+      offset = dragStartOffset - (e.clientX - dragStartX);
     });
     var endDrag = function () { pdown = false; if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
     window.addEventListener('pointerup', endDrag);

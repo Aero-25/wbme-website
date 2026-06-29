@@ -6,6 +6,10 @@
   --ink:#0c1726; --ink2:#10202f; --panel:#0b1422;
   --white:#fff; --mut:#9fb0c6; --line:rgba(255,255,255,.10);
   --gold:#c79a3e; --gold-d:#b1862c; --gold-lt:#e3c372; --gold-soft:rgba(199,154,62,.14);
+  /* motion (Emil Kowalski curves) */
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --ease-drawer:cubic-bezier(0.32,0.72,0,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -276,3 +280,39 @@ body.ready .card{opacity:1;transform:translateY(0)}
 .rail-wrap.grabbing{cursor:grabbing}
 .rail{user-select:none;-webkit-user-select:none}
 .card img,.card .lbl{pointer-events:none}
+
+/* ===========================================================
+   INTERACTIVE BUNDLE  (impeccable register + Emil Kowalski motion)
+   =========================================================== */
+/* easing + active-card spotlight */
+.card{transition:opacity .55s var(--ease-out),transform .55s var(--ease-out),box-shadow .45s var(--ease-out),filter .45s var(--ease-out)!important}
+body.ready .card{opacity:.8;transform:none}
+body.ready .card.focus{opacity:1;transform:translateY(-14px) scale(1.02)}
+.card.focus{box-shadow:0 30px 54px rgba(0,0,0,.55),0 0 0 2px var(--gold-lt)}
+.card.focus:after{background:linear-gradient(0deg,rgba(8,16,26,.5),transparent 64%)}
+
+/* press feedback (scale-on-active) */
+.explore,.btn-lime{transition:background .25s var(--ease-out),color .25s var(--ease-out),transform .15s var(--ease-out),border-color .25s var(--ease-out)}
+.explore:active,.btn-lime:active{transform:scale(.97)}
+.panel-close:active{transform:scale(.94)}
+
+/* scatter: rail + hero chrome recede as a panel opens */
+.rail-wrap{transition:opacity .55s var(--ease-out),transform .55s var(--ease-out)}
+.copy{transition:opacity .45s var(--ease-out)}
+body.locked .rail-wrap{opacity:0;transform:translateY(46px)}
+body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.locked .localtime{opacity:0}
+
+/* panel motion polish */
+.panel{transition:opacity .4s var(--ease-out)}
+.panel-backdrop{transition:opacity .5s var(--ease-out)}
+
+/* typography craft */
+.copy .ti,.panel-hero .ti,.panel-body h3{text-wrap:balance}
+.panel-body p{text-wrap:pretty;max-width:70ch}
+
+/* reduced motion: keep crossfades, drop movement */
+@media (prefers-reduced-motion: reduce){
+  body.ready .card,body.ready .card.focus{transform:none}
+  .copy{filter:none!important}
+  .rail-wrap,body.locked .rail-wrap{transform:none}
+}
