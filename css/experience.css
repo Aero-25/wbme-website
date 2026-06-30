@@ -422,3 +422,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 
 /* focus ring for the hero call CTA + nav cta */
 .hero-call:focus-visible,.nav a.nav-cta:focus-visible{outline:3px solid var(--gold-lt);outline-offset:3px;border-radius:8px}
+
+/* breathing room after removing the hero description */
+.hero-actions{margin-top:34px}

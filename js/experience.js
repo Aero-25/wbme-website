@@ -62,7 +62,7 @@
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
     var c = cards[i];
     copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
-      '<p class="de">' + c.d + '</p><div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:064285700">Call WBME</a></div></div>';
+      '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:064285700">Call WBME</a></div></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
     railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
@@ -294,6 +294,9 @@
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
 
   /* ===== CONTACT FORM ===== */
+  // To send enquiries in-page: create a form at https://formspree.io (send to info@wbme.com.na)
+  // and paste its endpoint below. Until then, the form opens the visitor's email app.
+  var FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_ID';
   var form = document.getElementById('contactForm');
   if (form) {
     form.addEventListener('submit', function (e) {
@@ -306,10 +309,17 @@
       });
       if (!ok) return;
       var g = function (n) { var el = form.querySelector('[name=' + n + ']'); return el ? el.value.trim() : ''; };
-      var body = encodeURIComponent('Name: ' + g('name') + '\nEmail: ' + g('email') + '\nPhone: ' + g('phone') + '\nService: ' + g('service') + '\n\n' + g('message'));
-      window.location.href = 'mailto:info@wbme.com.na?subject=' + encodeURIComponent('Quote request — ' + g('name')) + '&body=' + body;
-      form.style.display = 'none';
-      document.querySelector('.form-ok').style.display = 'block';
+      var done = function () { form.style.display = 'none'; var okMsg = document.querySelector('.form-ok'); if (okMsg) okMsg.style.display = 'block'; };
+      var mailto = function () {
+        var body = encodeURIComponent('Name: ' + g('name') + '\nEmail: ' + g('email') + '\nPhone: ' + g('phone') + '\nService: ' + g('service') + '\n\n' + g('message'));
+        window.location.href = 'mailto:info@wbme.com.na?subject=' + encodeURIComponent('Quote request - ' + g('name')) + '&body=' + body;
+        done();
+      };
+      if (FORM_ENDPOINT.indexOf('REPLACE_WITH_YOUR_ID') !== -1) { mailto(); return; }
+      var btn = form.querySelector('[type=submit]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+      fetch(FORM_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
+        .then(function (r) { r.ok ? done() : mailto(); })
+        .catch(mailto);
     });
     form.querySelectorAll('input,textarea').forEach(function (i) {
       i.addEventListener('input', function () { i.closest('.field').classList.remove('invalid'); });
