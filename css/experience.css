@@ -522,20 +522,21 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .panel-hero:before{mix-blend-mode:normal!important;background:linear-gradient(165deg,rgba(227,195,114,.12),transparent 55%)}
 
 /* ===========================================================
-   PALETTE — gold + brass on warm dark (less blue)
+   PALETTE — navy blue + brass/gold + white (brand)
    =========================================================== */
-:root{--ink:#15110b; --brass:#b8863c;}
+:root{--ink:#0b1a30; --brass:#c79a3e;}
 .scrim{background:
-  radial-gradient(70% 60% at 15% 44%, rgba(227,195,114,.13), transparent 60%),
-  linear-gradient(90deg,rgba(14,10,5,.74) 0%,rgba(14,10,5,.40) 46%,rgba(14,10,5,.08) 100%),
-  linear-gradient(0deg,rgba(14,10,5,.76),transparent 58%)}
-.card:after{background:linear-gradient(0deg,rgba(13,9,4,.82),transparent 56%)}
-.card.focus:after{background:linear-gradient(0deg,rgba(13,9,4,.5),transparent 64%)}
-.morph:after{background:linear-gradient(0deg,rgba(20,15,8,.5),transparent 62%)}
-.panel{background:#1c160d}
-.panel-hero:after{background:linear-gradient(0deg,#1c160d 2%,rgba(28,22,13,.12) 56%,rgba(28,22,13,.3))}
-.panel-backdrop{background:rgba(8,6,3,.58)}
-.vignette{box-shadow:inset 0 0 200px rgba(0,0,0,.55)}
+  radial-gradient(70% 60% at 15% 44%, rgba(227,195,114,.12), transparent 60%),
+  linear-gradient(90deg,rgba(7,16,30,.76) 0%,rgba(7,16,30,.42) 46%,rgba(7,16,30,.10) 100%),
+  linear-gradient(0deg,rgba(7,16,30,.80),transparent 58%)}
+.card:after{background:linear-gradient(0deg,rgba(6,13,26,.84),transparent 56%)}
+.card.focus:after{background:linear-gradient(0deg,rgba(6,13,26,.5),transparent 64%)}
+.morph:after{background:linear-gradient(0deg,rgba(10,20,38,.5),transparent 62%)}
+.panel{background:#0f2138}
+.panel-hero:after{background:linear-gradient(0deg,#0f2138 2%,rgba(15,33,56,.12) 56%,rgba(15,33,56,.32))}
+.panel-backdrop{background:rgba(4,10,20,.58)}
+.vignette{box-shadow:inset 0 0 200px rgba(0,0,0,.5)}
+.preloader{background:#0a1626}
 
 /* ===== FACEBOOK FEED (Projects) ===== */
 .fb-feed{margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:18px}
@@ -545,7 +546,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .fb-link:hover{color:#fff;border-color:#fff}
 
 /* ===== ABOUT panel (next-level) ===== */
-.lead-statement{font-family:'Barlow',sans-serif;font-weight:500;font-size:clamp(1.5rem,3.2vw,2.4rem);line-height:1.3;color:#f0ece4;max-width:780px;margin-bottom:42px;text-wrap:balance}
+.lead-statement{font-family:'Barlow',sans-serif;font-weight:500;font-size:clamp(1.5rem,3.2vw,2.4rem);line-height:1.3;color:#eef2f7;max-width:780px;margin-bottom:42px;text-wrap:balance}
 .lead-statement span{color:var(--gold-lt)}
 .founder{margin:0}
 .founder figcaption{margin-top:12px;font-family:'Archivo';font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt)}
@@ -557,12 +558,12 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 @media(max-width:860px){.std-list{grid-template-columns:1fr}}
 
 /* ===== LOADER — proper, 5s minimum, live % ===== */
-.preloader{background:#120e07}
+.preloader{background:#0a1626}
 .pl-inner{text-align:center;display:flex;flex-direction:column;align-items:center}
-.pl-logo{font-family:'Archivo';font-weight:700;letter-spacing:.18em;color:#cfc7b6;font-size:1rem;margin-bottom:16px}
+.pl-logo{font-family:'Archivo';font-weight:700;letter-spacing:.18em;color:#c7d0db;font-size:1rem;margin-bottom:16px}
 .pl-logo b{color:var(--gold-lt)}
 .pl-pct{font-family:'Anton',sans-serif;font-size:clamp(3.4rem,11vw,8rem);line-height:1;color:#fff;letter-spacing:.01em;margin-bottom:16px}
 .pl-pct:after{content:"%";font-size:.32em;color:var(--gold-lt);margin-left:6px;vertical-align:top}
 .pl-bar{width:220px;height:2px;background:rgba(255,255,255,.14);margin:0 auto;overflow:hidden;border-radius:2px}
 .pl-bar i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left center;transform:scaleX(0)}
-.pl-sub{margin-top:16px;font-family:'Archivo';font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#8a8270}
+.pl-sub{margin-top:16px;font-family:'Archivo';font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#8794a6}
