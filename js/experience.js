@@ -369,9 +369,7 @@
     var MIN = 700, CAP = 2200, start = Date.now();             // keep the loader crisp; never block on slow imagery
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
-    var pct = pre.querySelector('.pl-pct');
-    if (!pct) { pct = document.createElement('div'); pct.className = 'pl-pct'; var inr = pre.querySelector('.pl-inner') || pre; inr.insertBefore(pct, inr.querySelector('.pl-bar') || inr.firstChild); }
-    function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; if (pct) pct.textContent = Math.round(p * 100); }
+    function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; }
     function bump () { loaded++; }
     function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 280); }
     urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; }); // wait for the real photos
