@@ -11,7 +11,7 @@
     { key:'industries', bg:'images/3.jpg',   img:'images/3.jpg', s:'Who we serve',           t:'Industries', d:'Fishing, shipping, mining, offshore and ports — engineering across the blue economy.' },
     { key:'safety',     bg:'images/6.jpg',   img:'images/6.jpg', s:'Quality assured',        t:'Safety',     d:'Every job planned to its time, safety and quality frame — done right, done safely.' },
     { key:'projects',   bg:'images/2.jpg',   img:'images/2.jpg', s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
-    { key:'reviews',    bg:'images/bg2.jpg', img:'images/5.jpg', s:'In their words',         t:'Reviews',    d:'A few words from the operators and contractors we work with around Walvis Bay.' },
+    { key:'reviews',    bg:'images/bg2.jpg', img:'images/5.jpg', s:'Ready for the job',       t:'Readiness',  d:'Practical repair, fabrication and install support for urgent marine and industrial work.' },
     { key:'contact',    bg:'images/5.jpg',   img:'images/5.jpg', s:'Get in touch',           t:'Contact',    d:'8th Street East, Walvis Bay. Tell us about your project — we will get back fast.' }
   ];
   var N = cards.length;
@@ -44,8 +44,6 @@
       el.setAttribute('aria-label', 'Open ' + cards[+el.dataset.i].t);
       el.addEventListener('click', function () { if (didDrag) return; openPanel(el.dataset.key, el); });
       el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(el.dataset.key, el); } });
-      el.addEventListener('mouseenter', function () { paused = true; });
-      el.addEventListener('mouseleave', function () { paused = false; });
     });
   })();
 
@@ -64,7 +62,7 @@
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
     var c = cards[i];
     copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
-      '<p class="de">' + c.d + '</p><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button></div>';
+      '<p class="de">' + c.d + '</p><div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:064285700">Call WBME</a></div></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
     railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
@@ -74,23 +72,25 @@
   }
 
   /* continuous drift loop */
-  var offset = 0, speed = 1.3, paused = false, lastActive = -1, ready = false;
+  var offset = 0, speed = 96, lastActive = -1, ready = false;
   var dragging = false, dragStartX = 0, dragStartOffset = 0, didDrag = false;
-  var velocity = speed, lastOffset = 0;
-  function loop () {
+  var velocity = speed, lastOffset = 0, lastFrame = 0;
+  function loop (now) {
+    var dt = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 1 / 60;
+    lastFrame = now;
     if (dragging) {
-      velocity = offset - lastOffset;               // capture fling velocity
+      velocity = (offset - lastOffset) / Math.max(dt, 1 / 120); // capture fling velocity
     } else {
-      var target = (current || paused || reduce) ? 0 : speed;
-      velocity += (target - velocity) * 0.05;        // momentum eases back into the ambient drift
-      offset += velocity;
+      var target = (current || reduce) ? 0 : speed;
+      velocity += (target - velocity) * Math.min(1, dt * 4.2);  // momentum eases back into the ambient drift
+      offset += velocity * dt;
     }
     lastOffset = offset;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
     rail.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
     if (copy) {                                       // motion blur on the headline at speed
-      var b = reduce ? 0 : Math.min(6, Math.max(0, (Math.abs(velocity) - speed) * 0.5));
+      var b = reduce ? 0 : Math.min(6, Math.max(0, (Math.abs(velocity) - speed) * 0.018));
       copy.style.filter = b > 0.3 ? 'blur(' + b.toFixed(2) + 'px)' : '';
     }
     var active = ((Math.round(offset / cardStep) % N) + N) % N;
@@ -163,7 +163,7 @@
     requestAnimationFrame(function () { panel.classList.add('shown'); });
     var sc = panel.querySelector('.panel-scroll'); if (sc) sc.scrollTop = 0;
     panel.setAttribute('aria-hidden', 'false');
-    var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.width = '0%'; }
+    var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.transform = 'scaleX(0)'; }
     var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
     panel.querySelectorAll('[data-count]').forEach(function (el) {
       var to = +el.dataset.count, sf = el.dataset.suffix || '', c = 0, st = Math.max(1, Math.ceil(to / 26));
@@ -274,9 +274,14 @@
   });
 
   /* ===== LIGHTBOX ===== */
-  var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), gThumbs = [], gIdx = 0;
+  var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
   function refreshThumbs () { gThumbs = Array.prototype.slice.call(document.querySelectorAll('[data-lb]')); }
-  function showLb (i) { gIdx = (i + gThumbs.length) % gThumbs.length; lbImg.src = gThumbs[gIdx].getAttribute('data-lb'); }
+  function showLb (i) {
+    gIdx = (i + gThumbs.length) % gThumbs.length;
+    lbImg.src = gThumbs[gIdx].getAttribute('data-lb');
+    lbImg.alt = gThumbs[gIdx].querySelector('img') ? gThumbs[gIdx].querySelector('img').alt : 'Selected project image';
+    if (lbCaption) lbCaption.textContent = gThumbs[gIdx].getAttribute('data-caption') || lbImg.alt;
+  }
   function openLb (i) { refreshThumbs(); showLb(i); lb.classList.add('open'); }
   function closeLb () { lb.classList.remove('open'); }
   document.addEventListener('click', function (e) {
@@ -322,7 +327,7 @@
     var t = setInterval(function () {
       n += Math.floor(Math.random() * 8) + 5;
       if (n >= 100) { n = 100; clearInterval(t); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 260); }
-      if (bar) bar.style.width = n + '%';
+      if (bar) bar.style.transform = 'scaleX(' + (n / 100) + ')';
     }, 80);
   })();
 
@@ -391,7 +396,7 @@
       var hero = sc.querySelector('.panel-hero');
       if (hero) hero.style.backgroundPosition = 'center calc(50% + ' + (sc.scrollTop * 0.12) + 'px)';
       var mp = document.getElementById('modalProgress');
-      if (mp) { var max = sc.scrollHeight - sc.clientHeight; mp.querySelector('i').style.width = (max > 0 ? (sc.scrollTop / max * 100) : 0) + '%'; }
+      if (mp) { var max = sc.scrollHeight - sc.clientHeight; mp.querySelector('i').style.transform = 'scaleX(' + (max > 0 ? (sc.scrollTop / max) : 0) + ')'; }
     });
   });
 
