@@ -124,7 +124,7 @@ The palette is WBME blue and brass: blue carries the interface structure, brass 
 
 **The Real Yard Rule.** Photography must remain visible enough to prove the work. Avoid scrims so heavy that images become generic dark texture.
 
-**The Bucket Proof Rule.** Worksite photography should come from the public Supabase `WBME` bucket when possible, using real job folders for propulsion, machining, pipe works, fabrication, boiler making, rudder and coupling proof. The primary logo artwork also comes from the public bucket. Local imagery remains for the favicon, service icons and founder portrait.
+**The Bucket Proof Rule.** Worksite photography should come from the public Supabase `WBME` bucket when possible, using real job folders for propulsion, machining, pipe works, fabrication, boiler making, rudder and coupling proof. The primary logo artwork and propeller favicon also come from the public bucket. Local imagery remains for service icons and founder portrait.
 
 **The Propeller Contact Rule.** The bucket propeller icon is the floating contact affordance and loader motion motif. It may spin continuously as ambient machinery motion, but must stop under `prefers-reduced-motion`.
 
