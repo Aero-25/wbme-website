@@ -1,6 +1,7 @@
 /* WBME — Cinematic Experience engine */
 (function () {
   'use strict';
+  (function () { var l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://kbmgpqwmgthswjkfmqfe.supabase.co'; l.crossOrigin = ''; document.head.appendChild(l); })();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
   var bucketAsset = window.WBME_BUCKET_ASSET || function (path, width) {
@@ -33,7 +34,9 @@
       cnEl  = document.getElementById('cn'),
       backdrop = document.getElementById('panelBackdrop');
 
-  bgs.forEach(function (b) { b.style.backgroundImage = "url('" + cards[+b.dataset.i].bg + "')"; });
+  // lazy backgrounds: only load one as it becomes active (was loading all 8 up front)
+  function ensureBg (i) { var b = bgs[i]; if (b && !b.getAttribute('data-loaded')) { b.setAttribute('data-loaded', '1'); b.style.backgroundImage = "url('" + cards[i].bg + "')"; } }
+  ensureBg(0);
 
   /* build looping rail (3x duplicated) */
   var REPEAT = 3, railCards = [];
@@ -42,7 +45,7 @@
     for (var k = 0; k < N * REPEAT; k++) {
       var c = cards[k % N];
       html += '<div class="card" data-key="' + c.key + '" data-i="' + (k % N) + '">' +
-              '<img src="' + c.img + '" alt="' + c.t + '">' +
+              '<img src="' + (c.img || '').replace(/width=\d+/, 'width=560') + '" alt="' + c.t + '" decoding="async" loading="lazy">' +
               '<div class="lbl"><div class="s">' + c.s + '</div><div class="b">' + c.t + '</div></div></div>';
     }
     rail.innerHTML = html;
@@ -67,6 +70,7 @@
 
   /* visual state (no transform) */
   function setVisual (i) {
+    ensureBg(i); ensureBg((i + 1) % N);
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
     var c = cards[i];
     copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
@@ -350,7 +354,7 @@
     var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var MIN = 5000, CAP = 10000, start = Date.now();           // minimum 5s on screen, 10s hard cap
-    var urls = cards.map(function (c) { return c.bg; }).filter(Boolean);
+    var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
     var pct = pre.querySelector('.pl-pct');
     if (!pct) { pct = document.createElement('div'); pct.className = 'pl-pct'; var inr = pre.querySelector('.pl-inner') || pre; inr.insertBefore(pct, inr.querySelector('.pl-bar') || inr.firstChild); }
