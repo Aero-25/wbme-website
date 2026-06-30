@@ -93,7 +93,7 @@
     if (dragging) {
       velocity = (offset - lastOffset) / Math.max(dt, 1 / 120); // capture fling velocity
     } else {
-      var target = (current || reduce) ? 0 : speed;
+      var target = current ? 0 : speed;   // keep drifting even under reduced-motion (user wants the cards moving)
       velocity += (target - velocity) * Math.min(1, dt * 4.2);  // momentum eases back into the ambient drift
       offset += velocity * dt;
     }
