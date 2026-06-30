@@ -36,6 +36,9 @@
 
   // lazy backgrounds: only load one as it becomes active (was loading all 8 up front)
   function ensureBg (i) { var b = bgs[i]; if (b && !b.getAttribute('data-loaded')) { b.setAttribute('data-loaded', '1'); b.style.backgroundImage = "url('" + cards[i].bg + "')"; } }
+  function resizedUrl (url, width, quality) {
+    return String(url || '').replace(/([?&])width=\d+/, '$1width=' + width).replace(/([?&])quality=\d+/, '$1quality=' + quality);
+  }
   ensureBg(0);
 
   /* build looping rail (3x duplicated) */
@@ -45,7 +48,7 @@
     for (var k = 0; k < N * REPEAT; k++) {
       var c = cards[k % N];
       html += '<div class="card" data-key="' + c.key + '" data-i="' + (k % N) + '">' +
-              '<img src="' + (c.img || '').replace(/width=\d+/, 'width=560') + '" alt="' + c.t + '" decoding="async" loading="lazy">' +
+              '<img src="' + resizedUrl(c.img, isMobile() ? 360 : 560, 66) + '" alt="' + c.t + '" decoding="async" loading="lazy">' +
               '<div class="lbl"><div class="s">' + c.s + '</div><div class="b">' + c.t + '</div></div></div>';
     }
     rail.innerHTML = html;
@@ -170,14 +173,25 @@
     return 'translate(' + r.left + 'px,' + r.top + 'px) scale(' + (r.width / M.width) + ',' + (r.height / M.height) + ')';
   }
 
+  var sociableKitRequested = false;
+  function ensureSociableKit () {
+    if (sociableKitRequested || document.querySelector('script[src*="widgets.sociablekit.com/facebook-page-posts"]')) return;
+    sociableKitRequested = true;
+    var s = document.createElement('script');
+    s.src = 'https://widgets.sociablekit.com/facebook-page-posts/widget.js';
+    s.defer = true;
+    document.body.appendChild(s);
+  }
+
   function showPanelContent (panel) {
     panel.classList.add('open');
     requestAnimationFrame(function () { panel.classList.add('shown'); });
     var sc = panel.querySelector('.panel-scroll'); if (sc) sc.scrollTop = 0;
     panel.setAttribute('aria-hidden', 'false');
+    if (window.WBME_HYDRATE_BUCKET_ASSETS) window.WBME_HYDRATE_BUCKET_ASSETS(panel);
     var hero = panel.querySelector('.panel-hero'), im = cardImg(panel.id.replace('panel-', ''));
     if (hero && im) hero.style.backgroundImage = "url('" + im + "')";   // match panel hero to the real card photo
-    if (window.FB && panel.querySelector('.fb-page')) { try { window.FB.XFBML.parse(panel); } catch (_) {} }
+    if (panel.id === 'panel-projects') ensureSociableKit();
     var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.transform = 'scaleX(0)'; }
     var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
     panel.querySelectorAll('[data-count]').forEach(function (el) {
@@ -353,7 +367,7 @@
   (function preload () {
     var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
-    var MIN = 5000, CAP = 10000, start = Date.now();           // minimum 5s on screen, 10s hard cap
+    var MIN = 700, CAP = 2200, start = Date.now();             // keep the loader crisp; never block on slow imagery
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
     var pct = pre.querySelector('.pl-pct');
@@ -365,7 +379,7 @@
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
     (function tick () {
       var el = Date.now() - start, assetsDone = loaded >= total, timeP = Math.min(1, el / MIN);
-      setBar(assetsDone ? timeP : Math.min(0.92, timeP));      // fill over 5s; hold at 92% until photos arrive
+      setBar(assetsDone ? timeP : Math.min(0.92, timeP));      // fill quickly; hold at 92% only while the first image arrives
       if ((el >= MIN && assetsDone) || el >= CAP) { finish(); return; }
       requestAnimationFrame(tick);
     })();
