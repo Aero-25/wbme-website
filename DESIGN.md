@@ -2,9 +2,9 @@
 name: Walvis Bay Marine Engineering
 description: Rugged marine and metal engineering, shown through cinematic worksite proof.
 colors:
-  ink: "#0c1726"
-  ink-deep: "#070d16"
-  panel-navy: "#1b2e4d"
+  ink: "#0f2c52"
+  ink-deep: "#071a33"
+  panel-navy: "#163a66"
   black: "#000000"
   white: "#ffffff"
   white-steel: "#f4f7fb"
@@ -92,7 +92,7 @@ components:
 
 **Creative North Star: "The Working Yard at Dusk"**
 
-WBME should feel like a real Walvis Bay workshop photographed with care: steel, salt air, brass light, dark navy surfaces, and plain-spoken confidence. The interface is cinematic because the work is serious, not because it wants to perform.
+WBME should feel like a real Walvis Bay workshop photographed with care: steel, salt air, blue marine surfaces, brass light, and plain-spoken confidence. The interface is cinematic because the work is serious, not because it wants to perform.
 
 The system is built for procurement and technical buyers who may be stressed, mobile, and short on time. First impressions must answer: is this company capable, reachable, and trustworthy with time-critical work?
 
@@ -105,7 +105,7 @@ The system is built for procurement and technical buyers who may be stressed, mo
 
 ## 2. Colors
 
-The palette is deep marine steel with controlled brass highlights.
+The palette is WBME blue and brass: blue carries the interface structure, brass marks action, active state and proof.
 
 ### Primary
 - **Brass Worklight** (`brass`): Used for primary action, progress, focus accents and proof details. It should feel like reflected workshop light, not decorative gold.
