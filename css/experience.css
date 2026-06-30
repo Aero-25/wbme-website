@@ -544,3 +544,15 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .fb-feed .fb-page span,.fb-feed .fb-page iframe{max-width:100%!important}
 .fb-link{font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);border-bottom:1px solid rgba(227,195,114,.5);padding-bottom:3px}
 .fb-link:hover{color:#fff;border-color:#fff}
+
+/* ===== ABOUT panel (next-level) ===== */
+.lead-statement{font-family:'Barlow',sans-serif;font-weight:500;font-size:clamp(1.5rem,3.2vw,2.4rem);line-height:1.3;color:#f0ece4;max-width:780px;margin-bottom:42px;text-wrap:balance}
+.lead-statement span{color:var(--gold-lt)}
+.founder{margin:0}
+.founder figcaption{margin-top:12px;font-family:'Archivo';font-weight:700;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt)}
+.standard{margin-top:40px}
+.std-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.std-list li{color:var(--mut);line-height:1.6;padding:18px 20px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px}
+.std-list li b{color:#fff;font-family:'Archivo';display:block;margin-bottom:4px}
+.panel-cta{display:flex;align-items:center;gap:22px;margin-top:42px;flex-wrap:wrap}
+@media(max-width:860px){.std-list{grid-template-columns:1fr}}
