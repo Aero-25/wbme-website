@@ -567,3 +567,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .pl-bar{width:220px;height:2px;background:rgba(255,255,255,.14);margin:0 auto;overflow:hidden;border-radius:2px}
 .pl-bar i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left center;transform:scaleX(0)}
 .pl-sub{margin-top:16px;font-family:'Archivo';font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#8794a6}
+
+/* SociableKit FB feed sizing in the Projects panel */
+.fb-feed .sk-ww-facebook-page-posts{width:100%;max-width:960px}
