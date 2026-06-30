@@ -49,6 +49,7 @@ typography:
 rounded:
   hairline: "2px"
   focus: "6px"
+  focus-soft: "8px"
   sm: "11px"
   note: "12px"
   info: "13px"
@@ -58,6 +59,7 @@ rounded:
   lg: "18px"
   mobile-panel: "20px"
   panel: "26px"
+  nav-pill: "30px"
   control: "40px"
   circle: "50%"
   pill: "999px"
@@ -122,6 +124,10 @@ The palette is deep marine steel with controlled brass highlights.
 
 **The Real Yard Rule.** Photography must remain visible enough to prove the work. Avoid scrims so heavy that images become generic dark texture.
 
+**The Bucket Proof Rule.** Worksite photography should come from the public Supabase `WBME` bucket when possible, using real job folders for propulsion, machining, pipe works, fabrication, boiler making, rudder and coupling proof. The primary logo artwork also comes from the public bucket. Local imagery remains for the favicon, service icons and founder portrait.
+
+**The Propeller Contact Rule.** The bucket propeller icon is the floating contact affordance and loader motion motif. It may spin continuously as ambient machinery motion, but must stop under `prefers-reduced-motion`.
+
 ## 3. Typography
 
 **Display Font:** Anton, with Impact fallback.
@@ -179,6 +185,10 @@ Depth is created with tonal layering, image darkness, and large cinematic shadow
 
 ### Navigation
 - **Style:** Desktop navigation uses Archivo uppercase labels with wide tracking. Mobile uses a full-screen drawer with large Anton links and direct contact details.
+
+### Loader / Contact Affordance
+- **Loader:** Night Yard background, bucket logo, brass progress rail and a compact spinning propeller. Keep it fast and mechanical, never theatrical.
+- **Floating Contact:** Bottom-right propeller control opens the Contact panel. On mobile it sits above the urgent Call / Email / Map bar.
 
 ### Signature Component
 

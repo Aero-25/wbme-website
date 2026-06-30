@@ -3,16 +3,22 @@
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
+  var bucketAsset = window.WBME_BUCKET_ASSET || function (path) {
+    var base = 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/';
+    if (!path) return '';
+    if (/^(https?:|data:|blob:)/i.test(path)) return path;
+    return base + String(path).split('/').map(encodeURIComponent).join('/');
+  };
 
   var cards = [
-    { key:'about',      bg:'images/1.jpg',   img:'images/1.jpg', s:'Est. 1999 · Walvis Bay', t:'About',      d:'Marine engineering built on craftsmanship since 1999 — no job too big, no job too small.' },
-    { key:'why',        bg:'images/bg2.jpg', img:'images/4.jpg', s:'The standard',           t:'Why WBME',   d:'Quality, on-time delivery, fair prices and decades of field experience — the standard we hold.' },
-    { key:'services',   bg:'images/bg1.jpg', img:'images/6.jpg', s:'Six disciplines',        t:'Services',   d:'Rigging, fabrication, machining and welding — full-service marine engineering under one roof.' },
-    { key:'industries', bg:'images/3.jpg',   img:'images/3.jpg', s:'Who we serve',           t:'Industries', d:'Fishing, shipping, mining, offshore and ports — engineering across the blue economy.' },
-    { key:'safety',     bg:'images/6.jpg',   img:'images/6.jpg', s:'Quality assured',        t:'Safety',     d:'Every job planned to its time, safety and quality frame — done right, done safely.' },
-    { key:'projects',   bg:'images/2.jpg',   img:'images/2.jpg', s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
-    { key:'reviews',    bg:'images/bg2.jpg', img:'images/5.jpg', s:'Ready for the job',       t:'Readiness',  d:'Practical repair, fabrication and install support for urgent marine and industrial work.' },
-    { key:'contact',    bg:'images/5.jpg',   img:'images/5.jpg', s:'Get in touch',           t:'Contact',    d:'8th Street East, Walvis Bay. Tell us about your project — we will get back fast.' }
+    { key:'about',      bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), s:'Est. 1999 · Walvis Bay', t:'About',      d:'25 years of service excellence in marine engineering, ship repair and metal work.' },
+    { key:'why',        bg:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), img:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), s:'The standard',           t:'Why WBME',   d:'Skilled professionals, a reputation for excellence and partnerships built through commitment.' },
+    { key:'services',   bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), s:'Six disciplines',        t:'Services',   d:'Ship repair, maintenance, fitting, rigging, pipe works, boiler making, fabrication and welding.' },
+    { key:'industries', bg:bucketAsset('wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg'), s:'Who we serve',           t:'Industries', d:'Serving the local marine industry while expanding into new metal-work sectors.' },
+    { key:'safety',     bg:bucketAsset('wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg'), s:'Quality assured',        t:'Safety',     d:'Reliable solutions focused on safety, quality, efficiency and cost-effectiveness.' },
+    { key:'projects',   bg:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), img:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
+    { key:'reviews',    bg:bucketAsset('wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg'), img:bucketAsset('wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg'), s:'Ready for the job',       t:'Readiness',  d:'Wide service range, historical knowledge and practical support for demanding work.' },
+    { key:'contact',    bg:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), s:'Get in touch',           t:'Contact',    d:'Headquarters: 8th Street East, Industrial Area, Walvis Bay. Call +264 (0)64 285 700.' }
   ];
   var N = cards.length;
 
@@ -62,7 +68,7 @@
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
     var c = cards[i];
     copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
-      '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:064285700">Call WBME</a></div></div>';
+      '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:+26464285700">Call WBME</a></div></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
     railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
@@ -272,6 +278,11 @@
     a.addEventListener('click', function () { closeDrawer(); var k = a.dataset.key; setTimeout(function () { openPanel(k, firstCard(k)); }, 280); });
     a.addEventListener('keydown', keyActivate);
   });
+
+  var chatbotFab = document.getElementById('chatbotFab');
+  if (chatbotFab) {
+    chatbotFab.addEventListener('click', function () { openPanel('contact', firstCard('contact')); });
+  }
 
   /* ===== LIGHTBOX ===== */
   var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
