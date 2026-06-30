@@ -151,17 +151,27 @@
   function cardImg (key) { for (var i = 0; i < N; i++) if (cards[i].key === key) return cards[i].img; return ''; }
   function lock () { document.body.classList.add('locked'); }
   function unlock () { document.body.classList.remove('locked'); }
+  document.querySelectorAll('.panel').forEach(function (panel) {
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('tabindex', '-1');
+    var title = panel.querySelector('.panel-hero .ti');
+    if (title) {
+      if (!title.id) title.id = panel.id + '-title';
+      panel.setAttribute('aria-labelledby', title.id);
+    }
+  });
 
   function modalRect () {
     var vw = window.innerWidth, vh = window.innerHeight, width, height, top;
-    if (isMobile()) { width = vw * 0.94; height = vh * 0.92; top = vh * 0.04; }
-    else { width = Math.min(1100, vw * 0.92); height = vh * 0.86; top = vh * 0.07; }
-    return { left: (vw - width) / 2, top: top, width: width, height: height, radius: isMobile() ? 20 : 26 };
+    if (isMobile()) { width = vw; height = vh; top = 0; }
+    else { width = Math.min(1180, vw * 0.94); height = vh * 0.88; top = vh * 0.06; }
+    return { left: (vw - width) / 2, top: top, width: width, height: height, radius: isMobile() ? 0 : 18 };
   }
 
-  function makeMorph (key, M) {
+  function makeMorph (key, M, mode) {
     var m = document.createElement('div');
-    m.className = 'morph';
+    m.className = 'morph morph-' + (mode || 'open');
     m.style.backgroundImage = "url('" + cardImg(key) + "')";
     m.style.width = M.width + 'px'; m.style.height = M.height + 'px';
     m.style.top = '0'; m.style.left = '0'; m.style.transformOrigin = 'top left';
@@ -204,21 +214,23 @@
     backdrop.classList.add('open');
     if (reduce || !cardEl) { showPanelContent(panel); lock(); return; }
     var r = cardEl.getBoundingClientRect(), M = modalRect();
-    var m = makeMorph(key, M);
+    var m = makeMorph(key, M, 'open');
     m.style.transition = 'none';
     m.style.transform = cardToModalTransform(r, M);
     m.style.borderRadius = '14px';
     void m.offsetHeight;
     animating = true; lock();
     requestAnimationFrame(function () {
-      m.style.transition = 'transform .6s cubic-bezier(.65,0,.35,1),border-radius .6s ease';
+      m.classList.add('is-landing');
+      m.style.transition = 'transform .64s cubic-bezier(.22,1,.36,1),border-radius .64s cubic-bezier(.22,1,.36,1)';
       m.style.transform = 'translate(' + M.left + 'px,' + M.top + 'px) scale(1,1)';
       m.style.borderRadius = M.radius + 'px';
     });
     var done = function () {
       m.removeEventListener('transitionend', onEnd);
       showPanelContent(panel);
-      m.style.transition = 'opacity .3s'; m.style.opacity = '0';
+      m.classList.add('is-done');
+      m.style.transition = 'opacity .24s cubic-bezier(.23,1,.32,1)'; m.style.opacity = '0';
       setTimeout(function () { if (m.parentNode) m.parentNode.removeChild(m); animating = false; }, 320);
     };
     var onEnd = function (e) { if (e.propertyName === 'transform') done(); };
@@ -233,7 +245,7 @@
     var cardEl = firstCard(key);
     if (reduce || !cardEl) { panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true'); unlock(); restoreFocus(); return; }
     var r = cardEl.getBoundingClientRect(), M = modalRect();
-    var m = makeMorph(key, M);
+    var m = makeMorph(key, M, 'close');
     m.style.transition = 'none';
     m.style.transform = 'translate(' + M.left + 'px,' + M.top + 'px) scale(1,1)';
     m.style.borderRadius = M.radius + 'px';
@@ -241,7 +253,8 @@
     panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true');
     animating = true;
     requestAnimationFrame(function () {
-      m.style.transition = 'transform .54s cubic-bezier(.65,0,.35,1),border-radius .54s ease';
+      m.classList.add('is-returning');
+      m.style.transition = 'transform .46s cubic-bezier(.55,.08,.34,1),border-radius .46s cubic-bezier(.55,.08,.34,1),opacity .24s cubic-bezier(.23,1,.32,1)';
       m.style.transform = cardToModalTransform(r, M);
       m.style.borderRadius = '14px';
     });
