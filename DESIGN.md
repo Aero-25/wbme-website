@@ -184,7 +184,7 @@ Depth is created with tonal layering, image darkness, and large cinematic shadow
 - **Error / Disabled:** Errors use clear red text and border, with plain instructions.
 
 ### Navigation
-- **Style:** Desktop navigation uses Archivo uppercase labels with wide tracking. Mobile uses a full-screen drawer with large Anton links and direct contact details.
+- **Style:** Desktop navigation uses a fixed dark command bar with the bucket logo, section pills, urgent phone access and a brass quote action. Mobile keeps the same brand shell, collapsing to a clear menu button and full-screen drawer with direct contact details.
 
 ### Loader / Contact Affordance
 - **Loader:** Night Yard background, bucket logo, brass progress rail and a compact spinning propeller. Keep it fast and mechanical, never theatrical.

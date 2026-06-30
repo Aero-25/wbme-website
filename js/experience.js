@@ -269,9 +269,10 @@
 
   /* ===== DRAWER ===== */
   var drawer = document.getElementById('drawer');
-  function openDrawer () { drawer.classList.add('open'); lock(); }
-  function closeDrawer () { drawer.classList.remove('open'); if (!current) unlock(); }
-  document.getElementById('burger').addEventListener('click', openDrawer);
+  var burgerBtn = document.getElementById('burger');
+  function openDrawer () { drawer.classList.add('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'true'); lock(); }
+  function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); if (!current) unlock(); }
+  if (burgerBtn) burgerBtn.addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
   drawer.querySelectorAll('a[data-key]').forEach(function (a) {
     a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button');
