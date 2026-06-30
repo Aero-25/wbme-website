@@ -570,3 +570,19 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 
 /* SociableKit FB feed sizing in the Projects panel */
 .fb-feed .sk-ww-facebook-page-posts{width:100%;max-width:960px}
+
+/* ===========================================================
+   LOADER — premium redesign (real logo + slim brass line)
+   =========================================================== */
+.preloader{background:radial-gradient(72% 60% at 50% 40%, #102844 0%, #08131f 72%)}
+.pl-inner{display:flex;flex-direction:column;align-items:center}
+.pl-logo{order:1;width:236px;height:86px;font-size:0;border-radius:12px;
+  background:#fff url("https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/Big%20Logo.png?width=480&quality=90") center/80% no-repeat;
+  box-shadow:0 20px 54px rgba(0,0,0,.45);margin-bottom:32px}
+.pl-logo b{display:none}
+.pl-bar{order:2;width:240px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
+.pl-bar i{width:100%;background:linear-gradient(90deg,var(--gold),var(--gold-lt))}
+.pl-pct{order:3;font-family:'Archivo',sans-serif!important;font-weight:600;font-size:.72rem!important;letter-spacing:.24em;text-transform:uppercase;color:#9fb0c6;margin:18px 0 0!important}
+.pl-pct:before{content:"Loading ";color:#7e8b9c}
+.pl-pct:after{content:"%";color:var(--gold-lt);margin-left:1px;font-size:1em;vertical-align:baseline}
+.pl-sub{display:none}
