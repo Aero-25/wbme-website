@@ -3,11 +3,13 @@
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
-  var bucketAsset = window.WBME_BUCKET_ASSET || function (path) {
-    var base = 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/';
+  var bucketAsset = window.WBME_BUCKET_ASSET || function (path, width) {
     if (!path) return '';
     if (/^(https?:|data:|blob:)/i.test(path)) return path;
-    return base + String(path).split('/').map(encodeURIComponent).join('/');
+    var enc = String(path).split('/').map(encodeURIComponent).join('/');
+    // serve resized + compressed via Supabase's render endpoint (raw photos are 3-4 MB each)
+    return 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/' + enc +
+           '?width=' + (width || 1280) + '&quality=72&resize=contain';
   };
 
   var cards = [
@@ -169,6 +171,9 @@
     requestAnimationFrame(function () { panel.classList.add('shown'); });
     var sc = panel.querySelector('.panel-scroll'); if (sc) sc.scrollTop = 0;
     panel.setAttribute('aria-hidden', 'false');
+    var hero = panel.querySelector('.panel-hero'), im = cardImg(panel.id.replace('panel-', ''));
+    if (hero && im) hero.style.backgroundImage = "url('" + im + "')";   // match panel hero to the real card photo
+    if (window.FB && panel.querySelector('.fb-page')) { try { window.FB.XFBML.parse(panel); } catch (_) {} }
     var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.transform = 'scaleX(0)'; }
     var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
     panel.querySelectorAll('[data-count]').forEach(function (el) {
