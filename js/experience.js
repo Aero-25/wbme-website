@@ -361,7 +361,6 @@
     function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; if (pct) pct.textContent = Math.round(p * 100); }
     function bump () { loaded++; }
     function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 280); }
-    if (reduce) { finish(); return; }
     urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; }); // wait for the real photos
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
     (function tick () {

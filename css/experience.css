@@ -305,7 +305,6 @@ body.locked .chatbot-fab{opacity:0;visibility:hidden;pointer-events:none}
 @media(prefers-reduced-motion:reduce){
   .grain,.embers{display:none}
   .card{opacity:1;transform:none}
-  .preloader{display:none}
   .pl-prop img,.chatbot-ring img{animation:none}
 }
 
