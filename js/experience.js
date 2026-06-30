@@ -353,19 +353,10 @@
     }, 80);
   })();
 
-  /* ===== CURSOR · MAGNETIC · CARD TILT ===== */
+  /* ===== MAGNETIC · CARD TILT ===== */
   if (window.matchMedia('(hover:hover)').matches) {
-    var cursor = document.getElementById('cursor');
-    if (cursor) {
-      var cx = window.innerWidth / 2, cy = window.innerHeight / 2, tx = cx, ty = cy;
-      window.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; cursor.classList.add('show'); });
-      (function cl () { cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2; cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; requestAnimationFrame(cl); })();
-    }
-    var grow = function (txt) { return function () { if (cursor) { cursor.classList.add('grow'); if (txt) cursor.classList.add('txt'); } }; };
-    var shrink = function () { if (cursor) cursor.classList.remove('grow', 'txt'); };
     railCards.forEach(function (el) {
-      el.addEventListener('mouseenter', grow(true));
-      el.addEventListener('mouseleave', function () { shrink(); el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
       el.addEventListener('mousemove', function (e) {
         if (dragging) return;
         var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
@@ -374,9 +365,8 @@
       });
     });
     var mag = function (el, k) {
-      el.addEventListener('mouseenter', grow(false));
       el.addEventListener('mousemove', function (e) { var r = el.getBoundingClientRect(); el.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * k) + 'px,' + ((e.clientY - r.top - r.height / 2) * k) + 'px)'; });
-      el.addEventListener('mouseleave', function () { shrink(); el.style.transform = ''; });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
     };
     navA.forEach(function (a) { mag(a, 0.3); });
   }
