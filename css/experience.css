@@ -556,3 +556,14 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .std-list li b{color:#fff;font-family:'Archivo';display:block;margin-bottom:4px}
 .panel-cta{display:flex;align-items:center;gap:22px;margin-top:42px;flex-wrap:wrap}
 @media(max-width:860px){.std-list{grid-template-columns:1fr}}
+
+/* ===== LOADER — proper, 5s minimum, live % ===== */
+.preloader{background:#120e07}
+.pl-inner{text-align:center;display:flex;flex-direction:column;align-items:center}
+.pl-logo{font-family:'Archivo';font-weight:700;letter-spacing:.18em;color:#cfc7b6;font-size:1rem;margin-bottom:16px}
+.pl-logo b{color:var(--gold-lt)}
+.pl-pct{font-family:'Anton',sans-serif;font-size:clamp(3.4rem,11vw,8rem);line-height:1;color:#fff;letter-spacing:.01em;margin-bottom:16px}
+.pl-pct:after{content:"%";font-size:.32em;color:var(--gold-lt);margin-left:6px;vertical-align:top}
+.pl-bar{width:220px;height:2px;background:rgba(255,255,255,.14);margin:0 auto;overflow:hidden;border-radius:2px}
+.pl-bar i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left center;transform:scaleX(0)}
+.pl-sub{margin-top:16px;font-family:'Archivo';font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#8a8270}

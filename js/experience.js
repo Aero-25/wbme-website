@@ -349,19 +349,23 @@
   (function preload () {
     var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
+    var MIN = 5000, CAP = 10000, start = Date.now();           // minimum 5s on screen, 10s hard cap
     var urls = cards.map(function (c) { return c.bg; }).filter(Boolean);
-    var total = urls.length + 1, doneCount = 0, finished = false, start = Date.now();
-    function setBar (p) { if (bar) bar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, p)) + ')'; }
-    function finish () {
-      if (finished) return; finished = true; setBar(1);
-      var wait = Math.max(0, 500 - (Date.now() - start)); // minimum display so it never flashes
-      setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, wait + 220);
-    }
-    function bump () { doneCount++; setBar(doneCount / total); if (doneCount >= total) finish(); }
+    var total = urls.length + 1, loaded = 0, finished = false;
+    var pct = pre.querySelector('.pl-pct');
+    if (!pct) { pct = document.createElement('div'); pct.className = 'pl-pct'; var inr = pre.querySelector('.pl-inner') || pre; inr.insertBefore(pct, inr.querySelector('.pl-bar') || inr.firstChild); }
+    function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; if (pct) pct.textContent = Math.round(p * 100); }
+    function bump () { loaded++; }
+    function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 280); }
     if (reduce) { finish(); return; }
-    urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; });   // wait for the real hero/card photos
+    urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; }); // wait for the real photos
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
-    setTimeout(finish, 7000); // safety: never hang on a slow/broken asset
+    (function tick () {
+      var el = Date.now() - start, assetsDone = loaded >= total, timeP = Math.min(1, el / MIN);
+      setBar(assetsDone ? timeP : Math.min(0.92, timeP));      // fill over 5s; hold at 92% until photos arrive
+      if ((el >= MIN && assetsDone) || el >= CAP) { finish(); return; }
+      requestAnimationFrame(tick);
+    })();
   })();
 
   /* ===== MAGNETIC · CARD TILT ===== */
