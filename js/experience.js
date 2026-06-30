@@ -3,6 +3,8 @@
   'use strict';
   (function () { var l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://kbmgpqwmgthswjkfmqfe.supabase.co'; l.crossOrigin = ''; document.head.appendChild(l); })();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ENABLE_CARD_TILT = false;
+  var ENABLE_EMBERS = false;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
   var bucketAsset = window.WBME_BUCKET_ASSET || function (path, width) {
     if (!path) return '';
@@ -42,7 +44,7 @@
   ensureBg(0);
 
   /* build looping rail (3x duplicated) */
-  var REPEAT = 3, railCards = [];
+  var REPEAT = 2, railCards = [];
   (function build () {
     var html = '';
     for (var k = 0; k < N * REPEAT; k++) {
@@ -87,12 +89,13 @@
   }
 
   /* continuous drift loop */
-  var offset = 0, speed = 96, lastActive = -1, ready = false;
+  var offset = 0, speed = 64, lastActive = -1, ready = false;
   var dragging = false, dragStartX = 0, dragStartOffset = 0, didDrag = false;
   var velocity = speed, lastOffset = 0, lastFrame = 0;
   function loop (now) {
     var dt = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 1 / 60;
     lastFrame = now;
+    if (document.hidden) { requestAnimationFrame(loop); return; }
     if (dragging) {
       velocity = (offset - lastOffset) / Math.max(dt, 1 / 120); // capture fling velocity
     } else {
@@ -103,11 +106,7 @@
     lastOffset = offset;
     var wrap = cardStep * N;
     var x = ((offset % wrap) + wrap) % wrap;
-    rail.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
-    if (copy) {                                       // motion blur on the headline at speed
-      var b = reduce ? 0 : Math.min(6, Math.max(0, (Math.abs(velocity) - speed) * 0.018));
-      copy.style.filter = b > 0.3 ? 'blur(' + b.toFixed(2) + 'px)' : '';
-    }
+    rail.style.transform = 'translate3d(' + (-(Math.round(x * 2) / 2)) + 'px,0,0)';
     var active = ((Math.round(offset / cardStep) % N) + N) % N;
     if (active !== lastActive) { lastActive = active; setVisual(active); }
     requestAnimationFrame(loop);
@@ -386,7 +385,7 @@
   })();
 
   /* ===== MAGNETIC · CARD TILT ===== */
-  if (window.matchMedia('(hover:hover)').matches) {
+  if (ENABLE_CARD_TILT && window.matchMedia('(hover:hover)').matches) {
     railCards.forEach(function (el) {
       el.addEventListener('mouseleave', function () { el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
       el.addEventListener('mousemove', function (e) {
@@ -405,7 +404,7 @@
 
   /* ===== EMBERS ===== */
   (function embers () {
-    var cv = document.getElementById('embers'); if (!cv || reduce) return;
+    var cv = document.getElementById('embers'); if (!ENABLE_EMBERS || !cv || reduce) return;
     var ctx = cv.getContext('2d'), parts = [];
     function resize () { cv.width = window.innerWidth; cv.height = window.innerHeight; }
     resize(); window.addEventListener('resize', resize);
@@ -437,8 +436,6 @@
   /* ===== MODAL SCROLL: parallax hero + progress ===== */
   document.querySelectorAll('.panel-scroll').forEach(function (sc) {
     sc.addEventListener('scroll', function () {
-      var hero = sc.querySelector('.panel-hero');
-      if (hero) hero.style.backgroundPosition = 'center calc(50% + ' + (sc.scrollTop * 0.12) + 'px)';
       var mp = document.getElementById('modalProgress');
       if (mp) { var max = sc.scrollHeight - sc.clientHeight; mp.querySelector('i').style.transform = 'scaleX(' + (max > 0 ? (sc.scrollTop / max) : 0) + ')'; }
     });

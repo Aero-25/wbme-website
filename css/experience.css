@@ -484,12 +484,16 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 
 /* ===========================================================
    PERFORMANCE — smooth drift: drop per-card blend/filter
-   (mix-blend + image filters on 24 moving cards = the jank)
+   (mix-blend + image filters on moving cards = the jank)
    =========================================================== */
 .card img{filter:none!important}
 .card:before{display:none!important}
-.bg{filter:none!important}
+.bg{filter:none!important;transform:none!important;transition:opacity .45s var(--ease-out)!important}
 .panel-hero:before{mix-blend-mode:normal!important;background:linear-gradient(165deg,rgba(227,195,114,.12),transparent 55%)}
+.grain,.embers{display:none!important}
+.copy.anim .swap{animation:none!important}
+.panel-hero{transition:none!important}
+.panel-backdrop,.panel-close,.quick-actions a{backdrop-filter:none!important}
 
 /* ===========================================================
    PALETTE — navy blue + brass/gold + white (brand)
