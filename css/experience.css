@@ -464,7 +464,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
   padding:0;border-radius:0;border:0;background:transparent;backdrop-filter:none;box-shadow:none;
 }
 .hdr .brand::before{display:none}
-.hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);height:auto;object-fit:contain;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.82)) drop-shadow(0 14px 26px rgba(0,0,0,.62))}
+.hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);height:auto;object-fit:contain;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:none}
 .hdr .nav,.hdr-phone,.hdr .burger{display:none!important}
 .hdr .brand:focus-visible{outline:3px solid var(--gold-lt);outline-offset:4px;border-radius:12px}
 
@@ -989,4 +989,70 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 
 @media(prefers-reduced-motion:reduce){
   .panel{filter:none!important;transition:opacity .18s var(--ease-out)!important}
+}
+
+/* ===========================================================
+   THIRD-PARTY WIDGET GUARD
+   The SociableKit Facebook feed sometimes leaves its own photo
+   lightbox appended directly to <body> after a visitor opens a
+   post photo, and it never gets cleared on our own navigation.
+   Our real embed always lives nested inside .fb-feed, never as a
+   direct child of <body> — so anything SociableKit ("sk-…") drops
+   straight on <body> is a stray overlay and gets suppressed.
+   =========================================================== */
+body > [class*="sk-"]{display:none!important}
+
+/* ===========================================================
+   EDITORIAL TYPOGRAPHY + LAYOUT — panel content
+   Glass surfaces stay as-is; this pass is purely type + rhythm:
+   bigger considered numerals, a real editorial column structure,
+   broken-grid emphasis on the lead item, tighter large-type tracking.
+   =========================================================== */
+
+/* hero + section headings: tighter tracking, no orphan words */
+.panel-hero .ti{letter-spacing:-.01em;text-wrap:balance}
+.panel-body h3{text-wrap:balance;font-size:clamp(1.9rem,3.7vw,3.05rem)}
+.lead-statement{text-wrap:balance}
+
+/* panel-intro becomes a real two-column editorial spread:
+   a slim brass rule replaces the previously-empty second column */
+.panel-intro{position:relative}
+.panel-intro:after{
+  content:"";grid-column:2;grid-row:1/-1;justify-self:start;
+  width:1px;align-self:stretch;
+  background:linear-gradient(180deg,transparent,rgba(227,195,114,.4) 12%,rgba(227,195,114,.4) 88%,transparent);
+}
+.panel-intro p{font-size:1.06rem;line-height:1.75}
+
+/* big, considered stat numerals with tabular alignment */
+.statline .n{font-size:clamp(2.6rem,5.6vw,4.3rem);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.statline .l{margin-top:8px}
+
+/* service / industry / standard items read as a numbered
+   manifesto rather than a generic feature grid */
+.svc-grid,.ind-grid,.std-list{counter-reset:wbme-item}
+.svc,.ind,.std-list li{counter-increment:wbme-item}
+.svc:after,.ind:after,.std-list li:after{
+  content:counter(wbme-item,decimal-leading-zero);
+  position:absolute;top:10px;right:16px;z-index:0;pointer-events:none;
+  font-family:'Anton';font-size:2.4rem;line-height:1;
+  color:rgba(227,195,114,.14);
+}
+.std-list li:after{font-size:1.7rem;top:8px;right:12px}
+.std-list li{position:relative;overflow:hidden}
+.svc h4,.ind b,.std-list li b{position:relative;z-index:1}
+.svc p,.svc .proof,.svc .tags,.ind span{position:relative;z-index:1}
+
+/* break the uniform grid: lead item gets the full width */
+.svc-grid .svc:first-child,.ind-grid .ind:first-child{grid-column:1/-1}
+.svc-grid .svc:first-child h4,.ind-grid .ind:first-child b{font-size:1.28em}
+
+/* generous, editorial rhythm */
+.panel-intro{margin-bottom:clamp(36px,5.5vw,52px);padding-bottom:clamp(30px,4.5vw,44px)}
+.svc-grid,.ind-grid{gap:16px}
+.svc{padding:32px 28px}
+
+@media(max-width:860px){
+  .panel-intro:after{display:none}
+  .svc-grid .svc:first-child,.ind-grid .ind:first-child{grid-column:1/-1}
 }
