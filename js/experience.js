@@ -391,12 +391,17 @@
   try {
   /* ===== PRELOADER ===== */
   (function preload () {
-    var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
+    var pre = document.getElementById('preloader'), ring = document.getElementById('plRing'), pct = document.getElementById('plPct');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
-    function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; }
+    var RING_CIRC = 376.99;
+    function setBar (p) {
+      p = Math.max(0, Math.min(1, p));
+      if (ring) ring.style.strokeDashoffset = String(RING_CIRC * (1 - p));
+      if (pct) pct.textContent = Math.round(p * 100) + '%';
+    }
     function bump () { loaded++; }
     function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 280); }
     urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; }); // wait for the real photos
