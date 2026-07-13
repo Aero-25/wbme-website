@@ -432,6 +432,9 @@
   if (initKey && panelEl(initKey)) {
     current = initKey;
     history.replaceState({ panel: initKey }, '', '#' + initKey);
-    setTimeout(function () { doOpen(initKey, firstCard(initKey)); }, 450);
+    (function waitReady () {                      // don't open behind the still-visible preloader
+      if (ready) { doOpen(initKey, firstCard(initKey)); return; }
+      setTimeout(waitReady, 80);
+    })();
   }
 })();
