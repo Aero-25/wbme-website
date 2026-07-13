@@ -1134,142 +1134,105 @@ body > [class*="sk-"]{display:none!important}
 }
 
 /* ===========================================================
-   CINEMATIC TAKEOVER — full popup redesign
-   Full-viewport photo-first panels replace the floating glass
-   card. The hero photo dominates the entire opening screen like
-   a film title card; content below drops the bordered "glass
-   card" look entirely for border-less editorial typography.
+   SLIDE-IN PANEL — clean, conventional side panel
+   Deliberately restrained: no glass, no full-bleed cinematic
+   takeover, no experimental typography. A fixed-width panel
+   slides in from the right with the homepage visible behind it.
+   Plain cards, standard buttons, moderate-height header image.
    =========================================================== */
 
-/* ---- panel shell: edge-to-edge takeover, no floating card ---- */
+/* ---- panel shell: fixed-width slide-in from the right ---- */
 .panel{
-  position:fixed;inset:0;left:0;top:0;right:auto;bottom:auto;
-  width:100vw;height:100dvh;
-  transform:none!important;
-  border-radius:0!important;border:0!important;
-  background:#040a12;
-  box-shadow:none!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-  filter:none!important;
-  opacity:0;visibility:hidden;
-  transition:opacity .5s var(--ease-out),visibility 0s linear .5s;
+  position:fixed;top:0;right:0;left:auto;bottom:0;
+  width:min(680px,90vw);height:100dvh;
+  transform:translateX(100%);
+  border-radius:0;border:0;border-left:1px solid rgba(227,195,114,.28);
+  background:#0d2138;
+  box-shadow:-40px 0 90px rgba(0,0,0,.5);
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  filter:none;
+  opacity:1;visibility:visible;
+  transition:transform .48s cubic-bezier(.22,1,.36,1);
 }
-.panel.open{opacity:1;visibility:visible;transition:opacity .5s var(--ease-out)}
-.panel.open.shown{transform:none!important}
-.panel::before{display:none!important}
-.panel.open.shown::after{display:none!important} /* retire the brass ignite line */
+.panel.open.shown{transform:translateX(0)}
+.panel::before{display:none}
+.panel.open.shown::after{display:none} /* retire the brass ignite line */
 .panel-scroll{isolation:isolate}
 
-/* ---- morph transition: plain fade, no brass sweep ---- */
-.morph{background-color:#040a12;background-size:cover;background-position:center;border-radius:0!important}
-.morph:before{display:none!important}
-.morph:after{background:linear-gradient(0deg,rgba(4,10,18,.7),transparent 55%)}
-
-/* ---- hero: full-screen title card ---- */
+/* ---- hero: a normal header image, not full-screen ---- */
 .panel-hero{
-  position:relative;min-height:100dvh;width:100%;
+  position:relative;min-height:260px;width:100%;
   padding:0;display:flex;align-items:flex-end;
   background-size:cover;background-position:center;
-  border-bottom:0!important;isolation:isolate;filter:none!important;
+  border-bottom:1px solid rgba(227,195,114,.22);isolation:isolate;filter:none;
 }
-.panel-hero:before{
-  content:"Scroll to explore";position:absolute;left:50%;bottom:34px;z-index:2;
-  transform:translateX(-50%);animation:pl-cue-bob 2.2s ease-in-out infinite;
-  font-family:'Archivo';font-weight:700;font-size:.62rem;letter-spacing:.32em;
-  text-transform:uppercase;color:rgba(255,255,255,.5);white-space:nowrap;
-  background:none;box-shadow:none;pointer-events:none;
-}
+.panel-hero:before{content:none}
 .panel-hero:after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(0deg,#040a12 0%,rgba(4,10,18,.82) 20%,rgba(4,10,18,.1) 52%,rgba(4,10,18,.32) 100%),
-    linear-gradient(90deg,rgba(4,10,18,.6),transparent 60%);
+  background:linear-gradient(0deg,#0d2138 0%,rgba(13,33,56,.55) 45%,rgba(13,33,56,.12) 100%);
 }
-@keyframes pl-cue-bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
-.panel-hero .in{position:relative;z-index:2;max-width:100%;width:100%;padding:clamp(28px,6vw,80px)}
-.panel-hero .ey{
-  font-size:.72rem;letter-spacing:.4em;margin-bottom:20px;color:var(--gold-lt);
-  text-shadow:none;
-}
-.panel-hero .ti{
-  font-size:clamp(3.6rem,12vw,8.5rem);line-height:.86;letter-spacing:-.02em;
-  text-shadow:0 30px 70px rgba(0,0,0,.6);
-}
+.panel-hero .in{position:relative;z-index:2;max-width:100%;width:100%;padding:28px 34px}
+.panel-hero .ey{font-size:.68rem;letter-spacing:.24em;margin-bottom:10px;color:var(--gold-lt);text-shadow:none}
+.panel-hero .ti{font-size:clamp(2.1rem,5vw,3rem);line-height:1;letter-spacing:0;text-shadow:0 10px 26px rgba(0,0,0,.5)}
 
-/* ---- content zone: continues the dark space, no card backgrounds ---- */
-.panel-body{background:none;color:#eef2f7}
+/* ---- content zone: plain, readable ---- */
+.panel-body{background:#0d2138;color:#e4eaf1;padding:32px 34px 64px}
 .panel-intro{border-bottom-color:rgba(255,255,255,.12)}
-.panel-intro:after{background:linear-gradient(180deg,transparent,rgba(227,195,114,.4) 12%,rgba(227,195,114,.4) 88%,transparent)}
+.panel-intro:after{display:none}
 
-/* ---- strip every text card down to border-less editorial rows ---- */
+/* ---- ordinary cards: subtle fill, real border, normal radius ---- */
 .svc,.ind,.std-list li,.info .row,.formcard,.ready-card,.quote-card{
-  background:none!important;border:0!important;border-radius:0!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
-  box-shadow:none!important;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.14);border-radius:10px;
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
 }
-.svc:before,.ind:before,.ready-card:before{content:none!important}
+.svc:before,.ind:before,.ready-card:before{content:none}
+.svc:after,.ind:after,.std-list li:after{content:none}
 
-.svc-grid,.ind-grid,.std-list{grid-template-columns:1fr!important;gap:0!important}
-.svc,.ind,.std-list li{
-  display:flex;align-items:flex-start;gap:clamp(20px,4vw,40px);
-  padding:26px 0;border-bottom:1px solid rgba(255,255,255,.12);
-  position:relative;overflow:visible;
+.svc-grid,.ind-grid{grid-template-columns:1fr;gap:12px}
+.svc,.ind{padding:20px;display:flex;gap:16px;align-items:flex-start}
+.svc .ic,.ind .nu{
+  display:flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;height:40px;
+  border-radius:8px;background:rgba(199,154,62,.14);color:var(--gold-lt);
+  font-family:'Archivo';font-weight:800;font-size:.62rem;
 }
-.svc:first-child,.ind:first-child{grid-column:auto!important}
-.svc:last-child,.ind:last-child,.std-list li:last-child{border-bottom:0}
-.svc .ic,.ind .nu{display:none}
-.svc:after,.ind:after,.std-list li:after{
-  content:counter(wbme-item,decimal-leading-zero);
-  position:static;flex:0 0 auto;top:auto;right:auto;
-  font-family:'Anton';font-size:clamp(1.6rem,3vw,2.2rem);line-height:1;
-  color:rgba(227,195,114,.55);
-}
-.svc h4,.ind b,.std-list li b{
-  display:block;font-family:'Anton';text-transform:uppercase;letter-spacing:.005em;
-  font-size:clamp(1.3rem,2.2vw,1.85rem);color:#fff;margin-bottom:6px;
-}
-.svc p,.svc .proof,.svc .tags,.ind span{
-  color:#a7b4c6;font-size:1rem;line-height:1.75;max-width:62ch;
-}
-.svc .proof{margin-top:12px;padding-top:0;border-top:0}
-.svc .proof b{font-family:'Archivo';font-size:.7rem;letter-spacing:.14em;color:var(--gold-lt)}
-.svc .tags{margin-top:10px}
-.svc .tags span{background:none;border:1px solid rgba(255,255,255,.18);border-radius:0}
-.info .row{border-bottom:1px solid rgba(255,255,255,.12);padding:20px 0}
-.info .row:first-child{border-top-left-radius:0;border-top-right-radius:0}
-.info .row:last-child{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom:0}
-.formcard{padding:0}
-.lead-row .media{border-radius:0;border:0;box-shadow:none}
+.svc h4,.ind b{display:block;font-family:'Archivo';font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:5px}
+.svc p,.svc .proof,.svc .tags,.ind span{color:#aebccd;font-size:.92rem;line-height:1.6}
+.svc .proof{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
+.svc .proof b{font-family:'Archivo';font-size:.68rem;letter-spacing:.1em;color:var(--gold-lt)}
+.svc .tags{margin-top:8px}
+.svc .tags span{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:20px}
+.info .row{border-radius:10px;margin-bottom:10px;padding:16px}
+.formcard{padding:24px}
+.lead-row .media{border-radius:10px;border:1px solid rgba(255,255,255,.14);box-shadow:none}
 
-/* ---- panel buttons: solid block primary, underline secondary ---- */
+/* ---- panel buttons: standard rounded, solid fill ---- */
 .panel .explore{
-  background:var(--gold)!important;color:var(--ink)!important;border:0!important;border-radius:0!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;
-  padding:17px 36px;font-weight:800;
+  background:var(--gold);color:var(--ink);border:1px solid var(--gold);border-radius:8px;
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+  padding:14px 28px;font-weight:700;
 }
-.panel .explore:before{content:none!important}
-.panel .explore:hover{background:var(--gold-lt)!important;transform:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)!important}
+.panel .explore:before{content:none}
+.panel .explore:hover{background:var(--gold-lt);border-color:var(--gold-lt);transform:none;box-shadow:none}
 .panel .hero-call{
-  background:none!important;border:0!important;border-radius:0!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;
-  color:#fff;text-decoration:underline;text-underline-offset:6px;text-decoration-color:rgba(255,255,255,.35);
-  padding:0 4px;min-height:44px;
+  background:none;border:1px solid rgba(255,255,255,.24);border-radius:8px;
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+  color:#fff;text-decoration:none;padding:0 22px;min-height:48px;
 }
-.panel .hero-call:hover{color:var(--gold-lt);text-decoration-color:var(--gold-lt)}
+.panel .hero-call:hover{border-color:var(--gold-lt);color:var(--gold-lt)}
 .panel-cta{border-top-color:rgba(255,255,255,.14)}
 
-/* ---- close: minimal square outline, not a glass circle ---- */
+/* ---- close: simple outlined circle ---- */
 .panel-close{
-  background:none!important;border:1px solid rgba(255,255,255,.34)!important;border-radius:0!important;
-  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.24);border-radius:50%;
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
 }
-.panel-close:hover{background:#fff!important;border-color:#fff!important;transform:none!important}
-.panel-close:hover:before,.panel-close:hover:after{background:var(--ink)!important}
+.panel-close:hover{background:var(--gold);border-color:var(--gold);transform:none}
+.panel-close:hover:before,.panel-close:hover:after{background:var(--ink)}
 
 @media(max-width:860px){
-  .panel-hero:before{font-size:.56rem;bottom:26px}
-  .svc,.ind,.std-list li{gap:18px;padding:22px 0}
+  .panel{width:100vw}
+  .svc,.ind{padding:16px}
 }
 @media(prefers-reduced-motion:reduce){
-  .panel-hero:before{animation:none}
+  .panel{transition:none}
 }

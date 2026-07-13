@@ -167,24 +167,6 @@
     }
   });
 
-  function modalRect () {
-    // panels are always a full-viewport takeover now, so the morph always grows to fill the screen
-    return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight, radius: 0 };
-  }
-
-  function makeMorph (key, M, mode) {
-    var m = document.createElement('div');
-    m.className = 'morph morph-' + (mode || 'open');
-    m.style.backgroundImage = "url('" + cardImg(key) + "')";
-    m.style.width = M.width + 'px'; m.style.height = M.height + 'px';
-    m.style.top = '0'; m.style.left = '0'; m.style.transformOrigin = 'top left';
-    document.body.appendChild(m);
-    return m;
-  }
-  function cardToModalTransform (r, M) {
-    return 'translate(' + r.left + 'px,' + r.top + 'px) scale(' + (r.width / M.width) + ',' + (r.height / M.height) + ')';
-  }
-
   var sociableKitRequested = false;
   function ensureSociableKit () {
     if (sociableKitRequested || document.querySelector('script[src*="widgets.sociablekit.com/facebook-page-posts"]')) return;
@@ -215,55 +197,30 @@
   function doOpen (key, cardEl) {
     var panel = panelEl(key); if (!panel) return;
     backdrop.classList.add('open');
-    if (reduce || !cardEl) { showPanelContent(panel); lock(); return; }
-    var r = cardEl.getBoundingClientRect(), M = modalRect();
-    var m = makeMorph(key, M, 'open');
-    m.style.transition = 'none';
-    m.style.transform = cardToModalTransform(r, M);
-    m.style.borderRadius = '14px';
-    void m.offsetHeight;
-    animating = true; lock();
-    requestAnimationFrame(function () {
-      m.classList.add('is-landing');
-      m.style.transition = 'transform .64s cubic-bezier(.22,1,.36,1),border-radius .64s cubic-bezier(.22,1,.36,1)';
-      m.style.transform = 'translate(' + M.left + 'px,' + M.top + 'px) scale(1,1)';
-      m.style.borderRadius = M.radius + 'px';
-    });
-    var done = function () {
-      m.removeEventListener('transitionend', onEnd);
-      showPanelContent(panel);
-      m.classList.add('is-done');
-      m.style.transition = 'opacity .24s cubic-bezier(.23,1,.32,1)'; m.style.opacity = '0';
-      setTimeout(function () { if (m.parentNode) m.parentNode.removeChild(m); animating = false; }, 320);
-    };
-    var onEnd = function (e) { if (e.propertyName === 'transform') done(); };
-    m.addEventListener('transitionend', onEnd);
-    setTimeout(function () { if (animating) done(); }, 780);
+    lock();
+    showPanelContent(panel);
+    animating = true;
+    var onEnd = function (e) { if (e.target === panel && e.propertyName === 'transform') fin(); };
+    var fin = function () { panel.removeEventListener('transitionend', onEnd); animating = false; };
+    panel.addEventListener('transitionend', onEnd);
+    setTimeout(fin, 560); // fallback in case transitionend doesn't fire
   }
 
   function doClose () {
     var key = current, panel = panelEl(key); if (!panel) return;
     backdrop.classList.remove('open');
     var mp = document.getElementById('modalProgress'); if (mp) mp.classList.remove('on');
-    var cardEl = firstCard(key);
-    if (reduce || !cardEl) { panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true'); unlock(); restoreFocus(); return; }
-    var r = cardEl.getBoundingClientRect(), M = modalRect();
-    var m = makeMorph(key, M, 'close');
-    m.style.transition = 'none';
-    m.style.transform = 'translate(' + M.left + 'px,' + M.top + 'px) scale(1,1)';
-    m.style.borderRadius = M.radius + 'px';
-    void m.offsetHeight;
-    panel.classList.remove('open', 'shown'); panel.setAttribute('aria-hidden', 'true');
+    panel.classList.remove('shown');
+    panel.setAttribute('aria-hidden', 'true');
     animating = true;
-    requestAnimationFrame(function () {
-      m.classList.add('is-returning');
-      m.style.transition = 'transform .46s cubic-bezier(.55,.08,.34,1),border-radius .46s cubic-bezier(.55,.08,.34,1),opacity .24s cubic-bezier(.23,1,.32,1)';
-      m.style.transform = cardToModalTransform(r, M);
-      m.style.borderRadius = '14px';
-    });
-    var fin = function () { if (m.parentNode) m.parentNode.removeChild(m); animating = false; unlock(); restoreFocus(); };
-    m.addEventListener('transitionend', function (e) { if (e.propertyName === 'transform') fin(); });
-    setTimeout(function () { if (animating) fin(); }, 720);
+    var fin = function () {
+      panel.removeEventListener('transitionend', onEnd);
+      panel.classList.remove('open');
+      animating = false; unlock(); restoreFocus();
+    };
+    var onEnd = function (e) { if (e.target === panel && e.propertyName === 'transform') fin(); };
+    panel.addEventListener('transitionend', onEnd);
+    setTimeout(fin, 560); // fallback in case transitionend doesn't fire
   }
 
   function openPanel (key, cardEl) {
