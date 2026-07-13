@@ -509,7 +509,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
   box-shadow:0 16px 38px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.7);
 }
 .hdr .brand::before{display:none}
-.hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);height:auto;object-fit:contain;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:none}
+.hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);aspect-ratio:4.2/1;object-fit:cover;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:none}
 .hdr .nav,.hdr-phone{display:none!important}
 .hdr .brand:focus-visible{outline:3px solid var(--gold-lt);outline-offset:4px;border-radius:12px}
 
