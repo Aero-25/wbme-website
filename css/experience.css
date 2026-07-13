@@ -1079,3 +1079,13 @@ body > [class*="sk-"]{display:none!important}
   .panel-intro:after{display:none}
   .svc-grid .svc:first-child,.ind-grid .ind:first-child{grid-column:1/-1}
 }
+
+/* ===========================================================
+   MINI FOOTER — small, quiet, end of each panel
+   =========================================================== */
+.mini-footer{
+  margin-top:clamp(40px,6vw,64px);padding-top:16px;
+  border-top:1px solid rgba(227,195,114,.14);
+  text-align:center;font-family:'Archivo';font-weight:600;
+  font-size:.66rem;letter-spacing:.05em;color:#5f6d7f;
+}
