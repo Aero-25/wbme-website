@@ -15,7 +15,6 @@
      overlays above panels, atmosphere/preloader above everything. */
   --z-hdr:72;
   --z-burger:73;
-  --z-quick-actions:75;
   --z-chatbot-fab:76;
   --z-chatbot:77;
   --z-panel-backdrop:78;
@@ -324,12 +323,6 @@ body.ready .card{opacity:1;transform:translateY(0)}
 .modal-progress i{display:block;height:100%;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left center}
 .panel-hero{transition:background-position .05s linear}
 
-/* urgent mobile contact */
-.quick-actions{position:fixed;left:50%;right:auto;bottom:16px;z-index:var(--z-quick-actions);width:min(354px,calc(100vw - 36px));transform:translateX(-50%);display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;pointer-events:auto;box-sizing:border-box}
-.quick-actions a{min-width:0;min-height:46px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(15,44,82,.76);backdrop-filter:blur(10px);font-family:'Archivo';font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#f4f7fb;box-shadow:0 14px 34px rgba(0,0,0,.34);transition:background .22s var(--ease-out),color .22s var(--ease-out),transform .15s var(--ease-out),border-color .22s var(--ease-out)}
-.quick-actions a:first-child{background:var(--gold);border-color:var(--gold);color:var(--ink)}
-.quick-actions a:active{transform:scale(.97)}
-body.locked .quick-actions,.drawer.open~.quick-actions{display:none}
 .chatbot-fab{position:fixed;left:26px;bottom:24px;z-index:var(--z-chatbot-fab);width:84px;height:84px;border:1px solid rgba(227,195,114,.46);border-radius:999px;background:linear-gradient(180deg,rgba(15,44,82,.92),rgba(7,26,51,.82));box-shadow:0 18px 42px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1);color:#f4f7fb;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;transition:transform .15s var(--ease-out),border-color .22s var(--ease-out),background .22s var(--ease-out),opacity .24s var(--ease-out),visibility .24s var(--ease-out)}
 .chatbot-ring{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.18),rgba(199,154,62,.13) 46%,rgba(15,44,82,.78) 74%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .chatbot-ring img{width:48px;height:48px;object-fit:contain;animation:propeller-spin 4s linear infinite;transform-origin:50% 50%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.42))}
@@ -343,7 +336,6 @@ body.locked .chatbot-fab{opacity:0;visibility:hidden;pointer-events:none}
   .prog{left:24px;right:24px;bottom:88px}
   .count{left:24px;bottom:62px}
   .localtime{right:24px;bottom:62px;font-size:.62rem}
-  .quick-actions{display:grid}
   .chatbot-fab{left:16px;bottom:118px;width:72px;height:72px;border-color:var(--gold-lt);box-shadow:0 18px 42px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.12),inset 0 1px 0 rgba(255,255,255,.12)}
   .chatbot-ring{width:58px;height:58px;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.22),rgba(199,154,62,.18) 46%,rgba(15,44,82,.86) 74%)}
   .chatbot-ring img{width:44px;height:44px}
@@ -543,15 +535,15 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 @media(max-width:860px){
-  .hdr{top:14px}
-  .hdr .brand{padding:0 16px}
-  .hdr .brand-logo{width:clamp(250px,60vw,370px)}
+  .hdr{top:14px;left:16px;transform:none}
+  .hdr .brand{padding:0 12px}
+  .hdr .brand-logo{width:clamp(210px,calc(100vw - 118px),330px)}
   .copy{top:126px}
   .burger{display:flex}
 }
 @media(max-width:380px){
-  .hdr .brand{padding:4px 12px}
-  .hdr .brand-logo{width:215px}
+  .hdr{top:14px}
+  .hdr .brand{padding:3px 10px}
   .burger{width:44px;height:44px;top:14px;right:12px}
 }
 
@@ -566,7 +558,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .grain,.embers{display:none!important}
 .copy.anim .swap{animation:none!important}
 .panel-hero{transition:none!important}
-.panel-backdrop,.panel-close,.quick-actions a{backdrop-filter:none!important}
+.panel-backdrop,.panel-close{backdrop-filter:none!important}
 
 /* ===========================================================
    PALETTE — navy blue + brass/gold + white (brand)
@@ -734,7 +726,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 @media(max-width:860px){
   .panel{top:0;width:100vw;height:100dvh;border-radius:0;border-left:0;border-right:0}
   .panel::before{border-radius:0}
-  .panel-hero{min-height:250px;padding:86px 22px 30px}
+  .panel-hero{min-height:210px;padding:60px 22px 22px}
   .panel-close{top:18px;right:18px;width:44px;height:44px}
   .panel-body{max-width:none;padding:32px 20px 86px}
   .panel-intro{display:block;margin-bottom:28px;padding-bottom:26px}
@@ -1013,7 +1005,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 }
 
 /* ---- primary buttons: solid brass, pill, ink text (DESIGN.md button-primary) ---- */
-.explore,.btn-lime,.nav a.nav-cta,.panel-cta .explore,.quick-actions a:first-child,.cb-bar button{
+.explore,.btn-lime,.nav a.nav-cta,.panel-cta .explore,.cb-bar button{
   background:var(--gold);
   border:1px solid var(--gold);
   border-radius:999px;
@@ -1022,7 +1014,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   box-shadow:none;
   position:relative;overflow:hidden;
 }
-.explore:hover,.btn-lime:hover,.nav a.nav-cta:hover,.panel-cta .explore:hover,.quick-actions a:first-child:hover,.cb-bar button:hover{
+.explore:hover,.btn-lime:hover,.nav a.nav-cta:hover,.panel-cta .explore:hover,.cb-bar button:hover{
   background:var(--gold-lt);
   border-color:var(--gold-lt);
   color:var(--ink);
@@ -1044,15 +1036,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   background:var(--gold);border-color:var(--gold);color:var(--ink);
   box-shadow:none;
 }
-
-/* ---- urgent mobile contact bar: the one documented blur exception ---- */
-.quick-actions a{
-  background:rgba(15,44,82,.76);
-  border:1px solid rgba(255,255,255,.24);
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  box-shadow:0 14px 34px rgba(0,0,0,.34);
-}
-.quick-actions a:hover{border-color:var(--gold-lt);color:var(--gold-lt)}
 
 /* ---- circular controls: crisp, no blur (Heavy Object Rule: small controls stay crisp) ---- */
 .panel-close,.chatbot-fab,.cb-x{
@@ -1372,3 +1355,7 @@ body > [class*="sk-"]{display:none!important}
   .statline>div:nth-child(n+3){border-top:1px solid rgba(227,195,114,.16);padding-top:18px;margin-top:18px}
   .std-list,.ind-grid{grid-template-columns:1fr}
 }
+
+/* Contact hero photo runs dark on its right side — pan the crop
+   left and lift brightness slightly so it reads evenly. */
+#panel-contact .panel-hero{background-position:25% center;filter:brightness(1.12) saturate(1.04)}
