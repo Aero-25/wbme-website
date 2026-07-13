@@ -296,6 +296,8 @@ img{display:block;max-width:100%}
 
 /* local time */
 .localtime{position:absolute;right:48px;bottom:4.3vh;z-index:4;font-family:'Archivo';font-weight:600;letter-spacing:.16em;font-size:.72rem;text-transform:uppercase;color:#aab6c6}
+.stage-footer{position:absolute;left:50%;bottom:2vh;transform:translateX(-50%);z-index:4;font-family:'Archivo';font-weight:600;letter-spacing:.08em;font-size:.62rem;color:#66727f;white-space:nowrap;pointer-events:none}
+@media(max-width:860px){.stage-footer{display:none}}
 .localtime b{color:var(--gold-lt)}
 
 /* card intro + tilt + water reflection */
@@ -500,7 +502,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .hdr:before{display:none}
 .hdr .brand{
   display:inline-flex;align-items:center;min-width:0;min-height:0;position:relative;
-  padding:5px 22px;border-radius:999px;
+  padding:0 22px;border-radius:999px;
   background:rgba(224,228,234,.92);
   border:1px solid rgba(255,255,255,.55);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
