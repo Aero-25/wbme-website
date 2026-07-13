@@ -168,10 +168,8 @@
   });
 
   function modalRect () {
-    var vw = window.innerWidth, vh = window.innerHeight, width, height, top;
-    if (isMobile()) { width = vw; height = vh; top = 0; }
-    else { width = Math.min(1180, vw * 0.94); height = vh * 0.88; top = vh * 0.06; }
-    return { left: (vw - width) / 2, top: top, width: width, height: height, radius: isMobile() ? 0 : 18 };
+    // panels are always a full-viewport takeover now, so the morph always grows to fill the screen
+    return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight, radius: 0 };
   }
 
   function makeMorph (key, M, mode) {
@@ -391,15 +389,14 @@
   try {
   /* ===== PRELOADER ===== */
   (function preload () {
-    var pre = document.getElementById('preloader'), ring = document.getElementById('plRing'), pct = document.getElementById('plPct');
+    var pre = document.getElementById('preloader'), bar = document.getElementById('plBar'), pct = document.getElementById('plPct');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
-    var RING_CIRC = 376.99;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
-      if (ring) ring.style.strokeDashoffset = String(RING_CIRC * (1 - p));
+      if (bar) bar.style.transform = 'scaleX(' + p + ')';
       if (pct) pct.textContent = Math.round(p * 100) + '%';
     }
     function bump () { loaded++; }
