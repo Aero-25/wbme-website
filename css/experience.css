@@ -480,7 +480,11 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .hdr:before{display:none}
 .hdr .brand{
   display:inline-flex;align-items:center;min-width:0;min-height:0;position:relative;
-  padding:0;border-radius:0;border:0;background:transparent;backdrop-filter:none;box-shadow:none;
+  padding:12px 30px;border-radius:999px;
+  background:rgba(224,228,234,.92);
+  border:1px solid rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 16px 38px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.7);
 }
 .hdr .brand::before{display:none}
 .hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);height:auto;object-fit:contain;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:none}
