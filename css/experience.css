@@ -188,10 +188,9 @@ img{display:block;max-width:100%}
 .map iframe{width:100%;height:340px;border:0;display:block;filter:grayscale(.3) invert(.92) hue-rotate(180deg) contrast(.9)}
 
 /* drawer (mobile nav) */
-.drawer{position:fixed;inset:0;z-index:var(--z-drawer);background:linear-gradient(165deg,#122c50 0%,#081627 70%);padding:30px 26px;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.drawer{position:fixed;inset:0;z-index:var(--z-drawer);background:rgba(11,26,48,.72);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);padding:30px 26px;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1)}
 .drawer.open{transform:none}
-.drawer .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px}
-.drawer .brand{font-size:0}
+.drawer .top{display:flex;justify-content:flex-end;align-items:center;margin-bottom:36px}
 .drawer .x{
   display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;
   background:rgba(255,255,255,.06);border:1px solid rgba(227,195,114,.3);border-radius:50%;
@@ -248,51 +247,66 @@ img{display:block;max-width:100%}
 /* ===========================================================
    MAGNIFICENT LAYER
    =========================================================== */
-/* preloader */
+/* preloader — instrument gauge: a brass dial reads the load progress,
+   ticked like a shipboard RPM gauge, propeller turning at its centre. */
 .preloader{position:fixed;inset:0;z-index:var(--z-preloader);display:flex;align-items:center;justify-content:center;overflow:hidden;background:
-  radial-gradient(52% 46% at 50% 42%,rgba(24,62,108,.6),transparent 72%),
-  linear-gradient(180deg,#071526 0%,#040a12 100%);transition:opacity .5s var(--ease-out),visibility 0s linear .5s}
-.preloader:before{content:"";position:absolute;inset:0;background:
-  linear-gradient(90deg,transparent calc(50% - 1px),rgba(227,195,114,.18) 50%,transparent calc(50% + 1px)),
-  linear-gradient(180deg,rgba(255,255,255,.05),transparent 32%,transparent 68%,rgba(255,255,255,.04));opacity:.5}
-.preloader:after{content:"";position:absolute;left:50%;top:50%;width:min(560px,86vw);aspect-ratio:1;border:1px solid rgba(227,195,114,.13);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 120px rgba(0,0,0,.36)}
+  radial-gradient(120% 90% at 50% 20%,#123258 0%,#081627 56%,#05101f 100%);
+  transition:opacity .5s var(--ease-out),visibility 0s linear .5s}
+.preloader:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(55% 55% at 50% 46%,#000,transparent 78%);
+  mask-image:radial-gradient(55% 55% at 50% 46%,#000,transparent 78%);
+}
 .preloader.done{opacity:0;visibility:hidden}
-.pl-inner{position:relative;z-index:1;width:min(320px,calc(100vw - 64px));display:flex;flex-direction:column;align-items:center;text-align:center}
+.pl-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center}
 
-.pl-prop{
-  width:clamp(88px,15vw,132px);height:clamp(88px,15vw,132px);
-  display:grid;place-items:center;position:relative;
+.pl-gauge{
+  position:relative;width:clamp(154px,32vw,214px);height:clamp(154px,32vw,214px);
+  display:grid;place-items:center;
   animation:pl-fade-up .7s var(--ease-out) both;
 }
+.pl-ticks{
+  position:absolute;inset:-16px;border-radius:50%;opacity:.55;
+  background:repeating-conic-gradient(rgba(227,195,114,.4) 0deg 1.1deg,transparent 1.1deg 9deg);
+  -webkit-mask-image:radial-gradient(farthest-side,transparent calc(100% - 11px),#000 calc(100% - 11px),#000 calc(100% - 4px),transparent calc(100% - 4px));
+  mask-image:radial-gradient(farthest-side,transparent calc(100% - 11px),#000 calc(100% - 11px),#000 calc(100% - 4px),transparent calc(100% - 4px));
+}
+.pl-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(var(--gold-lt) var(--p,0deg),rgba(255,255,255,.1) 0deg);
+  -webkit-mask-image:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 5px));
+  mask-image:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 5px));
+  box-shadow:0 0 24px rgba(227,195,114,.22);
+}
+.pl-prop{position:relative;width:44%;height:44%;display:grid;place-items:center}
 .pl-prop:before{
-  content:"";position:absolute;inset:-14%;border-radius:50%;
-  background:radial-gradient(circle,rgba(227,195,114,.16),transparent 70%);
+  content:"";position:absolute;inset:-24%;border-radius:50%;
+  background:radial-gradient(circle,rgba(227,195,114,.18),transparent 70%);
   pointer-events:none;
 }
 .pl-prop img{
   width:100%;height:100%;object-fit:contain;
   animation:propeller-spin 1.6s linear infinite;transform-origin:50% 50%;will-change:transform;
-  filter:drop-shadow(0 20px 46px rgba(0,0,0,.55));
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.55));
 }
 @keyframes propeller-spin{to{transform:rotate(360deg)}}
 
-.pl-word{margin-top:8px;animation:pl-fade-up .6s var(--ease-out) .12s both}
-.pl-logo{font-family:'Anton',sans-serif;font-size:clamp(2.8rem,11vw,4.6rem);line-height:.88;letter-spacing:.01em;color:#f4f7fb;text-transform:uppercase;text-shadow:0 18px 44px rgba(0,0,0,.5)}
-.pl-sub{margin-top:10px;font-family:'Archivo';font-weight:600;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:#9fb0c6}
-
-.pl-line{width:min(280px,64vw);height:1px;background:rgba(255,255,255,.14);margin-top:34px;overflow:visible;position:relative;animation:pl-fade-up .6s var(--ease-out) .2s both}
-.pl-line i{
-  display:block;height:100%;width:100%;transform-origin:left center;transform:scaleX(0);
-  background:linear-gradient(90deg,var(--gold-d),var(--gold-lt));
-  transition:transform .18s linear;
-  box-shadow:0 0 12px rgba(227,195,114,.65);
+.pl-pct{
+  margin-top:22px;font-family:'Archivo';font-weight:800;font-size:1.7rem;letter-spacing:.01em;
+  color:#f4f7fb;font-variant-numeric:tabular-nums;
+  animation:pl-fade-up .6s var(--ease-out) .12s both;
 }
-.pl-pct{margin-top:16px;font-family:'Archivo';font-weight:700;font-size:.66rem;letter-spacing:.2em;color:var(--gold-lt);
-  font-variant-numeric:tabular-nums;animation:pl-fade-up .6s var(--ease-out) .26s both}
+.pl-word{margin-top:14px;animation:pl-fade-up .6s var(--ease-out) .2s both}
+.pl-logo{font-family:'Anton',sans-serif;font-size:clamp(1.5rem,4.6vw,1.95rem);letter-spacing:.08em;color:var(--gold-lt);text-transform:uppercase}
+.pl-sub{margin-top:8px;font-family:'Archivo';font-weight:600;font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:#9fb0c6}
 
 @keyframes pl-fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){
-  .pl-prop,.pl-word,.pl-line,.pl-pct{animation:none;opacity:1;transform:none}
+  .pl-gauge,.pl-pct,.pl-word{animation:none;opacity:1;transform:none}
   .pl-prop:before{display:none}
 }
 
@@ -516,12 +530,12 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .hdr .nav,.hdr-phone{display:none!important}
 .hdr .brand:focus-visible{outline:3px solid var(--gold-lt);outline-offset:4px;border-radius:12px}
 
-/* burger: hidden on desktop, crisp circular trigger on mobile (no blur, per Heavy Object Rule) */
+/* burger: hidden on desktop, frosted glass trigger on mobile */
 .burger{
   display:none;position:fixed;top:16px;right:16px;z-index:var(--z-burger);
   width:48px;height:48px;border-radius:50%;cursor:pointer;
-  background:rgba(8,17,31,.88);border:1.5px solid var(--gold-lt);
-  -webkit-backdrop-filter:none;backdrop-filter:none;
+  background:rgba(8,17,31,.62);border:1.5px solid var(--gold-lt);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
   box-shadow:0 10px 26px rgba(0,0,0,.42);
   flex-direction:column;align-items:center;justify-content:center;gap:5px;
   transition:border-color .2s var(--ease-out),box-shadow .2s var(--ease-out),transform .15s var(--ease-out);
@@ -558,7 +572,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .grain,.embers{display:none!important}
 .copy.anim .swap{animation:none!important}
 .panel-hero{transition:none!important}
-.panel-backdrop,.panel-close{backdrop-filter:none!important}
+.panel-backdrop{backdrop-filter:none!important}
 
 /* ===========================================================
    PALETTE — navy blue + brass/gold + white (brand)
@@ -576,13 +590,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .panel-backdrop{background:rgba(4,10,20,.58)}
 .vignette{box-shadow:inset 0 0 200px rgba(0,0,0,.5)}
 
-/* ===== FACEBOOK FEED (Projects) ===== */
-.fb-feed{margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:18px}
-.fb-feed .fb-page{background:#fff;border-radius:14px;overflow:hidden;max-width:100%;box-shadow:0 18px 44px rgba(0,0,0,.34)}
-.fb-feed .fb-page span,.fb-feed .fb-page iframe{max-width:100%!important}
-.fb-link{font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt);border-bottom:1px solid rgba(227,195,114,.5);padding-bottom:3px}
-.fb-link:hover{color:#fff;border-color:#fff}
-
 /* ===== ABOUT panel (next-level) ===== */
 .lead-statement{font-family:'Barlow',sans-serif;font-weight:500;font-size:clamp(1.5rem,3.2vw,2.4rem);line-height:1.3;color:#eef2f7;max-width:780px;margin-bottom:42px;text-wrap:balance}
 .lead-statement span{color:var(--gold-lt)}
@@ -594,9 +601,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .std-list li b{color:#fff;font-family:'Archivo';display:block;margin-bottom:4px}
 .panel-cta{display:flex;align-items:center;gap:22px;margin-top:42px;flex-wrap:wrap}
 @media(max-width:860px){.std-list{grid-template-columns:1fr}}
-
-/* SociableKit FB feed sizing in the Projects panel */
-.fb-feed .sk-ww-facebook-page-posts{width:100%;max-width:960px}
 
 /* ===========================================================
    PANEL PAGES - industrial upgrade
@@ -702,8 +706,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 .formcard{border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));border-color:rgba(227,195,114,.2);box-shadow:0 24px 58px rgba(0,0,0,.24)}
 .field input,.field textarea,.field select{border-radius:8px;background:rgba(4,9,18,.34)}
 .map{border-radius:8px;border-color:rgba(227,195,114,.18)}
-.fb-feed{align-items:stretch}
-.fb-feed .sk-ww-facebook-page-posts{min-height:360px;border:1px solid rgba(227,195,114,.18);border-radius:8px;background:rgba(255,255,255,.04)}
 .featured-work{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:clamp(34px,5vw,54px)}
 .work-card{position:relative;height:330px;border:1px solid rgba(227,195,114,.2);border-radius:8px;overflow:hidden;background:#081421;box-shadow:0 18px 42px rgba(0,0,0,.18)}
 .work-card img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.04);transition:transform .45s var(--ease-out)}
@@ -744,7 +746,6 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
   .svc .ic{width:44px;height:44px}
   .panel-cta{align-items:stretch}
   .panel-cta .explore,.panel-cta .hero-call{width:100%;justify-content:center;text-align:center}
-  .fb-feed .sk-ww-facebook-page-posts{min-height:300px}
 }
 
 @media(max-width:420px){
@@ -873,9 +874,10 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
   width:min(392px,calc(100vw - 32px));
   height:min(560px,calc(100dvh - 150px));
   display:flex;flex-direction:column;overflow:hidden;
-  border:1px solid rgba(227,195,114,.36);border-radius:18px;
-  background:linear-gradient(180deg,#0e2340 0%,#081627 100%);
-  box-shadow:0 34px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);
+  border:1px solid rgba(227,195,114,.4);border-radius:18px;
+  background:rgba(14,35,64,.66);
+  -webkit-backdrop-filter:blur(24px) saturate(1.3);backdrop-filter:blur(24px) saturate(1.3);
+  box-shadow:0 34px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1);
   opacity:0;visibility:hidden;transform:translateY(16px) scale(.98);transform-origin:bottom left;
   transition:opacity .28s var(--ease-out),transform .32s var(--ease-out),visibility 0s linear .32s;
 }
@@ -1004,60 +1006,49 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   box-shadow:none;
 }
 
-/* ---- primary buttons: solid brass, pill, ink text (DESIGN.md button-primary) ---- */
+/* ---- primary buttons: frosted brass glass, pill, ink text ---- */
 .explore,.btn-lime,.nav a.nav-cta,.panel-cta .explore,.cb-bar button{
-  background:var(--gold);
-  border:1px solid var(--gold);
+  background:rgba(199,154,62,.78);
+  border:1px solid rgba(227,195,114,.65);
   border-radius:999px;
   color:var(--ink);
-  -webkit-backdrop-filter:none;backdrop-filter:none;
-  box-shadow:none;
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);
+  box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.35);
   position:relative;overflow:hidden;
 }
 .explore:hover,.btn-lime:hover,.nav a.nav-cta:hover,.panel-cta .explore:hover,.cb-bar button:hover{
-  background:var(--gold-lt);
+  background:rgba(227,195,114,.88);
   border-color:var(--gold-lt);
   color:var(--ink);
-  box-shadow:none;
+  box-shadow:0 14px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.4);
   transform:translateY(-2px);
 }
 
-/* ---- ghost buttons: transparent fill, white border, brass on hover (DESIGN.md button-ghost) ---- */
+/* ---- ghost buttons: glass fill, white border, brass on hover ---- */
 .hero-call,.cb-chip,.lightbox .ln,.lightbox .lc{
-  background:none;
-  border:1px solid rgba(255,255,255,.4);
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.42);
   border-radius:999px;
-  -webkit-backdrop-filter:none;backdrop-filter:none;
-  box-shadow:none;
+  -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
   color:#fff;
 }
 .hero-call{padding:0 18px;min-height:48px}
 .hero-call:hover,.cb-chip:hover,.lightbox .ln:hover{
-  background:var(--gold);border-color:var(--gold);color:var(--ink);
-  box-shadow:none;
+  background:rgba(199,154,62,.78);border-color:var(--gold);color:var(--ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
 }
 
-/* ---- circular controls: crisp, no blur (Heavy Object Rule: small controls stay crisp) ---- */
+/* ---- circular controls: frosted glass discs ---- */
 .panel-close,.chatbot-fab,.cb-x{
-  background:rgba(10,20,36,.7);
+  background:rgba(10,20,36,.5);
   border:1px solid rgba(227,195,114,.4);
-  -webkit-backdrop-filter:none;backdrop-filter:none;
-  box-shadow:none;
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
 }
 .panel-close:hover,.chatbot-fab:hover,.cb-x:hover{
   border-color:var(--gold-lt);
 }
-
-/* ===========================================================
-   THIRD-PARTY WIDGET GUARD
-   The SociableKit Facebook feed sometimes leaves its own photo
-   lightbox appended directly to <body> after a visitor opens a
-   post photo, and it never gets cleared on our own navigation.
-   Our real embed always lives nested inside .fb-feed, never as a
-   direct child of <body> — so anything SociableKit ("sk-…") drops
-   straight on <body> is a stray overlay and gets suppressed.
-   =========================================================== */
-body > [class*="sk-"]{display:none!important}
 
 /* ===========================================================
    EDITORIAL TYPOGRAPHY + LAYOUT — panel content
@@ -1125,11 +1116,9 @@ body > [class*="sk-"]{display:none!important}
 }
 
 /* ===========================================================
-   SLIDE-IN PANEL — clean, conventional side panel
-   Deliberately restrained: no glass, no full-bleed cinematic
-   takeover, no experimental typography. A fixed-width panel
-   slides in from the right with the homepage visible behind it.
-   Plain cards, standard buttons, moderate-height header image.
+   SLIDE-IN PANEL — frosted glass side panel
+   A fixed-width panel slides in from the right with the homepage
+   visible (and blurred) behind it. Glass surfaces throughout.
    =========================================================== */
 
 /* ---- panel shell: fixed-width slide-in from the right ---- */
@@ -1137,10 +1126,10 @@ body > [class*="sk-"]{display:none!important}
   position:fixed;top:0;right:0;left:auto;bottom:0;
   width:min(680px,90vw);height:100dvh;
   transform:translateX(100%);
-  border-radius:0;border:0;border-left:1px solid rgba(227,195,114,.28);
-  background:var(--ink2);
-  box-shadow:-40px 0 90px rgba(0,0,0,.5);
-  -webkit-backdrop-filter:none;backdrop-filter:none;
+  border-radius:0;border:0;border-left:1px solid rgba(227,195,114,.32);
+  background:rgba(22,58,102,.62);
+  box-shadow:-40px 0 90px rgba(0,0,0,.5),inset 1px 0 0 rgba(255,255,255,.08);
+  -webkit-backdrop-filter:blur(26px) saturate(1.3);backdrop-filter:blur(26px) saturate(1.3);
   filter:none;
   opacity:1;visibility:visible;
   transition:transform .48s cubic-bezier(.22,1,.36,1);
@@ -1167,7 +1156,7 @@ body > [class*="sk-"]{display:none!important}
 .panel-hero .ti{font-size:clamp(2.6rem,6.4vw,4rem);line-height:.95;letter-spacing:0;text-shadow:0 10px 26px rgba(0,0,0,.5)}
 
 /* ---- content zone: plain, readable ---- */
-.panel-body{background:var(--ink2);color:#e4eaf1;padding:32px 34px 64px}
+.panel-body{background:transparent;color:#e4eaf1;padding:32px 34px 64px}
 .panel-intro{border-bottom-color:rgba(255,255,255,.12);grid-template-columns:1fr}
 .panel-intro:after{display:none}
 .panel-intro h3,.panel-intro p{max-width:640px}

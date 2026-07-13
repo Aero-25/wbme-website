@@ -167,16 +167,6 @@
     }
   });
 
-  var sociableKitRequested = false;
-  function ensureSociableKit () {
-    if (sociableKitRequested || document.querySelector('script[src*="widgets.sociablekit.com/facebook-page-posts"]')) return;
-    sociableKitRequested = true;
-    var s = document.createElement('script');
-    s.src = 'https://widgets.sociablekit.com/facebook-page-posts/widget.js';
-    s.defer = true;
-    document.body.appendChild(s);
-  }
-
   function showPanelContent (panel) {
     panel.classList.add('open');
     requestAnimationFrame(function () { panel.classList.add('shown'); });
@@ -185,7 +175,6 @@
     if (window.WBME_HYDRATE_BUCKET_ASSETS) window.WBME_HYDRATE_BUCKET_ASSETS(panel);
     var hero = panel.querySelector('.panel-hero'), im = cardImg(panel.id.replace('panel-', ''));
     if (hero && im) hero.style.backgroundImage = "url('" + im + "')";   // match panel hero to the real card photo
-    if (panel.id === 'panel-projects') ensureSociableKit();
     var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.transform = 'scaleX(0)'; }
     var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
     panel.querySelectorAll('[data-count]').forEach(function (el) {
@@ -346,14 +335,14 @@
   try {
   /* ===== PRELOADER ===== */
   (function preload () {
-    var pre = document.getElementById('preloader'), bar = document.getElementById('plBar'), pct = document.getElementById('plPct');
+    var pre = document.getElementById('preloader'), ring = document.getElementById('plRing'), pct = document.getElementById('plPct');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
-      if (bar) bar.style.transform = 'scaleX(' + p + ')';
+      if (ring) ring.style.setProperty('--p', (p * 360) + 'deg');
       if (pct) pct.textContent = Math.round(p * 100) + '%';
     }
     function bump () { loaded++; }

@@ -14,20 +14,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=76">
+<link rel="stylesheet" href="css/experience.css?v=78">
 </head>
 <body>
 
 <!-- ===== ATMOSPHERE / OVERLAYS ===== -->
 <div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
   <div class="pl-inner">
-    <div class="pl-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=220&height=220&resize=contain&quality=90" alt=""></div>
+    <div class="pl-gauge">
+      <div class="pl-ticks" aria-hidden="true"></div>
+      <div class="pl-ring" id="plRing" aria-hidden="true"></div>
+      <div class="pl-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=220&height=220&resize=contain&quality=90" alt=""></div>
+    </div>
+    <div class="pl-pct" id="plPct" aria-hidden="true">0%</div>
     <div class="pl-word">
       <div class="pl-logo">WBME</div>
       <div class="pl-sub">Marine Engineering &middot; Walvis Bay</div>
     </div>
-    <div class="pl-line" aria-hidden="true"><i id="plBar"></i></div>
-    <div class="pl-pct" id="plPct" aria-hidden="true">0%</div>
   </div>
 </div>
 <canvas class="embers" id="embers"></canvas>
@@ -181,11 +184,6 @@
         <img src="images/4.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg" alt="Bottom hull plate replacement">
         <div><span>Boiler making</span><h4>Hull plate replacement</h4><p>Structural renewal work for hull, deck and vessel steel repairs.</p></div>
       </article>
-    </div>
-    <div class="feed-intro p-rv"><span class="eyebrow">Live updates</span><h3>Latest from Facebook</h3></div>
-    <div class="fb-feed p-rv">
-      <div class="sk-ww-facebook-page-posts" data-embed-id="25693587"></div>
-      <a class="fb-link" href="https://www.facebook.com/p/Walvis-Bay-Marine-Engineering-61550832392872/" target="_blank" rel="noopener">Open our Facebook page →</a>
     </div>
     <div class="feed-intro p-rv"><span class="eyebrow">More from the yard</span><h3>Photo gallery</h3></div>
     <div class="gal p-rv" aria-label="WBME project photo gallery">
@@ -343,7 +341,7 @@
 
 <!-- ===== MOBILE DRAWER ===== -->
 <div class="drawer" id="drawer">
-  <div class="top"><div class="brand">WB<b style="color:var(--gold-lt)">ME</b></div><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
+  <div class="top"><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
   <a data-key="about">About</a><a data-key="why">Why WBME</a><a data-key="services">Services</a><a data-key="projects">Projects</a><a data-key="contact">Contact</a>
   <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail data-mail-text>Email</a><span>8th Street East, Walvis Bay</span></div>
 </div>
@@ -358,7 +356,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=42"></script>
-<script src="js/experience.js?v=57"></script>
+<script src="js/experience.js?v=59"></script>
 <script src="js/glass-fx.js?v=1"></script>
 <script src="js/chatbot.js?v=1"></script>
 </body>
