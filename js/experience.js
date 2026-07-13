@@ -6,6 +6,15 @@
   var ENABLE_CARD_TILT = false;
   var ENABLE_EMBERS = false;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
+  var EMAIL = ['info', 'wbme.com.na'].join('@'); // built at runtime so the address isn't scrapable from page source
+  function mailHref (subject) { return 'mailto:' + EMAIL + (subject ? '?subject=' + encodeURIComponent(subject) : ''); }
+  function hydrateEmailLinks () {
+    document.querySelectorAll('[data-mail]').forEach(function (a) {
+      a.setAttribute('href', mailHref(a.getAttribute('data-subject') || ''));
+      if (a.hasAttribute('data-mail-text')) a.textContent = EMAIL;
+    });
+  }
+  hydrateEmailLinks();
   var bucketAsset = window.WBME_BUCKET_ASSET || function (path, width) {
     if (!path) return '';
     if (/^(https?:|data:|blob:)/i.test(path)) return path;
@@ -337,7 +346,7 @@
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
 
   /* ===== CONTACT FORM ===== */
-  // To send enquiries in-page: create a form at https://formspree.io (send to info@wbme.com.na)
+  // To send enquiries in-page: create a form at https://formspree.io (send to the address in EMAIL above)
   // and paste its endpoint below. Until then, the form opens the visitor's email app.
   var FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_ID';
   var form = document.getElementById('contactForm');
@@ -355,7 +364,7 @@
       var done = function () { form.style.display = 'none'; var okMsg = document.querySelector('.form-ok'); if (okMsg) okMsg.style.display = 'block'; };
       var mailto = function () {
         var body = encodeURIComponent('Name: ' + g('name') + '\nEmail: ' + g('email') + '\nPhone: ' + g('phone') + '\nService: ' + g('service') + '\n\n' + g('message'));
-        window.location.href = 'mailto:info@wbme.com.na?subject=' + encodeURIComponent('Quote request - ' + g('name')) + '&body=' + body;
+        window.location.href = mailHref('Quote request - ' + g('name')) + '&body=' + body;
         done();
       };
       if (FORM_ENDPOINT.indexOf('REPLACE_WITH_YOUR_ID') !== -1) { mailto(); return; }
