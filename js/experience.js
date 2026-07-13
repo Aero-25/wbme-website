@@ -26,7 +26,7 @@
 
   var cards = [
     { key:'about',      bg:bucketAsset('Hero Boat.png'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), s:'Est. 1999 · Walvis Bay', t:'About',      d:'25 years of service excellence in marine engineering, ship repair and metal work.' },
-    { key:'why',        bg:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), img:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), s:'The standard',           t:'Why WBME',   d:'Skilled professionals, a reputation for excellence and partnerships built through commitment.' },
+    { key:'why',        bg:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), img:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), s:'The standard',           t:'Why WBME',   ht:'WBME', d:'Skilled professionals, a reputation for excellence and partnerships built through commitment.' },
     { key:'services',   bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), s:'Six disciplines',        t:'Services',   d:'Ship repair, maintenance, fitting, rigging, pipe works, boiler making, fabrication and welding.' },
     { key:'projects',   bg:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), img:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
     { key:'contact',    bg:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), s:'Get in touch',           t:'Contact',    d:'Headquarters: 8th Street East, Industrial Area, Walvis Bay. Call +264 (0)64 285 700.' }
@@ -83,7 +83,7 @@
   function setVisual (i) {
     bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === 0); }); // fixed hero bg: always the first photo, never swaps
     var c = cards[i];
-    copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
+    copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + (c.ht || c.t) + '</div>' +
       '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:+26464285700">Call WBME</a></div></div>';
     copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
     navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
@@ -322,8 +322,17 @@
 
   var chatbotFab = document.getElementById('chatbotFab');
   if (chatbotFab) {
-    chatbotFab.addEventListener('click', function () { openPanel('contact', firstCard('contact')); });
+    chatbotFab.addEventListener('click', function () {
+      if (window.WBME_CHATBOT) { window.WBME_CHATBOT.toggle(); return; }
+      openPanel('contact', firstCard('contact'));   // fallback if the assistant script fails to load
+    });
   }
+
+  /* hooks for the assistant (js/chatbot.js) */
+  window.WBME_OPEN_PANEL = openPanel;
+  window.WBME_FIRST_CARD = firstCard;
+  window.WBME_MAIL = mailHref;
+  window.WBME_EMAIL = EMAIL;
 
   /* ===== LIGHTBOX ===== */
   var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
