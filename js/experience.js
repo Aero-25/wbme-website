@@ -19,10 +19,7 @@
     { key:'about',      bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), s:'Est. 1999 · Walvis Bay', t:'About',      d:'25 years of service excellence in marine engineering, ship repair and metal work.' },
     { key:'why',        bg:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), img:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), s:'The standard',           t:'Why WBME',   d:'Skilled professionals, a reputation for excellence and partnerships built through commitment.' },
     { key:'services',   bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), s:'Six disciplines',        t:'Services',   d:'Ship repair, maintenance, fitting, rigging, pipe works, boiler making, fabrication and welding.' },
-    { key:'industries', bg:bucketAsset('wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg'), s:'Who we serve',           t:'Industries', d:'Serving the local marine industry while expanding into new metal-work sectors.' },
-    { key:'safety',     bg:bucketAsset('wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg'), s:'Quality assured',        t:'Safety',     d:'Reliable solutions focused on safety, quality, efficiency and cost-effectiveness.' },
     { key:'projects',   bg:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), img:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
-    { key:'reviews',    bg:bucketAsset('wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg'), img:bucketAsset('wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg'), s:'Ready for the job',       t:'Readiness',  d:'Wide service range, historical knowledge and practical support for demanding work.' },
     { key:'contact',    bg:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), s:'Get in touch',           t:'Contact',    d:'Headquarters: 8th Street East, Industrial Area, Walvis Bay. Call +264 (0)64 285 700.' }
   ];
   var N = cards.length;
@@ -75,8 +72,7 @@
 
   /* visual state (no transform) */
   function setVisual (i) {
-    ensureBg(i); ensureBg((i + 1) % N);
-    bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
+    bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === 0); }); // fixed hero bg: always the first photo, never swaps
     var c = cards[i];
     copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + c.t + '</div>' +
       '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:+26464285700">Call WBME</a></div></div>';
@@ -379,7 +375,7 @@
   (function preload () {
     var pre = document.getElementById('preloader'), bar = document.getElementById('plBar');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
-    var MIN = 700, CAP = 2200, start = Date.now();             // keep the loader crisp; never block on slow imagery
+    var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;
     function setBar (p) { p = Math.max(0, Math.min(1, p)); if (bar) bar.style.transform = 'scaleX(' + p + ')'; }

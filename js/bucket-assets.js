@@ -33,7 +33,7 @@
     params.set('width', options.width || 1280);
     if (options.height) params.set('height', options.height);
     params.set('quality', options.quality || 70);
-    params.set('resize', options.resize || 'cover');
+    params.set('resize', options.resize || 'contain');
     return BUCKET_RENDER_BASE + encodePath(path) + '?' + params.toString();
   }
 
@@ -58,7 +58,7 @@
       setBackground(el, bucketAsset(el.getAttribute('data-bucket-bg'), {
         width: window.matchMedia('(max-width:860px)').matches ? 900 : 1400,
         quality: 70,
-        resize: 'cover'
+        resize: 'contain'
       }));
     });
 
@@ -70,7 +70,7 @@
       el.setAttribute('src', bucketAsset(el.getAttribute('data-bucket-src'), {
         width: 640,
         quality: 68,
-        resize: 'cover'
+        resize: 'contain'
       }));
     });
 
