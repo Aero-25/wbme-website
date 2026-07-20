@@ -5,21 +5,23 @@ A cinematic, immersive single-page experience for WBME — a marine & metal engi
 **Demo build** — static HTML/CSS/JS, no build step.
 
 ## The experience
-A full-bleed cinematic hero with a **looping rail of four cards** — **About · Services · Projects · Contact**. The background cross-fades to the focused card. Click a card and it **morphs and expands** into a closeable full-screen panel holding that section's content; close to shrink it back.
+Five real, normally-scrollable pages — **Home · About · Services · Projects · Contact** — sharing one header/nav/footer/chatbot and one scroll-effects system: reveal-on-scroll, parallax drift, a header that solidifies on scroll, a scroll progress bar, and magnetic buttons.
 
-- Same look on desktop and mobile (reflowed for portrait; swipeable card rail, hamburger nav).
-- Deep-linkable panels (`/#services`), back-button friendly, `prefers-reduced-motion` aware.
+- Same look on desktop and mobile (nav collapses to a hamburger drawer under 960px).
+- `prefers-reduced-motion` aware — every effect (reveal, parallax, magnetic pull) disables cleanly.
 - Blue + brass/gold, dark cinematic, ANTON display titles.
 
 ## Structure
 ```
-├── index.html              # the cinematic experience (stage + 4 content panels)
-├── css/experience.css      # design system + morph + panels + mobile reflow
-├── js/experience.js        # loop, card-morph (FLIP), deep-links, lightbox, form
+├── index.html, about.html, services.html, projects.html, contact.html
+├── css/experience.css      # shared design system + scroll-effects engine
+├── js/experience.js        # header/nav state, reveals, parallax, progress, lightbox, form
+├── js/glass-fx.js          # cursor spotlight + magnetic buttons
+├── js/chatbot.js           # on-site assistant
+├── js/bucket-assets.js     # Supabase Storage image hydration
 ├── images/                 # logo, photography, service icons
 └── docs/superpowers/specs/ # design specs
 ```
-> The earlier clean multi-page version (`about.html`, `services.html`, … , `css/styles.css`, `js/main.js`) remains in the repo and git history.
 
 ## Run locally
 Serve the folder (don't open via `file://` — the experience uses History/hash routing):

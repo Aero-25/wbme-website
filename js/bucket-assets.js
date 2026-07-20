@@ -53,8 +53,6 @@
     root = root || document;
 
     root.querySelectorAll('[data-bucket-bg]').forEach(function (el) {
-      var panel = el.closest && el.closest('.panel');
-      if (root === document && panel && !panel.classList.contains('open')) return;
       setBackground(el, bucketAsset(el.getAttribute('data-bucket-bg'), {
         width: window.matchMedia('(max-width:860px)').matches ? 900 : 1400,
         quality: 70,
@@ -63,8 +61,6 @@
     });
 
     root.querySelectorAll('[data-bucket-src]').forEach(function (el) {
-      var panel = el.closest && el.closest('.panel');
-      if (root === document && panel && !panel.classList.contains('open')) return;
       el.setAttribute('loading', 'lazy');
       el.setAttribute('decoding', 'async');
       el.setAttribute('src', bucketAsset(el.getAttribute('data-bucket-src'), {

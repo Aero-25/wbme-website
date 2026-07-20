@@ -3,7 +3,6 @@
   'use strict';
   (function () { var l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://kbmgpqwmgthswjkfmqfe.supabase.co'; l.crossOrigin = ''; document.head.appendChild(l); })();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ENABLE_CARD_TILT = false;
 
   /* ===== SCROLL REVEAL (IntersectionObserver-driven .p-rv) ===== */
   function initScrollReveal () {
@@ -96,7 +95,6 @@
     els.forEach(function (el) { io.observe(el); });
   }
   var ENABLE_EMBERS = false;
-  var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
   var EMAIL = ['info', 'wbme.com.na'].join('@'); // built at runtime so the address isn't scrapable from page source
   function mailHref (subject) { return 'mailto:' + EMAIL + (subject ? '?subject=' + encodeURIComponent(subject) : ''); }
   function hydrateEmailLinks () {
@@ -106,14 +104,6 @@
     });
   }
   hydrateEmailLinks();
-  var bucketAsset = window.WBME_BUCKET_ASSET || function (path, width) {
-    if (!path) return '';
-    if (/^(https?:|data:|blob:)/i.test(path)) return path;
-    var enc = String(path).split('/').map(encodeURIComponent).join('/');
-    // serve resized + compressed via Supabase's render endpoint (raw photos are 3-4 MB each)
-    return 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/' + enc +
-           '?width=' + (width || 1280) + '&quality=72&resize=contain';
-  };
 
   var bgs = document.querySelectorAll('.bg');
 
@@ -143,11 +133,6 @@
   function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); unlock(); }
   if (burgerBtn) burgerBtn.addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
-  drawer.querySelectorAll('a[data-key]').forEach(function (a) {
-    a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button');
-    a.addEventListener('click', function () { closeDrawer(); var k = a.dataset.key; setTimeout(function () { openPanel(k, firstCard(k)); }, 280); });
-    a.addEventListener('keydown', keyActivate);
-  });
 
   /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
   initScrollReveal();
