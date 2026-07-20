@@ -13,4 +13,19 @@
     t.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
     t.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
   }, { passive: true });
+
+  var MAGNETIC_SEL = '.explore,.hero-call,.btn-lime,.nav-cta';
+  document.querySelectorAll(MAGNETIC_SEL).forEach(function (el) {
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect();
+      var relX = e.clientX - r.left - r.width / 2;
+      var relY = e.clientY - r.top - r.height / 2;
+      el.style.setProperty('--tx', (relX * 0.18).toFixed(1) + 'px');
+      el.style.setProperty('--ty', (relY * 0.18).toFixed(1) + 'px');
+    });
+    el.addEventListener('pointerleave', function () {
+      el.style.setProperty('--tx', '0px');
+      el.style.setProperty('--ty', '0px');
+    });
+  });
 })();
