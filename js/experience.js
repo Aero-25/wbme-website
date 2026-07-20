@@ -115,236 +115,26 @@
            '?width=' + (width || 1280) + '&quality=72&resize=contain';
   };
 
-  var cards = [
-    { key:'about',      bg:bucketAsset('Hero Boat.png'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'), s:'Est. 1999 · Walvis Bay', t:'About',      d:'25 years of service excellence in marine engineering, ship repair and metal work.' },
-    { key:'why',        bg:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), img:bucketAsset('wbme photos for web 2026/New Complete Ships Rudder/12.jpg'), s:'The standard',           t:'Why WBME',   ht:'WBME', d:'Skilled professionals, a reputation for excellence and partnerships built through commitment.' },
-    { key:'services',   bg:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg'), s:'Six disciplines',        t:'Services',   d:'Ship repair, maintenance, fitting, rigging, pipe works, boiler making, fabrication and welding.' },
-    { key:'projects',   bg:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), img:bucketAsset('wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg'), s:'Our work',               t:'Projects',   d:'From dry-dock repairs to precision machining — a look at what we build and restore.' },
-    { key:'contact',    bg:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), img:bucketAsset('wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg'), s:'Get in touch',           t:'Contact',    d:'Headquarters: 8th Street East, Industrial Area, Walvis Bay. Call +264 (0)64 285 700.' }
-  ];
-  var N = cards.length;
+  var bgs = document.querySelectorAll('.bg');
 
-  var bgs   = document.querySelectorAll('.bg'),
-      rail  = document.getElementById('rail'),
-      railWrap = document.querySelector('.rail-wrap'),
-      copy  = document.getElementById('copy'),
-      navA  = document.querySelectorAll('#nav a[data-key]'),
-      progB = document.getElementById('progBar'),
-      cnEl  = document.getElementById('cn'),
-      backdrop = document.getElementById('panelBackdrop');
-
-  // lazy backgrounds: only load one as it becomes active (was loading all 8 up front)
-  function ensureBg (i) { var b = bgs[i]; if (b && !b.getAttribute('data-loaded')) { b.setAttribute('data-loaded', '1'); b.style.backgroundImage = "url('" + cards[i].bg + "')"; } }
-  function resizedUrl (url, width, quality) {
-    return String(url || '').replace(/([?&])width=\d+/, '$1width=' + width).replace(/([?&])quality=\d+/, '$1quality=' + quality);
-  }
-  ensureBg(0);
-
-  /* build looping rail (3x duplicated) — only on pages that have the rail (old Home, until Task 7) */
-  var REPEAT = 2, railCards = [];
-  (function build () {
-    if (!rail) return;
-    var html = '';
-    for (var k = 0; k < N * REPEAT; k++) {
-      var c = cards[k % N];
-      html += '<div class="card" data-key="' + c.key + '" data-i="' + (k % N) + '">' +
-              '<img src="' + resizedUrl(c.img, isMobile() ? 360 : 560, 66) + '" alt="' + c.t + '" decoding="async" loading="lazy">' +
-              '<div class="lbl"><div class="s">' + c.s + '</div><div class="b">' + c.t + '</div></div></div>';
-    }
-    rail.innerHTML = html;
-    railCards = rail.querySelectorAll('.card');
-    railCards.forEach(function (el) {
-      el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button');
-      el.setAttribute('aria-label', 'Open ' + cards[+el.dataset.i].t);
-      el.addEventListener('click', function () { if (didDrag) return; openPanel(el.dataset.key, el); });
-      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPanel(el.dataset.key, el); } });
-    });
-  })();
-
-  var cardStep = 218;
-  function measure () {
-    if (railCards.length > 1) {
-      var d = railCards[1].getBoundingClientRect().left - railCards[0].getBoundingClientRect().left;
-      if (d > 10) cardStep = d;
-    }
-  }
-  measure();
-  window.addEventListener('resize', measure);
-
-  /* visual state (no transform) */
-  function setVisual (i) {
-    bgs.forEach(function (b) { b.classList.toggle('on', +b.dataset.i === 0); }); // fixed hero bg: always the first photo, never swaps
-    var c = cards[i];
-    copy.innerHTML = '<div class="swap"><div class="ey">' + c.s + '</div><div class="ti" aria-hidden="true">' + (c.ht || c.t) + '</div>' +
-      '<div class="hero-actions"><button class="explore" data-key="' + c.key + '">Explore ' + c.t + ' →</button><a class="hero-call" href="tel:+26464285700">Call WBME</a></div></div>';
-    copy.querySelector('.explore').addEventListener('click', function () { openPanel(c.key, firstCard(c.key)); });
-    navA.forEach(function (a) { a.classList.toggle('act', a.dataset.key === c.key); });
-    railCards.forEach(function (el) { el.classList.toggle('focus', +el.dataset.i === i); });
-    if (copy) copy.classList.toggle('anim', !dragging && Math.abs(velocity) < speed * 1.7);
-    if (cnEl) cnEl.textContent = '0' + (i + 1);
-    if (progB) progB.style.transform = 'translateX(' + (i * 100) + '%)';
-  }
-
-  /* continuous drift loop */
-  var offset = 0, speed = 64, lastActive = -1, ready = false;
-  var dragging = false, dragStartX = 0, dragStartOffset = 0, didDrag = false;
-  var velocity = speed, lastOffset = 0, lastFrame = 0;
-  function loop (now) {
-    var dt = lastFrame ? Math.min(0.05, (now - lastFrame) / 1000) : 1 / 60;
-    lastFrame = now;
-    if (document.hidden) { requestAnimationFrame(loop); return; }
-    if (dragging) {
-      velocity = (offset - lastOffset) / Math.max(dt, 1 / 120); // capture fling velocity
-    } else {
-      var target = current ? 0 : speed;   // keep drifting even under reduced-motion (user wants the cards moving)
-      velocity += (target - velocity) * Math.min(1, dt * 4.2);  // momentum eases back into the ambient drift
-      offset += velocity * dt;
-    }
-    lastOffset = offset;
-    var wrap = cardStep * N;
-    var x = ((offset % wrap) + wrap) % wrap;
-    rail.style.transform = 'translate3d(' + (-(Math.round(x * 2) / 2)) + 'px,0,0)';
-    var active = ((Math.round(offset / cardStep) % N) + N) % N;
-    if (active !== lastActive) { lastActive = active; setVisual(active); }
-    requestAnimationFrame(loop);
-  }
-  function keyActivate (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }
-  navA.forEach(function (a) {
-    a.setAttribute('tabindex', '0'); a.setAttribute('role', 'button');
-    a.addEventListener('click', function () { openPanel(a.dataset.key, firstCard(a.dataset.key)); });
-    a.addEventListener('keydown', keyActivate);
-  });
-
-  /* ===== CORE START (guaranteed, before enhancements) ===== */
-  document.body.classList.add('ready');
-  if (rail) {
-    if (progB) progB.style.width = (100 / N) + '%';
-    if (copy) copy.classList.add('first');
-    setVisual(0);
-    setTimeout(function () { if (copy) copy.classList.remove('first'); }, 900);
-    requestAnimationFrame(loop);
-  }
-
-  /* ===== GRAB TO SCROLL (mouse + touch) with momentum ===== */
-  if (railWrap) {
-    var pdown = false;
-    railWrap.addEventListener('pointerdown', function (e) { pdown = true; didDrag = false; dragStartX = e.clientX; });
-    window.addEventListener('pointermove', function (e) {
-      if (!pdown) return;
-      if (!dragging) {
-        if (Math.abs(e.clientX - dragStartX) <= 4) return;
-        dragging = true; didDrag = true; dragStartX = e.clientX; dragStartOffset = offset; railWrap.classList.add('grabbing');
-      }
-      offset = dragStartOffset - (e.clientX - dragStartX);
-    });
-    var endDrag = function () { pdown = false; if (dragging) { dragging = false; railWrap.classList.remove('grabbing'); } };
-    window.addEventListener('pointerup', endDrag);
-    window.addEventListener('pointercancel', endDrag);
-  }
-
-  /* ===== PANEL (modal morph) ===== */
-  var current = null, animating = false, lastTrigger = null;
-  function restoreFocus () { if (lastTrigger && lastTrigger.focus) { try { lastTrigger.focus(); } catch (_) {} } }
-  function panelEl (key) { return document.getElementById('panel-' + key); }
-  function firstCard (key) { return document.querySelector('.card[data-key="' + key + '"]'); }
-  function cardImg (key) { for (var i = 0; i < N; i++) if (cards[i].key === key) return cards[i].img; return ''; }
   function lock () { document.body.classList.add('locked'); }
   function unlock () { document.body.classList.remove('locked'); }
-  document.querySelectorAll('.panel').forEach(function (panel) {
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-modal', 'true');
-    panel.setAttribute('tabindex', '-1');
-    var title = panel.querySelector('.panel-hero .ti');
-    if (title) {
-      if (!title.id) title.id = panel.id + '-title';
-      panel.setAttribute('aria-labelledby', title.id);
-    }
-  });
+  function keyActivate (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }
+  var ready = false;
 
-  function showPanelContent (panel) {
-    panel.classList.add('open');
-    requestAnimationFrame(function () { panel.classList.add('shown'); });
-    var sc = panel.querySelector('.panel-scroll'); if (sc) sc.scrollTop = 0;
-    panel.setAttribute('aria-hidden', 'false');
-    if (window.WBME_HYDRATE_BUCKET_ASSETS) window.WBME_HYDRATE_BUCKET_ASSETS(panel);
-    var hero = panel.querySelector('.panel-hero'), im = cardImg(panel.id.replace('panel-', ''));
-    if (hero && im) hero.style.backgroundImage = "url('" + im + "')";   // match panel hero to the real card photo
-    var mp = document.getElementById('modalProgress'); if (mp) { mp.classList.add('on'); mp.querySelector('i').style.transform = 'scaleX(0)'; }
-    var cb = panel.querySelector('[data-close]'); if (cb) cb.focus();
-    panel.querySelectorAll('[data-count]').forEach(function (el) {
-      var to = +el.dataset.count, sf = el.dataset.suffix || '', c = 0, st = Math.max(1, Math.ceil(to / 26));
-      var t = setInterval(function () { c += st; if (c >= to) { c = to; clearInterval(t); } el.textContent = c + sf; }, 26);
-    });
-  }
-
-  function doOpen (key, cardEl) {
-    var panel = panelEl(key); if (!panel) return;
-    backdrop.classList.add('open');
-    lock();
-    showPanelContent(panel);
-    animating = true;
-    var onEnd = function (e) { if (e.target === panel && e.propertyName === 'transform') fin(); };
-    var fin = function () { panel.removeEventListener('transitionend', onEnd); animating = false; };
-    panel.addEventListener('transitionend', onEnd);
-    setTimeout(fin, 560); // fallback in case transitionend doesn't fire
-  }
-
-  function doClose () {
-    var key = current, panel = panelEl(key); if (!panel) return;
-    backdrop.classList.remove('open');
-    var mp = document.getElementById('modalProgress'); if (mp) mp.classList.remove('on');
-    panel.classList.remove('shown');
-    panel.setAttribute('aria-hidden', 'true');
-    animating = true;
-    var fin = function () {
-      panel.removeEventListener('transitionend', onEnd);
-      panel.classList.remove('open');
-      animating = false; unlock(); restoreFocus();
-    };
-    var onEnd = function (e) { if (e.target === panel && e.propertyName === 'transform') fin(); };
-    panel.addEventListener('transitionend', onEnd);
-    setTimeout(fin, 560); // fallback in case transitionend doesn't fire
-  }
-
-  function openPanel (key, cardEl) {
-    if (animating || current === key || !panelEl(key)) return;
-    lastTrigger = cardEl || document.activeElement;
-    current = key;
-    history.pushState({ panel: key }, '', '#' + key);
-    doOpen(key, cardEl);
-  }
-  function closePanel () {
-    if (!current || animating) return;
-    if (history.state && history.state.panel) { history.back(); }
-    else { doClose(); current = null; history.replaceState(null, '', location.pathname + location.search); }
-  }
-  window.addEventListener('popstate', function (e) {
-    var key = (e.state && e.state.panel) || null;
-    if (key && panelEl(key)) { if (current !== key) { current = key; doOpen(key, firstCard(key)); } }
-    else if (current) { doClose(); current = null; }
-  });
-
-  document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closePanel); });
-  if (backdrop) backdrop.addEventListener('click', closePanel);
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    var lbEl = document.getElementById('lightbox');
-    if (lbEl && lbEl.classList.contains('open')) return closeLb();
+    var lb = document.getElementById('lightbox');
+    if (lb && lb.classList.contains('open')) return closeLb();
     if (drawer.classList.contains('open')) return closeDrawer();
-    if (current) closePanel();
   });
   document.addEventListener('keydown', function (e) {
     var ae = document.activeElement;
     if ((e.key === 'Enter' || e.key === ' ') && ae && ae.hasAttribute && ae.hasAttribute('data-lb')) { e.preventDefault(); ae.click(); return; }
-    if (e.key === 'Tab' && current) {               // focus trap inside the open panel
-      var panel = panelEl(current); if (!panel) return;
-      var f = Array.prototype.filter.call(panel.querySelectorAll('button,a[href],input,textarea,select,[tabindex]:not([tabindex="-1"])'), function (el) { return el.offsetParent !== null; });
-      if (!f.length) return;
-      var first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && ae === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && ae === last) { e.preventDefault(); first.focus(); }
-    }
   });
+
+  /* ===== CORE START (guaranteed, before enhancements) ===== */
+  document.body.classList.add('ready');
 
   /* ===== DRAWER ===== */
   var drawer = document.getElementById('drawer');
@@ -371,13 +161,11 @@
   if (chatbotFab) {
     chatbotFab.addEventListener('click', function () {
       if (window.WBME_CHATBOT) { window.WBME_CHATBOT.toggle(); return; }
-      openPanel('contact', firstCard('contact'));   // fallback if the assistant script fails to load
+      window.location.href = 'contact.html';   // fallback if the assistant script fails to load
     });
   }
 
   /* hooks for the assistant (js/chatbot.js) */
-  window.WBME_OPEN_PANEL = openPanel;
-  window.WBME_FIRST_CARD = firstCard;
   window.WBME_MAIL = mailHref;
   window.WBME_EMAIL = EMAIL;
 
@@ -452,7 +240,9 @@
     }
     try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
-    var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
+    var heroBg = document.querySelector('.bg');
+    var heroBgUrl = heroBg && heroBg.style.backgroundImage ? heroBg.style.backgroundImage.replace(/^url\((['"]?)(.*)\1\)$/, '$2') : '';
+    var urls = [heroBgUrl].filter(Boolean); // wait only for the first visible hero image, if this page has one
     var total = urls.length + 1, loaded = 0, finished = false;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
@@ -470,24 +260,6 @@
       requestAnimationFrame(tick);
     })();
   })();
-
-  /* ===== MAGNETIC · CARD TILT ===== */
-  if (ENABLE_CARD_TILT && window.matchMedia('(hover:hover)').matches) {
-    railCards.forEach(function (el) {
-      el.addEventListener('mouseleave', function () { el.style.transform = ''; var im = el.querySelector('img'); if (im) im.style.transform = ''; });
-      el.addEventListener('mousemove', function (e) {
-        if (dragging) return;
-        var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-        el.style.transform = 'perspective(800px) rotateY(' + (px * 11) + 'deg) rotateX(' + (-py * 11) + 'deg) translateY(-8px)';
-        var im = el.querySelector('img'); if (im) im.style.transform = 'scale(1.12) translate(' + (px * -14) + 'px,' + (py * -14) + 'px)';
-      });
-    });
-    var mag = function (el, k) {
-      el.addEventListener('mousemove', function (e) { var r = el.getBoundingClientRect(); el.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * k) + 'px,' + ((e.clientY - r.top - r.height / 2) * k) + 'px)'; });
-      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
-    };
-    navA.forEach(function (a) { mag(a, 0.3); });
-  }
 
   /* ===== EMBERS ===== */
   (function embers () {
@@ -530,14 +302,4 @@
 
   } catch (err) { /* enhancements are optional — core experience already running */ }
 
-  /* ===== DEEP LINK ===== */
-  var initKey = location.hash ? location.hash.slice(1) : '';
-  if (initKey && panelEl(initKey)) {
-    current = initKey;
-    history.replaceState({ panel: initKey }, '', '#' + initKey);
-    (function waitReady () {                      // don't open behind the still-visible preloader
-      if (ready) { doOpen(initKey, firstCard(initKey)); return; }
-      setTimeout(waitReady, 80);
-    })();
-  }
 })();

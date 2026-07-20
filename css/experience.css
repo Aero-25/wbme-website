@@ -1431,3 +1431,31 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 /* repeat-navigation preloader: quick fade instead of the full gauge animation */
 .preloader.fast-skip{transition:opacity .2s ease}
 .preloader.fast-skip.done{opacity:0;pointer-events:none}
+
+/* ===========================================================
+   HOME — static hero copy + scroll teaser sections
+   =========================================================== */
+.stage .copy{position:absolute;left:48px;bottom:14vh;z-index:5;max-width:640px}
+.stage .copy .ey{font-family:'Archivo';font-weight:600;font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:16px}
+.stage .copy .ti{font-family:'Anton';font-size:clamp(3.6rem,10.5vw,10.5rem);line-height:.9;text-transform:uppercase;color:#fff}
+.stage .hero-actions{margin-top:34px;display:flex;align-items:center;gap:26px}
+.stage .stage-footer{opacity:.8}
+
+.home-section{position:relative;min-height:70vh;display:flex;align-items:center;padding:80px 48px}
+.home-section-rev{flex-direction:row-reverse}
+.hs-media{position:absolute;inset:-10% -5%;background-size:cover;background-position:center;z-index:0;filter:brightness(.55) saturate(.95)}
+.hs-copy{position:relative;z-index:1;max-width:560px;background:rgba(7,15,26,.42);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);padding:36px;border-radius:18px}
+.home-section-rev .hs-copy{margin-left:auto}
+.hs-copy h2{font-family:'Anton';text-transform:uppercase;font-size:clamp(1.8rem,3.4vw,2.8rem);line-height:1;margin:14px 0 18px;color:#fff}
+.hs-copy p{color:var(--text-body,#dbe2ec);margin-bottom:22px;max-width:52ch;line-height:1.7}
+
+.home-cta{text-align:center;padding:100px 24px;background:var(--panel)}
+.home-cta h2{font-family:'Anton';text-transform:uppercase;font-size:clamp(2rem,4vw,3.2rem);color:#fff;margin-bottom:16px}
+.home-cta p{color:var(--mut);max-width:48ch;margin:0 auto 30px}
+.home-cta .panel-cta{justify-content:center}
+
+@media(max-width:860px){
+  .stage .copy{left:22px;right:22px;bottom:16vh;max-width:none}
+  .home-section,.home-section-rev{flex-direction:column;padding:56px 22px;text-align:left}
+  .hs-copy{margin-left:0;max-width:none}
+}

@@ -34,11 +34,11 @@
     return h + '</span>';
   }
   var ACT = {
-    about:    ['Open About', 'panel', 'about'],
-    why:      ['Why WBME', 'panel', 'why'],
-    services: ['Open Services', 'panel', 'services'],
-    projects: ['See Projects', 'panel', 'projects'],
-    contact:  ['Open Contact', 'panel', 'contact'],
+    about:    ['Open About', 'link', 'about.html'],
+    why:      ['Why WBME', 'link', 'about.html#why-wbme'],
+    services: ['Open Services', 'link', 'services.html'],
+    projects: ['See Projects', 'link', 'projects.html'],
+    contact:  ['Open Contact', 'link', 'contact.html'],
     call:     ['Call ' + PHONE_DISPLAY, 'tel'],
     email:    ['Email us', 'mail', 'Enquiry - WBME website'],
     quote:    ['Request a quote', 'mail', 'Quote request - WBME'],
@@ -167,6 +167,7 @@
   var NAV_RE = /(?:open|show(?:\s+me)?|go\s+to|take\s+me\s+to|view|see)\s+(?:the\s+|your\s+)?(about|why|services?|projects?|contact|gallery|quote)/;
   var NAV_KEY = { about: 'about', why: 'why', service: 'services', services: 'services', project: 'projects', projects: 'projects', gallery: 'projects', contact: 'contact', quote: 'contact' };
   var PANEL_NAME = { about: 'About', why: 'Why WBME', services: 'Services', projects: 'Projects', contact: 'Contact' };
+  var NAV_URL = { about: 'about.html', why: 'about.html#why-wbme', services: 'services.html', projects: 'projects.html', contact: 'contact.html' };
 
   function think (q) {
     var text = norm(q), toks = tokens(q);
@@ -209,7 +210,7 @@
     if (r.nav) {
       typing(420, function () {
         addBot('Taking you to <b>' + PANEL_NAME[r.nav] + '</b>…');
-        setTimeout(function () { goPanel(r.nav); }, reduce ? 60 : 520);
+        setTimeout(function () { goLink(NAV_URL[r.nav]); }, reduce ? 60 : 520);
       });
       return;
     }
@@ -230,15 +231,12 @@
   }
 
   /* ===== actions (guide + open pages) ===== */
-  function goPanel (key) {
+  function goLink (url) {
     close();
-    if (window.WBME_OPEN_PANEL) {
-      var card = window.WBME_FIRST_CARD ? window.WBME_FIRST_CARD(key) : null;
-      window.WBME_OPEN_PANEL(key, card);
-    }
+    window.location.href = url;
   }
   function doAction (go, arg) {
-    if (go === 'panel') { goPanel(arg); return; }
+    if (go === 'link') { goLink(arg); return; }
     if (go === 'tel') { window.location.href = PHONE_TEL; return; }
     if (go === 'mail') { window.location.href = window.WBME_MAIL ? window.WBME_MAIL(arg || '') : '#'; return; }
     if (go === 'map') { window.open(MAPS_URL, '_blank', 'noopener'); }
