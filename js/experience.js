@@ -442,6 +442,15 @@
   (function preload () {
     var pre = document.getElementById('preloader'), ring = document.getElementById('plRing'), pct = document.getElementById('plPct');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
+    var SEEN_KEY = 'wbme_preloader_seen';
+    var seenBefore = false;
+    try { seenBefore = sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* sessionStorage unavailable (privacy mode) — fall back to full gauge */ }
+    if (seenBefore) {
+      pre.classList.add('fast-skip');
+      setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 220);
+      return;
+    }
+    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
     var urls = [cards[0] && cards[0].bg].filter(Boolean); // wait only for the first visible hero image, not all 8
     var total = urls.length + 1, loaded = 0, finished = false;

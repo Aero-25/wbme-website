@@ -1427,3 +1427,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 
 /* magnetic buttons: JS sets --tx/--ty on pointer devices only */
 .explore,.hero-call,.btn-lime,.nav-cta{transform:translate(var(--tx,0px),var(--ty,0px));transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s var(--ease-out),color .25s var(--ease-out),border-color .25s var(--ease-out)}
+
+/* repeat-navigation preloader: quick fade instead of the full gauge animation */
+.preloader.fast-skip{transition:opacity .2s ease}
+.preloader.fast-skip.done{opacity:0;pointer-events:none}
