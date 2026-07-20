@@ -69,7 +69,7 @@ img{display:block;max-width:100%}
 .explore:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}
 .hero-call{display:inline-flex;align-items:center;min-height:48px;padding:0 4px;font-family:'Archivo';font-weight:700;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);transition:color .22s var(--ease-out),transform .15s var(--ease-out)}
 .hero-call:hover{color:#fff}
-.hero-call:active{transform:scale(.97)}
+.hero-call:active{transform:translate(var(--tx,0px),var(--ty,0px)) scale(.97)}
 .copy .swap{opacity:1}
 .copy.first .swap{opacity:0;transform:translateY(16px);animation:rise .7s forwards}
 @keyframes rise{to{opacity:1;transform:none}}
@@ -407,7 +407,7 @@ body.ready .card.focus{opacity:1;transform:translateY(-14px) scale(1.02)}
 
 /* press feedback (scale-on-active) */
 .explore,.btn-lime{transition:background .25s var(--ease-out),color .25s var(--ease-out),transform .15s var(--ease-out),border-color .25s var(--ease-out)}
-.explore:active,.btn-lime:active{transform:scale(.97)}
+.explore:active,.btn-lime:active{transform:translate(var(--tx,0px),var(--ty,0px)) scale(.97)}
 .panel-close:active{transform:scale(.94)}
 
 /* scatter: rail + hero chrome recede as a panel opens */
@@ -1034,7 +1034,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   border-color:var(--gold-lt);
   color:var(--ink);
   box-shadow:0 14px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.4);
-  transform:translateY(-2px);
+  transform:translate(var(--tx,0px),calc(var(--ty,0px) - 2px));
 }
 
 /* ---- ghost buttons: glass fill, white border, brass on hover ---- */
@@ -1206,7 +1206,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   padding:14px 28px;font-weight:700;
 }
 .panel .explore:before,.panel-body .explore:before{content:none}
-.panel .explore:hover,.panel-body .explore:hover{background:var(--gold-lt);border-color:var(--gold-lt);transform:none;box-shadow:none}
+.panel .explore:hover,.panel-body .explore:hover{background:var(--gold-lt);border-color:var(--gold-lt);transform:translate(var(--tx,0px),var(--ty,0px));box-shadow:none}
 .panel .hero-call,.panel-body .hero-call{
   background:none;border:1px solid rgba(255,255,255,.24);border-radius:8px;
   -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
