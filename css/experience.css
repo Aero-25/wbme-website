@@ -104,7 +104,7 @@ img{display:block;max-width:100%}
 .panel.open{opacity:1;visibility:visible}
 .panel-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
 .panel-hero{position:relative;min-height:280px;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:40px 44px}
-.panel-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--ink) 2%,rgba(12,23,38,.3) 50%,rgba(12,23,38,.5))}
+.panel-hero:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,var(--ink) 2%,rgba(12,23,38,.3) 50%,rgba(12,23,38,.5))}
 .panel-hero .in{position:relative;z-index:2;max-width:760px}
 .panel-hero .ey{font-family:'Archivo';font-weight:600;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:10px}
 .panel-hero .ti{font-family:'Anton';font-size:clamp(2.6rem,6vw,5rem);line-height:.92;text-transform:uppercase}
@@ -535,7 +535,7 @@ body.locked .copy,body.locked .prog,body.locked .count,body.locked .hint,body.lo
 }
 .hdr .brand::before{display:none}
 .hdr .brand-logo{display:block;width:clamp(280px,26vw,440px);aspect-ratio:4.2/1;object-fit:cover;object-position:center;border-radius:0;background:transparent;box-shadow:none;filter:none}
-.hdr .nav,.hdr-phone{display:none!important}
+.hdr .nav,.hdr .hdr-phone{display:none!important}
 .hdr .brand:focus-visible{outline:3px solid var(--gold-lt);outline-offset:4px;border-radius:12px}
 
 /* burger: hidden on desktop, frosted glass trigger on mobile */
@@ -869,6 +869,7 @@ body.ready .panel-hero:before{animation:panelHeroLight .78s cubic-bezier(.22,1,.
 @media(prefers-reduced-motion:reduce){
   .morph,.morph:before,.panel,.panel.open.shown::after,
   .panel.open.shown .panel-hero .ey,.panel.open.shown .panel-hero .ti,.panel.open.shown .panel-hero:before,
+  body.ready .panel-hero .ey,body.ready .panel-hero .ti,body.ready .panel-hero:before,
   .panel.open .svc,.panel.open .ind,.panel.open .ready-card,
   .panel.open .std-list li,.panel.open .checklist li,.panel.open .info .row{
     animation:none!important;filter:none!important;
@@ -1376,7 +1377,8 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   background:rgba(7,26,51,.86);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
   box-shadow:0 8px 26px rgba(0,0,0,.35);padding:14px 40px;
 }
-.site-hdr .brand{display:inline-flex;align-items:center;gap:10px;min-width:0}
+.site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:0}
+.site-hdr .brand::before{display:none}
 .site-hdr .brand-logo{display:block;width:clamp(160px,14vw,220px);aspect-ratio:4.2/1;object-fit:cover;object-position:center}
 .site-nav{display:flex;align-items:center;gap:30px}
 .site-nav a{font-family:'Archivo';font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:#dfe5ee;opacity:.82;transition:opacity .2s var(--ease-out),color .2s var(--ease-out);position:relative}
@@ -1418,3 +1420,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 /* page-hero: a shorter version of the full-viewport home hero, used on About/Services/Projects/Contact */
 .page-hero{min-height:56vh}
 @media(max-width:720px){.page-hero{min-height:44vh}}
+
+/* hero-bg: dedicated parallax/background layer, kept separate from the
+   foreground .in text so the parallax transform never touches the heading */
+.hero-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;will-change:transform}
