@@ -3,141 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — Walvis Bay Marine Engineering</title>
-<meta name="description" content="The WBME story — established by the late Mr. Uwe Crüys in 1999. Marine & metal engineering built on craftsmanship, character and a commitment to going the extra mile.">
+<title>About WBME | Walvis Bay Marine Engineering</title>
+<meta name="description" content="Established in 1999, Walvis Bay Marine Engineering (WBME) delivers ship repair, fabrication and precision engineering across Namibia's marine, mining and industrial sectors.">
+<meta property="og:title" content="About Walvis Bay Marine Engineering">
+<meta property="og:description" content="25 years of service excellence in marine engineering, ship repair and metal work. No job too big, no job too small.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/wbme%20photos%20for%20web%202026/Pics%20for%20T/Propulsion/CPP%20complete%20refit%202.jpg?width=1200&quality=75&resize=cover">
 <link rel="icon" type="image/png" sizes="128x128" href="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=128&height=128&resize=contain&quality=90">
+<link rel="preconnect" href="https://kbmgpqwmgthswjkfmqfe.supabase.co" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/experience.css?v=79">
 </head>
-<body>
+<body data-page="about">
 
-<div class="drawer" id="drawer">
-  <div class="top">
-    <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-    <button class="close" data-close aria-label="Close menu">&times;</button>
-  </div>
-  <a href="index.html">Home</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-  <div class="dr-foot"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><a href="#">Mon–Fri 07:00–17:00 · Sun on request</a></div>
-</div>
-
-<header class="site-header">
-  <div class="wrap bar">
-    <a href="index.html" class="logo"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></a>
-    <nav class="menu"><a href="index.html">Home</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html" class="on">About</a><a href="contact.html">Contact</a></nav>
-    <div class="hd-right">
-      <div class="hd-phone">+264 (0)64 285 700<span>Mon–Fri 07:00–17:00 · Sun on request</span></div>
-      <a href="contact.html" class="btn btn-lime">Get a Quote</a>
-      <button class="burger" data-burger aria-label="Open menu"><span></span><span></span><span></span></button>
+<div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
+  <div class="pl-inner">
+    <div class="pl-gauge">
+      <div class="pl-ticks" aria-hidden="true"></div>
+      <div class="pl-ring" id="plRing" aria-hidden="true"></div>
+      <div class="pl-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=220&height=220&resize=contain&quality=90" alt=""></div>
     </div>
+    <div class="pl-pct" id="plPct" aria-hidden="true">0%</div>
+    <div class="pl-word">
+      <div class="pl-logo">WBME</div>
+      <div class="pl-sub">Marine Engineering &middot; Walvis Bay</div>
+    </div>
+  </div>
+</div>
+<div class="grain"></div>
+<div class="scroll-progress" id="scrollProgress"><i></i></div>
+
+<header class="site-hdr" id="siteHeader">
+  <a class="brand" href="index.html" aria-label="Walvis Bay Marine Engineering home"><img class="brand-logo" src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90" alt="WBME"></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+  </nav>
+  <div class="hdr-actions">
+    <a class="hdr-phone" href="tel:+26464285700">+264 (0)64 285 700</a>
+    <a class="nav-cta" href="contact.html">Request a quote</a>
   </div>
 </header>
+<button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
 
-<!-- BANNER -->
-<section class="banner">
-  <div class="wrap">
-    <div class="banner-card">
-      <div class="banner-bg" style="background-image:url('images/bg1.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg"></div>
-      <div class="banner-inner">
-        <span class="eyebrow" style="color:#e3c372">About WBME</span>
-        <h1>Engineering you can trust</h1>
-        <div class="crumb"><a href="index.html">Home</a> &nbsp;/&nbsp; <span class="lime">About</span></div>
-      </div>
-    </div>
-  </div>
+<main>
+<section class="panel-hero page-hero" data-parallax="0.18" style="background-image:url('images/1.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg">
+  <div class="in"><div class="ey">Est. 1999 &middot; Walvis Bay</div><h1 class="ti">About Us</h1></div>
 </section>
-
-<!-- STORY -->
-<section class="about">
-  <div class="wrap about-grid">
-    <div class="about-media rv"><img src="images/uwe_cruys_img.gif" alt="Founder Mr. Uwe Crüys">
-      <div class="badge"><span>1999</span><small>FOUNDED</small></div>
+<div class="panel-body">
+  <p class="lead-statement p-rv">Established in Walvis Bay and trusted across the marine yard, WBME delivers ship repair, fabrication and precision engineering with the same founder-led ethic: <span>No job too big, no job too small.</span></p>
+  <div class="lead-row p-rv">
+    <div>
+      <span class="eyebrow">Our story</span>
+      <h3>Built on craftsmanship &amp; character</h3>
+      <p>Walvis Bay Marine Engineering was established by the late Mr. Uwe Cr&uuml;ys in 1999 and registered in October 2000. The company was built as a well-established workshop offering high standards of workmanship to vessels, mines and industrial clients around Walvis Bay.</p>
+      <p>From Mr. Cr&uuml;ys' example came the ethic that still runs every job: value the customer, value the person, protect the relationship and take pride in the small things that keep expensive equipment working.</p>
+      <div class="verse">"I can do all things through Christ Jesus who strengthens me." Philippians 4:13</div>
     </div>
-    <div class="rv" data-d="1">
-      <span class="eyebrow">Our Story</span>
-      <h2>Built on craftsmanship &amp; character</h2>
-      <p>Walvis Bay Marine Engineering was initially established by the late owner, Mr. Uwe Crüys, in the latter part of 1999, and officially registered in October 2000. We are a well-established company offering high standards of workmanship.</p>
-      <p>From his example of never saying no to anyone in need — technical, personal or social — always stretching himself to meet the need, together with the company's belief in the Lord Jesus Christ, came our motto.</p>
-      <div class="verse">"I can do all things through Christ Jesus who strengthens me." — Philippians 4:13</div>
-      <p style="font-family:'Plus Jakarta Sans';font-weight:700;color:var(--ink)">"No job too big, no job too small."</p>
+    <figure class="founder"><div class="media"><img src="images/uwe_cruys_img.gif" alt="Founder, the late Mr. Uwe Cr&uuml;ys"></div><figcaption>Mr. Uwe Cr&uuml;ys &middot; Founder</figcaption></figure>
+  </div>
+  <div class="statline p-rv">
+    <div><div class="n" data-count="25" data-suffix="+">0</div><div class="l">Years of service</div></div>
+    <div><div class="n">6</div><div class="l">Core disciplines</div></div>
+    <div><div class="n">1999</div><div class="l">Established</div></div>
+    <div><div class="n">100%</div><div class="l">Commitment</div></div>
+  </div>
+  <div class="standard p-rv stagger">
+    <span class="eyebrow">The standard we hold</span>
+    <ul class="std-list">
+      <li class="p-rv"><b>Highest quality service.</b> Workmanship held to a high standard at competitive prices.</li>
+      <li class="p-rv"><b>On time, on budget.</b> Engineering results planned around your time frame and budget.</li>
+      <li class="p-rv"><b>Practical solutions.</b> Repairs, renewals and new work shaped to reduce total job cost.</li>
+      <li class="p-rv"><b>Real experience.</b> Field knowledge across ship repair, fabrication, machining and pipe work.</li>
+    </ul>
+  </div>
+  <div class="standard p-rv stagger">
+    <span class="eyebrow">Who we serve</span>
+    <div class="ind-grid">
+      <div class="ind p-rv"><div class="nu">SEA</div><div><b>Fishing &amp; Seafood</b><span>Vessel repair, refits and on-season turnarounds.</span></div></div>
+      <div class="ind p-rv"><div class="nu">SHP</div><div><b>Shipping &amp; Cargo</b><span>Ship repair, structural steel and maintenance.</span></div></div>
+      <div class="ind p-rv"><div class="nu">MIN</div><div><b>Mining &amp; Minerals</b><span>Fabrication, machining and plant components.</span></div></div>
+      <div class="ind p-rv"><div class="nu">OFF</div><div><b>Offshore &amp; Energy</b><span>Rigging, pipework and specialist welding.</span></div></div>
+      <div class="ind p-rv"><div class="nu">PORT</div><div><b>Ports &amp; Harbour</b><span>Structural works, repairs and new builds.</span></div></div>
+      <div class="ind p-rv"><div class="nu">GEN</div><div><b>General Industry</b><span>One-offs, jigs and bespoke metal engineering.</span></div></div>
     </div>
   </div>
-</section>
+  <div class="about-video p-rv">
+    <video controls playsinline preload="metadata">
+      <source src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/WBME%20Propulsionl%20short%20Edit%20720p.mp4" type="video/mp4">
+    </video>
+    <div class="about-video-caption"><b>WBME in action</b><span>A short look at propulsion work from the yard.</span></div>
+  </div>
 
-<!-- VIDEO -->
-<section class="about about-video-section">
-  <div class="wrap">
-    <div class="about-video rv">
-      <video controls playsinline preload="metadata" poster="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/wbme%20photos%20for%20web%202026/Pics%20for%20T/Propulsion/CPP%20complete%20refit%202.jpg?width=1200&quality=75&resize=cover" aria-label="WBME propulsion work video">
-        <source src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/WBME%20Propulsionl%20short%20Edit%20720p.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <div class="about-video-caption">
-        <b>Propulsion work</b>
-        <span>Short edit from WBME workshop and vessel work.</span>
-      </div>
+  <div class="panel-intro p-rv"><span class="eyebrow">What sets us apart</span><h3>Why WBME</h3><p>Guided by the motto "No job too big, and no job too small," WBME approaches each project with skilled workmanship, safety-first planning and care for long-term customer relationships.</p></div>
+  <div class="svc-grid p-rv stagger">
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">QC</span></div><h4>Quality &amp; value</h4><p>High standards of workmanship delivered at competitive prices and checked against practical job requirements.</p></div>
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">TEAM</span></div><h4>Skilled professionals</h4><p>Tradesmen supported by professional engineers and consultants where historical or specialist knowledge matters.</p></div>
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">TRUST</span></div><h4>Reputation for excellence</h4><p>More than 25 years serving the local marine industry, plus expanding industrial and mining work.</p></div>
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">LINK</span></div><h4>Partnership building</h4><p>Customers are treated as long-term relationships, not once-off tickets through the workshop.</p></div>
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">SAFE</span></div><h4>Safety-first culture</h4><p>Every job is planned and carried out to a clear safety frame, with work checked and finished to a consistent standard.</p></div>
+    <div class="svc p-rv"><div class="ic"><span class="num-badge">RDY</span></div><h4>Ready &amp; responsive</h4><p>When a vessel is in dock or a plant component fails, WBME brings the right hands and backup fast.</p></div>
+  </div>
+
+  <div class="panel-cta p-rv"><a class="explore" href="#" data-mail>Request a quote &rarr;</a><a class="hero-call" href="tel:+26464285700">Call WBME</a></div>
+</div>
+</main>
+
+<footer class="site-footer">
+  <div class="sf-top">
+    <a class="sf-brand" href="index.html">WB<b>ME</b></a>
+    <nav class="sf-links" aria-label="Footer">
+      <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+    </nav>
+    <div class="sf-contact">
+      <a href="tel:+26464285700">+264 (0)64 285 700</a>
+      <a href="#" data-mail data-mail-text>Loading&hellip;</a>
+      <span>8th Street East, Industrial Area, Walvis Bay</span>
     </div>
   </div>
-</section>
-
-<!-- MISSION / VALUES -->
-<section>
-  <div class="wrap">
-    <div class="why rv">
-      <div class="top">
-        <div><span class="eyebrow" style="color:#e3c372">Our Mission</span><h2 style="margin-top:14px">What we set out to do, every job</h2></div>
-        <p class="lead">We esteem the customer, the person and the relationship. We go the extra mile.</p>
-      </div>
-      <div class="why-grid">
-        <div class="it"><div class="n">01</div><h4>Highest quality</h4><p>Provide the highest quality of service at competitive prices.</p></div>
-        <div class="it"><div class="n">02</div><h4>On schedule</h4><p>Deliver engineering results on schedule and within budget.</p></div>
-        <div class="it"><div class="n">03</div><h4>Practical solutions</h4><p>Offer innovative, practical solutions to reduce overall project cost.</p></div>
-        <div class="it"><div class="n">04</div><h4>Field experience</h4><p>Use our extensive field experience to expand your equipment's capability.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<section class="about" style="padding-top:0">
-  <div class="wrap">
-    <div class="hero-cards rv" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:18px">
-      <div class="hc-text" style="background:#fff;border:1px solid var(--line);color:var(--ink)"><div class="hc-stats"><div><div class="n" data-count="25" data-suffix="+">0</div><div class="l" style="color:var(--mut)">Years of service</div></div></div></div>
-      <div class="hc-text" style="background:#fff;border:1px solid var(--line);color:var(--ink)"><div class="hc-stats"><div><div class="n">6</div><div class="l" style="color:var(--mut)">Core disciplines</div></div></div></div>
-      <div class="hc-text" style="background:#fff;border:1px solid var(--line);color:var(--ink)"><div class="hc-stats"><div><div class="n">1999</div><div class="l" style="color:var(--mut)">Established</div></div></div></div>
-      <div class="hc-text" style="background:#fff;border:1px solid var(--line);color:var(--ink)"><div class="hc-stats"><div><div class="n">100%</div><div class="l" style="color:var(--mut)">Commitment</div></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="cta-card rv">
-      <h2>Let's work together</h2>
-      <p>Ship repair, fabrication or precision machining — we'd be glad to help. Get in touch for a quote.</p>
-      <a href="contact.html" class="btn btn-dark">Request a Quote →</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="col">
-        <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-        <p>Ship repair, fabrication &amp; precision engineering for the marine and mining industries. Walvis Bay, Namibia.</p>
-      </div>
-      <div class="col"><h4>Visit</h4><p>8th Street East<br>Industrial Area<br>Walvis Bay, Namibia</p></div>
-      <div class="col"><h4>Contact</h4><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><a href="#">Mon–Fri 07:00–17:00 · Sun on request</a></div>
-      <div class="col"><h4>Pages</h4><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
-    </div>
-    <div class="foot-bot"><span>© <span id="year">2026</span> Walvis Bay Marine Engineering</span><span>No job too big · No job too small</span></div>
-  </div>
+  <div class="sf-bottom">&copy; 2026 Walvis Bay Marine Engineering &middot; No job too big, no job too small.</div>
 </footer>
 
-<script src="js/bucket-assets.js?v=41"></script>
-<script src="js/main.js"></script>
+<div class="drawer" id="drawer">
+  <div class="top"><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
+  <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+  <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail data-mail-text>Email</a><span>8th Street East, Walvis Bay</span></div>
+</div>
+
+<button class="chatbot-fab" id="chatbotFab" type="button" aria-label="Chat with the WBME assistant" aria-expanded="false">
+  <span class="chatbot-ring" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=96&height=96&resize=contain&quality=85" alt=""></span>
+</button>
+<div class="chatbot" id="chatbot" role="dialog" aria-label="WBME assistant" aria-hidden="true">
+  <div class="cb-head">
+    <span class="cb-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=96&height=96&resize=contain&quality=85" alt=""></span>
+    <div class="cb-id"><b>WBME Assistant</b><span>Walvis Bay Marine Engineering</span></div>
+    <button class="cb-x" id="chatbotClose" type="button" aria-label="Close assistant">&times;</button>
+  </div>
+  <div class="cb-log" id="cbLog" aria-live="polite"></div>
+  <div class="cb-chips" id="cbChips" aria-label="Suggested questions"></div>
+  <form class="cb-bar" id="cbForm" novalidate>
+    <input id="cbInput" type="text" placeholder="Ask about services, quotes, hours&hellip;" autocomplete="off" maxlength="300" aria-label="Message the WBME assistant">
+    <button type="submit" aria-label="Send message">&#10148;</button>
+  </form>
+</div>
+
+<script src="js/bucket-assets.js?v=43"></script>
+<script src="js/experience.js?v=60"></script>
+<script src="js/glass-fx.js?v=2"></script>
+<script src="js/chatbot.js?v=2"></script>
 </body>
 </html>

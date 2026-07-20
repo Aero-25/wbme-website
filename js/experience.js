@@ -4,6 +4,91 @@
   (function () { var l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://kbmgpqwmgthswjkfmqfe.supabase.co'; l.crossOrigin = ''; document.head.appendChild(l); })();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ENABLE_CARD_TILT = false;
+
+  /* ===== SCROLL REVEAL (IntersectionObserver-driven .p-rv) ===== */
+  function initScrollReveal () {
+    var els = document.querySelectorAll('.p-rv');
+    if (!els.length) return;
+    if (reduce) { els.forEach(function (el) { el.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ===== PARALLAX DRIFT (transform-based, not scroll-jacking) ===== */
+  var parallaxEls = [], parallaxTicking = false;
+  function initParallax () {
+    parallaxEls = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
+    if (!parallaxEls.length || reduce) return;
+    window.addEventListener('scroll', onParallaxScroll, { passive: true });
+    onParallaxScroll();
+  }
+  function onParallaxScroll () {
+    if (parallaxTicking) return;
+    parallaxTicking = true;
+    requestAnimationFrame(function () {
+      var vh = window.innerHeight;
+      parallaxEls.forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        var speed = parseFloat(el.getAttribute('data-parallax')) || 0.2;
+        var offset = (rect.top - vh / 2) * speed * -1;
+        el.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0) scale(1.12)';
+      });
+      parallaxTicking = false;
+    });
+  }
+
+  /* ===== HEADER SCROLL STATE ===== */
+  function initHeaderScrollState () {
+    var hdr = document.querySelector('.site-hdr');
+    if (!hdr) return;
+    function update () { hdr.classList.toggle('scrolled', window.scrollY > 40); }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  /* ===== ACTIVE NAV (current page, not scroll-spy — this is a multi-page site) ===== */
+  function markActiveNav () {
+    var path = (location.pathname.split('/').pop() || 'index.html');
+    document.querySelectorAll('.site-nav a[href],.drawer a[href]').forEach(function (a) {
+      var href = a.getAttribute('href').split('/').pop();
+      if (href === path) a.classList.add('active');
+    });
+  }
+
+  /* ===== SCROLL PROGRESS BAR ===== */
+  function initScrollProgress () {
+    var bar = document.getElementById('scrollProgress');
+    if (!bar) return;
+    var fill = bar.querySelector('i');
+    function update () {
+      var h = document.documentElement;
+      var scrollTop = h.scrollTop || document.body.scrollTop;
+      var height = h.scrollHeight - h.clientHeight;
+      var pct = height > 0 ? scrollTop / height : 0;
+      fill.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  /* ===== SCROLL-TRIGGERED COUNTERS (data-count) ===== */
+  function initScrollCounters () {
+    var els = document.querySelectorAll('[data-count]');
+    if (!els.length) return;
+    function run (el) {
+      var to = +el.dataset.count, sf = el.dataset.suffix || '', c = 0, st = Math.max(1, Math.ceil(to / 26));
+      if (reduce) { el.textContent = to + sf; return; }
+      var t = setInterval(function () { c += st; if (c >= to) { c = to; clearInterval(t); } el.textContent = c + sf; }, 26);
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { if (entry.isIntersecting) { run(entry.target); io.unobserve(entry.target); } });
+    }, { threshold: 0.4 });
+    els.forEach(function (el) { io.observe(el); });
+  }
   var ENABLE_EMBERS = false;
   var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
   var EMAIL = ['info', 'wbme.com.na'].join('@'); // built at runtime so the address isn't scrapable from page source
@@ -49,9 +134,10 @@
   }
   ensureBg(0);
 
-  /* build looping rail (3x duplicated) */
+  /* build looping rail (3x duplicated) — only on pages that have the rail (old Home, until Task 7) */
   var REPEAT = 2, railCards = [];
   (function build () {
+    if (!rail) return;
     var html = '';
     for (var k = 0; k < N * REPEAT; k++) {
       var c = cards[k % N];
@@ -125,11 +211,13 @@
 
   /* ===== CORE START (guaranteed, before enhancements) ===== */
   document.body.classList.add('ready');
-  if (progB) progB.style.width = (100 / N) + '%';
-  if (copy) copy.classList.add('first');
-  setVisual(0);
-  setTimeout(function () { if (copy) copy.classList.remove('first'); }, 900);
-  requestAnimationFrame(loop);
+  if (rail) {
+    if (progB) progB.style.width = (100 / N) + '%';
+    if (copy) copy.classList.add('first');
+    setVisual(0);
+    setTimeout(function () { if (copy) copy.classList.remove('first'); }, 900);
+    requestAnimationFrame(loop);
+  }
 
   /* ===== GRAB TO SCROLL (mouse + touch) with momentum ===== */
   if (railWrap) {
@@ -231,10 +319,11 @@
   });
 
   document.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', closePanel); });
-  backdrop.addEventListener('click', closePanel);
+  if (backdrop) backdrop.addEventListener('click', closePanel);
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    if (document.getElementById('lightbox').classList.contains('open')) return closeLb();
+    var lbEl = document.getElementById('lightbox');
+    if (lbEl && lbEl.classList.contains('open')) return closeLb();
     if (drawer.classList.contains('open')) return closeDrawer();
     if (current) closePanel();
   });
@@ -264,6 +353,14 @@
     a.addEventListener('keydown', keyActivate);
   });
 
+  /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
+  initScrollReveal();
+  initParallax();
+  initHeaderScrollState();
+  markActiveNav();
+  initScrollProgress();
+  initScrollCounters();
+
   var chatbotFab = document.getElementById('chatbotFab');
   if (chatbotFab) {
     chatbotFab.addEventListener('click', function () {
@@ -279,7 +376,7 @@
   window.WBME_EMAIL = EMAIL;
 
   /* ===== LIGHTBOX ===== */
-  var lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
+  var lb = document.getElementById('lightbox'), lbImg = lb ? lb.querySelector('img') : null, lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
   function refreshThumbs () { gThumbs = Array.prototype.slice.call(document.querySelectorAll('[data-lb]')); }
   function showLb (i) {
     gIdx = (i + gThumbs.length) % gThumbs.length;
@@ -288,15 +385,17 @@
     if (lbCaption) lbCaption.textContent = gThumbs[gIdx].getAttribute('data-caption') || lbImg.alt;
   }
   function openLb (i) { refreshThumbs(); showLb(i); lb.classList.add('open'); }
-  function closeLb () { lb.classList.remove('open'); }
+  function closeLb () { if (lb) lb.classList.remove('open'); }
   document.addEventListener('click', function (e) {
     var g = e.target.closest && e.target.closest('[data-lb]');
     if (g) { refreshThumbs(); openLb(gThumbs.indexOf(g)); }
   });
-  lb.querySelector('.lc').addEventListener('click', closeLb);
-  lb.querySelector('.lp').addEventListener('click', function () { showLb(gIdx - 1); });
-  lb.querySelector('.lnx').addEventListener('click', function () { showLb(gIdx + 1); });
-  lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+  if (lb) {
+    lb.querySelector('.lc').addEventListener('click', closeLb);
+    lb.querySelector('.lp').addEventListener('click', function () { showLb(gIdx - 1); });
+    lb.querySelector('.lnx').addEventListener('click', function () { showLb(gIdx + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+  }
 
   /* ===== CONTACT FORM ===== */
   // To send enquiries in-page: create a form at https://formspree.io (send to the address in EMAIL above)
