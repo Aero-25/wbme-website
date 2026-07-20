@@ -77,7 +77,13 @@
 
   /* ===== SCROLL-TRIGGERED COUNTERS (data-count) ===== */
   function initScrollCounters () {
-    var els = document.querySelectorAll('[data-count]');
+    // exclude counters that live inside the old rail-loop panels (index.html) — those are
+    // owned exclusively by showPanelContent()'s own count-up, which fires on panel open and
+    // would otherwise be restarted from 0 by this observer once the panel's internal scroll
+    // container brings the element into view.
+    var els = Array.prototype.filter.call(document.querySelectorAll('[data-count]'), function (el) {
+      return !el.closest('.panel');
+    });
     if (!els.length) return;
     function run (el) {
       var to = +el.dataset.count, sf = el.dataset.suffix || '', c = 0, st = Math.max(1, Math.ceil(to / 26));
