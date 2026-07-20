@@ -140,7 +140,7 @@
   var drawer = document.getElementById('drawer');
   var burgerBtn = document.getElementById('burger');
   function openDrawer () { drawer.classList.add('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'true'); lock(); }
-  function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); if (!current) unlock(); }
+  function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); unlock(); }
   if (burgerBtn) burgerBtn.addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
   drawer.querySelectorAll('a[data-key]').forEach(function (a) {
