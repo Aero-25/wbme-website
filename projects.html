@@ -3,107 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects — Walvis Bay Marine Engineering</title>
-<meta name="description" content="A gallery of WBME's marine engineering work — dry-dock repairs, machining, fabrication, pipe works and welding in Walvis Bay, Namibia.">
+<title>Projects | Walvis Bay Marine Engineering</title>
+<meta name="description" content="A look at real WBME workshop proof — ship repair, machining, fabrication, boiler making and more, from the Walvis Bay yard.">
+<meta property="og:title" content="Projects | Walvis Bay Marine Engineering">
+<meta property="og:description" content="A look at real WBME workshop proof — ship repair, machining, fabrication, boiler making and more, from the Walvis Bay yard.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/wbme%20photos%20for%20web%202026/Remove%20and%20fit%20new%20vessel%20kort%20nozzel%20change%20shaft%20from%20cpp%20to%20fixed/1.jpg?width=1200&quality=75&resize=cover">
 <link rel="icon" type="image/png" sizes="128x128" href="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=128&height=128&resize=contain&quality=90">
+<link rel="preconnect" href="https://kbmgpqwmgthswjkfmqfe.supabase.co" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/experience.css?v=79">
 </head>
-<body>
+<body data-page="projects">
 
-<div class="drawer" id="drawer">
-  <div class="top">
-    <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-    <button class="close" data-close aria-label="Close menu">&times;</button>
-  </div>
-  <a href="index.html">Home</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-  <div class="dr-foot"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><a href="#">Mon–Fri 07:00–17:00 · Sun on request</a></div>
-</div>
-
-<header class="site-header">
-  <div class="wrap bar">
-    <a href="index.html" class="logo"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></a>
-    <nav class="menu"><a href="index.html">Home</a><a href="services.html">Services</a><a href="projects.html" class="on">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
-    <div class="hd-right">
-      <div class="hd-phone">+264 (0)64 285 700<span>Mon–Fri 07:00–17:00 · Sun on request</span></div>
-      <a href="contact.html" class="btn btn-lime">Get a Quote</a>
-      <button class="burger" data-burger aria-label="Open menu"><span></span><span></span><span></span></button>
+<div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
+  <div class="pl-inner">
+    <div class="pl-gauge">
+      <div class="pl-ticks" aria-hidden="true"></div>
+      <div class="pl-ring" id="plRing" aria-hidden="true"></div>
+      <div class="pl-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=220&height=220&resize=contain&quality=90" alt=""></div>
     </div>
+    <div class="pl-pct" id="plPct" aria-hidden="true">0%</div>
+    <div class="pl-word">
+      <div class="pl-logo">WBME</div>
+      <div class="pl-sub">Marine Engineering &middot; Walvis Bay</div>
+    </div>
+  </div>
+</div>
+<div class="grain"></div>
+<div class="scroll-progress" id="scrollProgress"><i></i></div>
+
+<header class="site-hdr" id="siteHeader">
+  <a class="brand" href="index.html" aria-label="Walvis Bay Marine Engineering home"><img class="brand-logo" src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90" alt="WBME"></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+  </nav>
+  <div class="hdr-actions">
+    <a class="hdr-phone" href="tel:+26464285700">+264 (0)64 285 700</a>
+    <a class="nav-cta" href="contact.html">Request a quote</a>
   </div>
 </header>
+<button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
 
-<!-- BANNER -->
-<section class="banner">
-  <div class="wrap">
-    <div class="banner-card">
-      <div class="banner-bg" style="background-image:url('images/1.jpg')" data-bucket-bg="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg"></div>
-      <div class="banner-inner">
-        <span class="eyebrow" style="color:#e3c372">Our Work</span>
-        <h1>Engineering in action</h1>
-        <div class="crumb"><a href="index.html">Home</a> &nbsp;/&nbsp; <span class="lime">Projects</span></div>
-      </div>
+<main>
+<section class="panel-hero page-hero">
+  <div class="hero-bg" data-parallax="0.18" style="background-image:url('images/2.jpg')" data-bucket-bg="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg"></div>
+  <div class="in"><div class="ey">From the yard</div><h1 class="ti">Projects</h1></div>
+</section>
+<div class="panel-body">
+  <div class="panel-intro p-rv"><span class="eyebrow">Workshop proof</span><h3>Featured work from the yard</h3><p>A fast look at the kind of heavy, practical work WBME handles.</p></div>
+  <div class="featured-work p-rv stagger" aria-label="Featured WBME project examples">
+    <article class="work-card p-rv">
+      <img src="images/1.jpg" data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg" alt="Kort nozzle and propeller shaft conversion work">
+      <div><span>Ship repair</span><h4>Kort nozzle &amp; shaft conversion</h4><p>Removal and refit work changing a vessel from CPP to fixed shaft configuration.</p></div>
+    </article>
+    <article class="work-card p-rv">
+      <img src="images/2.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Machining/Machining of new seal liners.jpg" alt="Machining new seal liners">
+      <div><span>Machining</span><h4>New seal liners</h4><p>Precision fitting and turning for replacement components prepared for installation.</p></div>
+    </article>
+    <article class="work-card p-rv">
+      <img src="images/3.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 1.jpg" alt="Stainless steel tank fabrication">
+      <div><span>Fabrication</span><h4>Stainless steel tank</h4><p>Custom steel fabrication, preparation and finish work for marine and industrial use.</p></div>
+    </article>
+    <article class="work-card p-rv">
+      <img src="images/4.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg" alt="Bottom hull plate replacement">
+      <div><span>Boiler making</span><h4>Hull plate replacement</h4><p>Structural renewal work for hull, deck and vessel steel repairs.</p></div>
+    </article>
+  </div>
+  <div class="feed-intro p-rv"><span class="eyebrow">More from the yard</span><h3>Photo gallery</h3></div>
+  <div class="gal p-rv stagger" aria-label="WBME project photo gallery">
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: CPP propeller refit" data-bucket-lb="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg" data-caption="CPP propeller refit">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg" alt="CPP propeller refit"><span class="cap">CPP propeller refit</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Propulsion overhaul" data-bucket-lb="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg" data-caption="Propulsion overhaul">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg" alt="Propulsion overhaul"><span class="cap">Propulsion overhaul</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/12.jpg" data-caption="New ship's rudder">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/12.jpg" alt="New ship's rudder"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Sea water inlet strainer" data-bucket-lb="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg" data-caption="Sea water inlet strainer">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg" alt="Sea water inlet strainer"><span class="cap">Sea water inlet strainer</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New Thordon bushes" data-bucket-lb="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg" data-caption="New Thordon bushes">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg" alt="New Thordon bushes"><span class="cap">New Thordon bushes</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Propeller shaft bushes and stuffing box" data-bucket-lb="wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg" data-caption="Propeller shaft bushes &amp; stuffing box">
+      <img data-bucket-src="wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/20240807_110555.jpg" alt="Propeller shaft bushes and stuffing box"><span class="cap">Shaft bushes &amp; stuffing box</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 1" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/1.jpg" data-caption="New ship's rudder — 1">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/1.jpg" alt="New ship's rudder, photo 1"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 4" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/4.jpg" data-caption="New ship's rudder — 4">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/4.jpg" alt="New ship's rudder, photo 4"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 6" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/6.jpg" data-caption="New ship's rudder — 6">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/6.jpg" alt="New ship's rudder, photo 6"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 8" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/8.jpg" data-caption="New ship's rudder — 8">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/8.jpg" alt="New ship's rudder, photo 8"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 11" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/11.jpg" data-caption="New ship's rudder — 11">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/11.jpg" alt="New ship's rudder, photo 11"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: New ship's rudder, photo 21" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/21.jpg" data-caption="New ship's rudder — 21">
+      <img data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/21.jpg" alt="New ship's rudder, photo 21"><span class="cap">New ship's rudder</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 2" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/2.jpg" data-caption="Kort nozzle &amp; shaft conversion — 2">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/2.jpg" alt="Kort nozzle and shaft conversion, photo 2"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 3" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/3.jpg" data-caption="Kort nozzle &amp; shaft conversion — 3">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/3.jpg" alt="Kort nozzle and shaft conversion, photo 3"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 4" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/4.jpg" data-caption="Kort nozzle &amp; shaft conversion — 4">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/4.jpg" alt="Kort nozzle and shaft conversion, photo 4"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 5" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/5.jpg" data-caption="Kort nozzle &amp; shaft conversion — 5">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/5.jpg" alt="Kort nozzle and shaft conversion, photo 5"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 6" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/6.jpg" data-caption="Kort nozzle &amp; shaft conversion — 6">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/6.jpg" alt="Kort nozzle and shaft conversion, photo 6"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 7" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/7.jpg" data-caption="Kort nozzle &amp; shaft conversion — 7">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/7.jpg" alt="Kort nozzle and shaft conversion, photo 7"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 8" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/8.jpg" data-caption="Kort nozzle &amp; shaft conversion — 8">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/8.jpg" alt="Kort nozzle and shaft conversion, photo 8"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 9" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/9.jpg" data-caption="Kort nozzle &amp; shaft conversion — 9">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/9.jpg" alt="Kort nozzle and shaft conversion, photo 9"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 10" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/10.jpg" data-caption="Kort nozzle &amp; shaft conversion — 10">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/10.jpg" alt="Kort nozzle and shaft conversion, photo 10"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 11" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/11.jpg" data-caption="Kort nozzle &amp; shaft conversion — 11">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/11.jpg" alt="Kort nozzle and shaft conversion, photo 11"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Kort nozzle and shaft conversion, photo 12" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/12.jpg" data-caption="Kort nozzle &amp; shaft conversion — 12">
+      <img data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/12.jpg" alt="Kort nozzle and shaft conversion, photo 12"><span class="cap">Kort nozzle &amp; shaft conversion</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Stainless steel tank, photo 2" data-bucket-lb="wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 2.jpg" data-caption="Stainless steel tank — 2">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 2.jpg" alt="Stainless steel tank, photo 2"><span class="cap">Stainless steel tank</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Hull plate replacement, photo 2" data-bucket-lb="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 2.jpg" data-caption="Hull plate replacement — 2">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 2.jpg" alt="Hull plate replacement, photo 2"><span class="cap">Hull plate replacement</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Sea water inlet strainer, photo 2" data-bucket-lb="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 2.jpg" data-caption="Sea water inlet strainer — 2">
+      <img data-bucket-src="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 2.jpg" alt="Sea water inlet strainer, photo 2"><span class="cap">Sea water inlet strainer</span>
+    </div>
+    <div class="g p-rv" tabindex="0" role="button" aria-label="View full image: Propeller shaft bushes and stuffing box, photo 1" data-bucket-lb="wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/1.jpg" data-caption="Shaft bushes &amp; stuffing box — 1">
+      <img data-bucket-src="wbme photos for web 2026/Complete new propeller shaft bushes and stuffing box/1.jpg" alt="Propeller shaft bushes and stuffing box, photo 1"><span class="cap">Shaft bushes &amp; stuffing box</span>
     </div>
   </div>
-</section>
-
-<!-- GALLERY -->
-<section>
-  <div class="wrap">
-    <div class="sec-head rv">
-      <div><span class="eyebrow">Gallery</span><h2 style="margin-top:14px">A look around the workshop</h2></div>
-      <p class="lead">From the machine shop to the dry dock — click any image to view it larger.</p>
-    </div>
-    <div class="gallery">
-      <div class="g rv" data-lb="images/1.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Machining/Machining of new seal liners.jpg"><img src="images/1.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Machining/Machining of new seal liners.jpg" alt="Machining of new seal liners"><div class="ov"><div><b>Fitting &amp; Turning</b><span>New seal liners</span></div></div></div>
-      <div class="g rv" data-d="1" data-lb="images/2.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg"><img src="images/2.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg" alt="CPP complete refit"><div class="ov"><div><b>Propulsion</b><span>CPP complete refit</span></div></div></div>
-      <div class="g rv" data-d="2" data-lb="images/3.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg"><img src="images/3.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg" alt="New Thordon bushes"><div class="ov"><div><b>Machining</b><span>Thordon bushes</span></div></div></div>
-      <div class="g rv" data-lb="images/4.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 1.jpg"><img src="images/4.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 1.jpg" alt="Stainless steel tank fabrication"><div class="ov"><div><b>Fabrication</b><span>Stainless steel tank</span></div></div></div>
-      <div class="g rv" data-d="1" data-lb="images/5.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg"><img src="images/5.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg" alt="Sea water inlet strainer"><div class="ov"><div><b>Pipe Works</b><span>Sea water inlet strainer</span></div></div></div>
-      <div class="g rv" data-d="2" data-lb="images/6.jpg" data-bucket-lb="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg"><img src="images/6.jpg" data-bucket-src="wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg" alt="Bottom hull plate replacement"><div class="ov"><div><b>Boiler Making</b><span>Hull plate replacement</span></div></div></div>
-      <div class="g rv" data-lb="images/bg1.jpg" data-bucket-lb="wbme photos for web 2026/New Complete Ships Rudder/12.jpg"><img src="images/bg1.jpg" data-bucket-src="wbme photos for web 2026/New Complete Ships Rudder/12.jpg" alt="Complete ship rudder fabrication"><div class="ov"><div><b>Rudder Works</b><span>Complete new rudder</span></div></div></div>
-      <div class="g rv" data-d="1" data-lb="images/bg2.jpg" data-bucket-lb="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg"><img src="images/bg2.jpg" data-bucket-src="wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg" alt="Kort nozzle and shaft conversion"><div class="ov"><div><b>Marine Repair</b><span>Kort nozzle conversion</span></div></div></div>
-      <div class="g rv" data-d="2" data-lb="images/2.jpg" data-bucket-lb="wbme photos for web 2026/New Cast Iron Coupling/Gearbox propeller coupling 1.jpg"><img src="images/2.jpg" data-bucket-src="wbme photos for web 2026/New Cast Iron Coupling/Gearbox propeller coupling 1.jpg" alt="Gearbox propeller coupling"><div class="ov"><div><b>Coupling</b><span>Gearbox propeller coupling</span></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section style="padding-top:0">
-  <div class="wrap">
-    <div class="cta-card rv">
-      <h2>Your project could be next</h2>
-      <p>Whatever the scale, we'd be glad to take a look. Get in touch and tell us what you need.</p>
-      <a href="contact.html" class="btn btn-dark">Request a Quote →</a>
-    </div>
-  </div>
-</section>
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <span class="lb-close" aria-label="Close">&times;</span>
-  <span class="lb-nav lb-prev" aria-label="Previous">&#8249;</span>
-  <img src="images/1.jpg" alt="Project image">
-  <span class="lb-nav lb-next" aria-label="Next">&#8250;</span>
+  <div class="panel-cta p-rv"><a class="explore" href="#" data-mail data-subject="Project enquiry - WBME">Discuss a similar job</a><a class="hero-call" href="tel:+26464285700">Call WBME</a></div>
 </div>
+</main>
 
-<footer>
-  <div class="wrap">
-    <div class="foot-grid">
-      <div class="col">
-        <div class="logo on"><div class="mk"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM12 7v13M12 20c-3.6 0-6.5-2.9-6.5-6.5M12 20c3.6 0 6.5-2.9 6.5-6.5M5.5 13.5H3M21 13.5h-2.5M7 10 5.5 13.5M17 10l1.5 3.5" stroke="#0f2c52" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tx"><div class="n">WBME</div><div class="s">Marine Eng.</div></div></div>
-        <p>Ship repair, fabrication &amp; precision engineering for the marine and mining industries. Walvis Bay, Namibia.</p>
-      </div>
-      <div class="col"><h4>Visit</h4><p>8th Street East<br>Industrial Area<br>Walvis Bay, Namibia</p></div>
-      <div class="col"><h4>Contact</h4><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="mailto:info@wbme.com.na">info@wbme.com.na</a><a href="#">Mon–Fri 07:00–17:00 · Sun on request</a></div>
-      <div class="col"><h4>Pages</h4><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
+<footer class="site-footer">
+  <div class="sf-top">
+    <a class="sf-brand" href="index.html">WB<b>ME</b></a>
+    <nav class="sf-links" aria-label="Footer">
+      <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+    </nav>
+    <div class="sf-contact">
+      <a href="tel:+26464285700">+264 (0)64 285 700</a>
+      <a href="#" data-mail data-mail-text>Loading&hellip;</a>
+      <span>8th Street East, Industrial Area, Walvis Bay</span>
     </div>
-    <div class="foot-bot"><span>© <span id="year">2026</span> Walvis Bay Marine Engineering</span><span>No job too big · No job too small</span></div>
   </div>
+  <div class="sf-bottom">&copy; 2026 Walvis Bay Marine Engineering &middot; No job too big, no job too small.</div>
 </footer>
 
-<script src="js/bucket-assets.js?v=41"></script>
-<script src="js/main.js"></script>
+<div class="drawer" id="drawer">
+  <div class="top"><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
+  <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
+  <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail data-mail-text>Email</a><span>8th Street East, Walvis Bay</span></div>
+</div>
+
+<button class="chatbot-fab" id="chatbotFab" type="button" aria-label="Chat with the WBME assistant" aria-expanded="false">
+  <span class="chatbot-ring" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=96&height=96&resize=contain&quality=85" alt=""></span>
+</button>
+<div class="chatbot" id="chatbot" role="dialog" aria-label="WBME assistant" aria-hidden="true">
+  <div class="cb-head">
+    <span class="cb-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=96&height=96&resize=contain&quality=85" alt=""></span>
+    <div class="cb-id"><b>WBME Assistant</b><span>Walvis Bay Marine Engineering</span></div>
+    <button class="cb-x" id="chatbotClose" type="button" aria-label="Close assistant">&times;</button>
+  </div>
+  <div class="cb-log" id="cbLog" aria-live="polite"></div>
+  <div class="cb-chips" id="cbChips" aria-label="Suggested questions"></div>
+  <form class="cb-bar" id="cbForm" novalidate>
+    <input id="cbInput" type="text" placeholder="Ask about services, quotes, hours&hellip;" autocomplete="off" maxlength="300" aria-label="Message the WBME assistant">
+    <button type="submit" aria-label="Send message">&#10148;</button>
+  </form>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <span class="lc" aria-label="Close">&times;</span>
+  <span class="ln lp" aria-label="Previous">&#8249;</span>
+  <img src="images/2.jpg" alt="Selected project image">
+  <p class="lb-caption" id="lbCaption">Dry-dock repair work</p>
+  <span class="ln lnx" aria-label="Next">&#8250;</span>
+</div>
+
+<script src="js/bucket-assets.js?v=43"></script>
+<script src="js/experience.js?v=60"></script>
+<script src="js/glass-fx.js?v=2"></script>
+<script src="js/chatbot.js?v=2"></script>
 </body>
 </html>
