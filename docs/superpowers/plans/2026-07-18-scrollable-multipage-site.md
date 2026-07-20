@@ -692,7 +692,8 @@ Create `services.html` with this exact content (identical head/chrome to `about.
 <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
 
 <main>
-<section class="panel-hero page-hero" data-parallax="0.18" style="background-image:url('images/6.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg">
+<section class="panel-hero page-hero">
+  <div class="hero-bg" data-parallax="0.18" style="background-image:url('images/6.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg"></div>
   <div class="in"><div class="ey">Six disciplines &middot; In-house</div><h1 class="ti">Services</h1></div>
 </section>
 <div class="panel-body">
@@ -776,7 +777,7 @@ git commit -m "Add standalone Services page"
 
 - [ ] **Step 1: Create `projects.html`**
 
-Same head/chrome pattern as Task 2 (title: "Projects | Walvis Bay Marine Engineering", description: "A look at real WBME workshop proof — ship repair, machining, fabrication, boiler making and more, from the Walvis Bay yard.", `data-page="projects"`, page-hero image `images/2.jpg` / bucket path `wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg`, eyebrow "From the yard", title "Projects"). Inside `<main>`, after the page-hero, use this exact `.panel-body` content (the full featured-work + gallery + lightbox from the current Projects panel in `index.html`, with `p-rv`/`stagger` added to the featured-work cards and gallery grid the same way Task 1/2 did):
+Same head/chrome pattern as Task 2 (title: "Projects | Walvis Bay Marine Engineering", description: "A look at real WBME workshop proof — ship repair, machining, fabrication, boiler making and more, from the Walvis Bay yard.", `data-page="projects"`, page-hero image `images/2.jpg` / bucket path `wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg`, eyebrow "From the yard", title "Projects"). **Important — use the corrected page-hero structure from the Task 1 follow-up fix (commit `a515f31`), not the original single-`<section>` pattern**: `data-parallax`/`style="background-image:..."`/`data-bucket-bg` must live on a `<div class="hero-bg">` that is a sibling of `<div class="in">`, e.g. `<section class="panel-hero page-hero"><div class="hero-bg" data-parallax="0.18" style="background-image:url('images/2.jpg')" data-bucket-bg="...">...</div><div class="in">...</div></section>` — putting them directly on the `<section>` (as About's *original* Task 1 markup did) clips the heading text via the parallax `scale(1.12)` transform; this was found and fixed after Task 1 shipped. Inside `<main>`, after the page-hero, use this exact `.panel-body` content (the full featured-work + gallery + lightbox from the current Projects panel in `index.html`, with `p-rv`/`stagger` added to the featured-work cards and gallery grid the same way Task 1/2 did):
 
 ```html
 <div class="panel-body">
@@ -922,7 +923,7 @@ git commit -m "Add standalone Projects page with gallery and lightbox"
 
 - [ ] **Step 1: Create `contact.html`**
 
-Same head/chrome pattern as Task 2/3 (title: "Contact | Walvis Bay Marine Engineering", description: "Reach Walvis Bay Marine Engineering by phone, email or the enquiry form — 8th Street East, Industrial Area, Walvis Bay, Namibia.", `data-page="contact"`, page-hero image `images/5.jpg` / bucket path `wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg`, eyebrow "Get in touch", title "Contact"). Inside `<main>`, after the page-hero, use this exact content:
+Same head/chrome pattern as Task 2/3 (title: "Contact | Walvis Bay Marine Engineering", description: "Reach Walvis Bay Marine Engineering by phone, email or the enquiry form — 8th Street East, Industrial Area, Walvis Bay, Namibia.", `data-page="contact"`, page-hero image `images/5.jpg` / bucket path `wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg`, eyebrow "Get in touch", title "Contact"). **Use the corrected page-hero structure** (see the note added to Task 3): `data-parallax`/`style="background-image:..."`/`data-bucket-bg` go on a `<div class="hero-bg">` sibling of `<div class="in">`, not directly on the `<section>`. Inside `<main>`, after the page-hero, use this exact content:
 
 ```html
 <div class="panel-body">
