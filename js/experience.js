@@ -219,7 +219,7 @@
     }
     try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
     var MIN = 1150, CAP = 2600, start = Date.now();             // keep the loader crisp; MIN covers a full propeller-spin rotation (1.08s)
-    var heroBg = document.querySelector('.bg');
+    var heroBg = document.querySelector('.stage-photo-img');
     var heroBgUrl = heroBg && heroBg.style.backgroundImage ? heroBg.style.backgroundImage.replace(/^url\((['"]?)(.*)\1\)$/, '$2') : '';
     var urls = [heroBgUrl].filter(Boolean); // wait only for the first visible hero image, if this page has one
     var total = urls.length + 1, loaded = 0, finished = false;
