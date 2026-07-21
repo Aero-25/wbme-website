@@ -19,6 +19,7 @@
   --z-chatbot:77;
   --z-modal-progress:96;
   --z-drawer:120;
+  --z-contact-modal:150;
   --z-lightbox:200;
   --z-grain:9000;
   --z-preloader:11000;
@@ -178,6 +179,35 @@ img{display:block;max-width:100%}
 .lightbox .ln{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:2rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s}
 .lightbox .ln:hover{background:var(--gold);color:var(--ink)}
 .lightbox .lp{left:24px}.lightbox .lnx{right:24px}
+
+/* contact modal — replaces the standalone Contact page as the primary way to reach WBME from any page */
+.contact-modal{position:fixed;inset:0;z-index:var(--z-contact-modal);display:none;align-items:center;justify-content:center;padding:24px}
+.contact-modal.open{display:flex}
+.cm-backdrop{position:absolute;inset:0;background:rgba(5,10,18,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cm-panel{
+  position:relative;z-index:1;width:min(720px,100%);max-height:min(88vh,780px);overflow-y:auto;
+  background:linear-gradient(165deg,var(--ink2) 0%,var(--ink) 100%);
+  border:1px solid rgba(227,195,114,.28);box-shadow:0 40px 90px rgba(0,0,0,.5);
+  padding:clamp(28px,4vw,48px);
+  opacity:0;transform:scale(.96) translateY(10px);transition:opacity .32s var(--ease-out),transform .32s var(--ease-out);
+}
+.contact-modal.open .cm-panel{opacity:1;transform:none}
+.cm-x{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(227,195,114,.3);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;transition:border-color .2s var(--ease-out),background .2s var(--ease-out)}
+.cm-x:hover{border-color:var(--gold-lt);background:rgba(199,154,62,.14)}
+.cm-x:focus-visible{outline:2px solid var(--gold-lt);outline-offset:3px}
+.cm-head{margin-bottom:26px;padding-right:40px}
+.cm-head h3{font-family:'Anton';text-transform:uppercase;letter-spacing:.01em;font-size:clamp(1.6rem,3.4vw,2.2rem);margin:10px 0 8px;color:#fff}
+.cm-head p{color:var(--mut);max-width:52ch}
+.cm-info{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;padding-bottom:24px;border-bottom:1px solid rgba(227,195,114,.16)}
+.cm-i b{display:block;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px}
+.cm-i span{display:block;font-size:.86rem;color:#dfe5ee;line-height:1.4}
+.cm-i a{color:#dfe5ee}
+.cm-i a:hover{color:var(--gold-lt)}
+@media(max-width:640px){
+  .contact-modal{padding:0}
+  .cm-panel{width:100%;height:100%;max-height:none;border:0;padding:24px 20px 32px}
+  .cm-info{grid-template-columns:1fr 1fr}
+}
 
 /* ===== MOBILE REFLOW ===== */
 @media(max-width:860px){

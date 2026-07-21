@@ -108,6 +108,8 @@
     if (e.key !== 'Escape') return;
     var lb = document.getElementById('lightbox');
     if (lb && lb.classList.contains('open')) return closeLb();
+    var cm = document.getElementById('contactModal');
+    if (cm && cm.classList.contains('open')) return closeContactModal();
     if (drawer.classList.contains('open')) return closeDrawer();
   });
   document.addEventListener('keydown', function (e) {
@@ -125,6 +127,24 @@
   function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); unlock(); }
   if (burgerBtn) burgerBtn.addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
+
+  /* ===== CONTACT MODAL (replaces the standalone Contact page as the primary contact flow) ===== */
+  var contactModal = document.getElementById('contactModal');
+  function openContactModal () {
+    if (!contactModal) return;
+    closeDrawer();
+    contactModal.classList.add('open');
+    lock();
+    var firstField = contactModal.querySelector('input,textarea,select');
+    if (firstField) firstField.focus();
+  }
+  function closeContactModal () { if (contactModal) { contactModal.classList.remove('open'); unlock(); } }
+  document.addEventListener('click', function (e) {
+    var opener = e.target.closest && e.target.closest('[data-contact-open]');
+    if (opener) { e.preventDefault(); openContactModal(); return; }
+    var closer = e.target.closest && e.target.closest('[data-contact-close]');
+    if (closer) closeContactModal();
+  });
 
   /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
   initScrollReveal();
@@ -172,8 +192,8 @@
   // To send enquiries in-page: create a form at https://formspree.io (send to the address in EMAIL above)
   // and paste its endpoint below. Until then, the form opens the visitor's email app.
   var FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_ID';
-  var form = document.getElementById('contactForm');
-  if (form) {
+  function wireContactForm (form) {
+    if (!form) return;
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var ok = true;
@@ -184,7 +204,7 @@
       });
       if (!ok) return;
       var g = function (n) { var el = form.querySelector('[name=' + n + ']'); return el ? el.value.trim() : ''; };
-      var done = function () { form.style.display = 'none'; var okMsg = document.querySelector('.form-ok'); if (okMsg) okMsg.style.display = 'block'; };
+      var done = function () { form.style.display = 'none'; var okMsg = form.parentElement.querySelector('.form-ok'); if (okMsg) okMsg.style.display = 'block'; };
       var mailto = function () {
         var body = encodeURIComponent('Name: ' + g('name') + '\nEmail: ' + g('email') + '\nPhone: ' + g('phone') + '\nService: ' + g('service') + '\n\n' + g('message'));
         window.location.href = mailHref('Quote request - ' + g('name')) + '&body=' + body;
@@ -200,6 +220,8 @@
       i.addEventListener('input', function () { i.closest('.field').classList.remove('invalid'); });
     });
   }
+  wireContactForm(document.getElementById('contactForm'));
+  wireContactForm(document.getElementById('contactModalForm'));
 
   /* ===== ENHANCEMENTS (optional; never block the core) ===== */
   try {
