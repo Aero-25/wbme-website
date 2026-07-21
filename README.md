@@ -1,6 +1,6 @@
 # Walvis Bay Marine Engineering (WBME) — Website
 
-A cinematic, immersive single-page experience for WBME — a marine & metal engineering firm in Walvis Bay, Namibia (est. 1999).
+A cinematic, five-page marketing site for WBME — a marine & metal engineering firm in Walvis Bay, Namibia (est. 1999).
 
 **Demo build** — static HTML/CSS/JS, no build step.
 
@@ -24,7 +24,7 @@ Five real, normally-scrollable pages — **Home · About · Services · Projects
 ```
 
 ## Run locally
-Serve the folder (don't open via `file://` — the experience uses History/hash routing):
+Serve the folder (don't open via `file://` — the contact form's `fetch()` POST to Formspree can misbehave from a `file://` origin in some browsers):
 ```bash
 python -m http.server 8000   # then http://localhost:8000
 ```
