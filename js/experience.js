@@ -34,7 +34,7 @@
         var rect = el.getBoundingClientRect();
         var speed = parseFloat(el.getAttribute('data-parallax')) || 0.2;
         var offset = (rect.top - vh / 2) * speed * -1;
-        el.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0) scale(1.12)';
+        el.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0) scale(1.06)';
       });
       parallaxTicking = false;
     });
