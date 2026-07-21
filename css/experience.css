@@ -5,7 +5,7 @@
 :root{
   --ink:#0f2c52; --ink2:#163a66; --panel:#071a33;
   --white:#fff; --mut:#9fb0c6; --line:rgba(255,255,255,.10);
-  --gold:#c79a3e; --gold-lt:#e3c372; --gold-soft:rgba(199,154,62,.14);
+  --gold:#c79a3e; --gold-lt:#e3c372; --gold-soft:rgba(199,154,62,.14); --brass-deep:#b1862c; --white-steel:#f4f7fb;
   /* motion (Emil Kowalski curves) */
   --ease-out:cubic-bezier(0.23,1,0.32,1);
   --ease-in-out:cubic-bezier(0.77,0,0.175,1);
@@ -1118,8 +1118,8 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   transition:background-color .3s var(--ease-out),box-shadow .3s var(--ease-out),padding .3s var(--ease-out);
 }
 .site-hdr.scrolled{
-  background:rgba(7,26,51,.86);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
-  box-shadow:0 8px 26px rgba(0,0,0,.35);padding:14px 40px;
+  background:rgba(244,247,251,.94);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
+  box-shadow:0 8px 26px rgba(15,44,82,.14);padding:14px 40px;
 }
 .site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:0}
 .site-hdr .brand::before{display:none}
@@ -1132,6 +1132,10 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .hdr-actions{display:flex;align-items:center;gap:22px}
 .hdr-phone{font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.1em;color:var(--gold-lt);white-space:nowrap}
 .hdr-phone:hover{color:#fff}
+.site-hdr.scrolled .site-nav a{color:var(--ink);opacity:.85}
+.site-hdr.scrolled .site-nav a:hover,.site-hdr.scrolled .site-nav a.active{opacity:1;color:var(--brass-deep)}
+.site-hdr.scrolled .hdr-phone{color:var(--brass-deep)}
+.site-hdr.scrolled .hdr-phone:hover{color:var(--ink)}
 .site-hdr .nav-cta{background:var(--gold);color:var(--ink);padding:.6rem 1.3rem;border-radius:0;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);font-family:'Archivo';font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;transition:background .2s var(--ease-out)}
 .site-hdr .nav-cta:hover{background:var(--gold-lt)}
 .site-hdr .nav-cta:active{transform:translate(var(--tx,0px),var(--ty,0px)) scale(.97)}
