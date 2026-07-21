@@ -23,6 +23,7 @@ colors:
   brass-light: "#e3c372"
   error: "#e07a7a"
   error-text: "#e98c8c"
+  status-online: "#6de08a"
 typography:
   display:
     fontFamily: "Anton, Impact, sans-serif"
@@ -134,6 +135,8 @@ The palette is WBME blue and brass: blue carries the interface structure, brass 
 
 **The Propeller Contact Rule.** The bucket propeller icon is the floating contact affordance and loader motion motif. It may spin continuously as ambient machinery motion, but must stop under `prefers-reduced-motion`.
 
+**The Semantic Exception.** `status-online` is the one hue outside blue-and-brass. It exists only for genuine live-status indicators (e.g. the dispatch panel's pulsing "workshop online" dot) — never as a second accent or decorative color.
+
 ## 3. Typography
 
 **Display Font:** Anton, with Impact fallback.
@@ -173,7 +176,7 @@ Depth is created with tonal layering, image darkness, and large cinematic shadow
 ## 5. Components
 
 ### Buttons
-- **Shape:** Fully pill-shaped controls (`999px`) for primary action and hero exploration.
+- **Shape:** Chamfered/clipped corners (`clip-path` polygon, not `border-radius`) for primary action and hero exploration — matches the corner-registration-mark motif instead of sitting next to it as an unrelated shape. Circular controls (lightbox nav, close buttons) stay pill/circle.
 - **Primary:** Brass background with ink text, strong weight and 44px+ touch height.
 - **Hover / Focus:** Hover shifts toward light brass or white; focus uses a visible light brass outline.
 - **Ghost:** Transparent fill with a white border, turning brass on hover.
@@ -202,7 +205,7 @@ Depth is created with tonal layering, image darkness, and large cinematic shadow
 
 ### Signature Component
 
-The looping rail card is the signature WBME interaction. It must remain image-led, keyboard-operable, and paired with the shared-element modal transition. If motion is reduced, the content must still be immediately readable.
+The Capability Triptych (Home, below the stat strip) is the signature WBME interaction: three full-bleed panels sharing one row, where hovering or keyboard-focusing one widens it via `flex-grow` and reveals its detail copy while the other two yield. It must remain image-led and keyboard-operable (`:focus-visible`, not `:focus`, so a clicked link doesn't stay visually "stuck" open). On touch/mobile, where hover doesn't apply, it degrades to three always-expanded stacked cards rather than requiring a tap-to-expand step.
 
 ## 6. Do's and Don'ts
 
