@@ -148,18 +148,18 @@
 
   /* ===== LIGHTBOX ===== */
   var lb = document.getElementById('lightbox'), lbImg = lb ? lb.querySelector('img') : null, lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
-  function refreshThumbs () { gThumbs = Array.prototype.slice.call(document.querySelectorAll('[data-lb]')); }
+  function refreshThumbs (scope) { gThumbs = Array.prototype.slice.call((scope || document).querySelectorAll('[data-lb]')); }
   function showLb (i) {
     gIdx = (i + gThumbs.length) % gThumbs.length;
     lbImg.src = gThumbs[gIdx].getAttribute('data-lb');
     lbImg.alt = gThumbs[gIdx].querySelector('img') ? gThumbs[gIdx].querySelector('img').alt : 'Selected project image';
     if (lbCaption) lbCaption.textContent = gThumbs[gIdx].getAttribute('data-caption') || lbImg.alt;
   }
-  function openLb (i) { refreshThumbs(); showLb(i); lb.classList.add('open'); }
+  function openLb (i) { showLb(i); lb.classList.add('open'); }
   function closeLb () { if (lb) lb.classList.remove('open'); }
   document.addEventListener('click', function (e) {
     var g = e.target.closest && e.target.closest('[data-lb]');
-    if (g) { refreshThumbs(); openLb(gThumbs.indexOf(g)); }
+    if (g) { refreshThumbs(g.closest('[data-lb-scope]')); openLb(gThumbs.indexOf(g)); }
   });
   if (lb) {
     lb.querySelector('.lc').addEventListener('click', closeLb);
