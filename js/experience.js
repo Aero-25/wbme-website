@@ -206,6 +206,8 @@
   /* ===== PRELOADER ===== */
   (function preload () {
     var pre = document.getElementById('preloader'), ring = document.getElementById('plRing'), pct = document.getElementById('plPct');
+    var plNum = pct ? pct.querySelector('.pl-num') : null;
+    var plStats = pre ? pre.querySelectorAll('.pl-stat') : [];
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var SEEN_KEY = 'wbme_preloader_seen';
     var seenBefore = false;
@@ -224,7 +226,9 @@
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
       if (ring) ring.style.setProperty('--p', (p * 360) + 'deg');
-      if (pct) pct.textContent = Math.round(p * 100) + '%';
+      var pctVal = Math.round(p * 100);
+      if (plNum) plNum.textContent = (pctVal < 10 ? '0' : '') + pctVal;
+      plStats.forEach(function (el) { el.classList.toggle('lit', pctVal >= (+el.dataset.at || 0)); });
     }
     function bump () { loaded++; }
     function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 280); }

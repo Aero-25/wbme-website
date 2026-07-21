@@ -30,6 +30,12 @@ typography:
     fontWeight: 400
     lineHeight: 0.9
     letterSpacing: "0"
+  data:
+    fontFamily: "'JetBrains Mono', 'Courier New', monospace"
+    fontSize: ".7rem"
+    fontWeight: 500
+    lineHeight: 1.3
+    letterSpacing: ".08em"
   title:
     fontFamily: "Archivo, Arial, sans-serif"
     fontSize: "1.2rem"
@@ -133,8 +139,9 @@ The palette is WBME blue and brass: blue carries the interface structure, brass 
 **Display Font:** Anton, with Impact fallback.
 **Body Font:** Barlow, with Arial fallback.
 **Label Font:** Archivo, with Arial fallback.
+**Data Font:** JetBrains Mono, with Courier New fallback.
 
-**Character:** The type system is heavy, industrial and direct. Anton handles the cinematic title voice; Archivo handles mechanical labels; Barlow carries readable long-form content with a slightly engineered feel.
+**Character:** The type system is heavy, industrial and direct. Anton handles the cinematic title voice; Archivo handles mechanical labels; Barlow carries readable long-form content with a slightly engineered feel; JetBrains Mono renders anything that reads as an instrument readout — coordinates, percentages, system-status lines, spec strips — reinforcing the "precision engineering" character with a genuine technical typeface rather than faking it with tracked caps.
 
 ### Hierarchy
 - **Display** (400, `clamp(3.6rem, 10.5vw, 10.5rem)`, 0.9): Hero and panel titles only.
@@ -142,10 +149,13 @@ The palette is WBME blue and brass: blue carries the interface structure, brass 
 - **Title** (700, `1.05rem-1.2rem`, 1.2): Service cards, readiness cards and contact labels.
 - **Body** (400, `1rem`, 1.7): Panel prose, service descriptions and form notes. Keep body copy under roughly 70ch.
 - **Label** (600-700, `.72rem-.84rem`, tracked uppercase): Navigation, eyebrows, tags and compact metadata.
+- **Data** (500, `.66rem-.78rem`, tabular-nums where numeric): Preloader readouts, hero spec strips, coordinates, corner-mark-framed instrument panels.
 
 ### Named Rules
 
 **The Plain Workshop Rule.** Use direct nouns and verbs. Avoid brochure language, fake testimonials and inflated claims.
+
+**The Instrument Panel Rule.** Corner registration marks and JetBrains Mono data readouts (coordinates, percentages, spec strips) are the site's recurring signature — they should read as a real technical instrument, not decoration. Use them on full-bleed heroes and the preloader only; do not scatter them into cards or body content where they'd become wallpaper.
 
 ## 4. Elevation
 
