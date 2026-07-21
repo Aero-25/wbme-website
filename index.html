@@ -19,22 +19,34 @@
 <body data-page="home">
 
 <div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
+  <div class="pl-bg" aria-hidden="true" style="background-image:url('https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/Hero%20Boat.png?width=1600&quality=72&resize=contain')"></div>
   <div class="pl-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="pl-inner">
     <div class="pl-top">
-      <span class="pl-tag">WBME &sol;&sol; WORKSHOP SYSTEMS</span>
-      <span class="pl-coord">22&deg;57&prime;S&nbsp;&middot;&nbsp;14&deg;30&prime;E</span>
+      <span class="pl-tag" id="plTag">WBME // WORKSHOP SYSTEMS</span>
+      <span class="pl-coord">22&deg;57&prime;S &middot; 14&deg;30&prime;E</span>
     </div>
     <div class="pl-gauge">
-      <div class="pl-ticks" aria-hidden="true"></div>
-      <div class="pl-ring" id="plRing" aria-hidden="true"></div>
-      <div class="pl-readout" id="plPct" aria-hidden="true"><span class="pl-num">00</span><span class="pl-sym">%</span></div>
-      <div class="pl-prop" aria-hidden="true"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=120&height=120&resize=contain&quality=90" alt=""></div>
+      <div class="pl-gauge-glow" aria-hidden="true"></div>
+      <svg class="pl-gauge-svg" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="pl-ticks" cx="100" cy="100" r="94" fill="none" stroke="rgba(227,195,114,.35)" stroke-width="1.2" stroke-dasharray="1.6 5.4" />
+        <circle class="pl-track" cx="100" cy="100" r="82" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="3" />
+        <circle class="pl-arc" id="plArc" cx="100" cy="100" r="82" fill="none" stroke="var(--gold-lt)" stroke-width="3" stroke-linecap="round" stroke-dasharray="515.22" stroke-dashoffset="515.22" transform="rotate(-90 100 100)" />
+        <circle class="pl-inner-ring" cx="100" cy="100" r="68" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1" />
+        <circle class="pl-inner-ring-2" cx="100" cy="100" r="58" fill="none" stroke="rgba(227,195,114,.12)" stroke-width="0.5" />
+      </svg>
+      <div class="pl-prop" aria-hidden="true">
+        <div class="pl-prop-glow"></div>
+        <img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=120&height=120&resize=contain&quality=90" alt="">
+      </div>
+      <div class="pl-readout" id="plPct">
+        <span class="pl-num" id="plNum">00</span><span class="pl-sym">%</span>
+      </div>
     </div>
     <div class="pl-status" id="plStatus" aria-hidden="true">
-      <div class="pl-stat" data-at="28"><i></i>Propulsion</div>
-      <div class="pl-stat" data-at="62"><i></i>Hull &amp; structure</div>
-      <div class="pl-stat" data-at="100"><i></i>Workshop online</div>
+      <div class="pl-stat" data-at="28"><i></i><span>Propulsion</span></div>
+      <div class="pl-stat" data-at="62"><i></i><span>Hull &amp; structure</span></div>
+      <div class="pl-stat" data-at="100"><i></i><span>Workshop online</span></div>
     </div>
   </div>
 </div>
