@@ -5,7 +5,7 @@
   'use strict';
   if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
 
-  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-lime';
+  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass';
   document.addEventListener('pointermove', function (e) {
     var t = e.target.closest && e.target.closest(SEL);
     if (!t) return;
@@ -14,7 +14,7 @@
     t.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
   }, { passive: true });
 
-  var MAGNETIC_SEL = '.explore,.hero-call,.btn-lime,.nav-cta';
+  var MAGNETIC_SEL = '.explore,.hero-call,.btn-brass,.nav-cta';
   document.querySelectorAll(MAGNETIC_SEL).forEach(function (el) {
     el.addEventListener('pointermove', function (e) {
       var r = el.getBoundingClientRect();

@@ -14,40 +14,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=79">
+<link rel="stylesheet" href="css/experience.css?v=80">
 </head>
 <body data-page="contact">
 
 <div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
-  <div class="pl-bg" aria-hidden="true" style="background-image:url('https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/Hero%20Boat.png?width=1600&quality=72&resize=contain')"></div>
   <div class="pl-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="pl-inner">
-    <div class="pl-top">
-      <span class="pl-tag" id="plTag">WBME // WORKSHOP SYSTEMS</span>
-      <span class="pl-coord">22&deg;57&prime;S &middot; 14&deg;30&prime;E</span>
+    <img class="pl-logo" src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90" alt="Walvis Bay Marine Engineering">
+    <div class="pl-prop" aria-hidden="true">
+      <img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=120&height=120&resize=contain&quality=90" alt="">
     </div>
-    <div class="pl-gauge">
-      <div class="pl-gauge-glow" aria-hidden="true"></div>
-      <svg class="pl-gauge-svg" viewBox="0 0 200 200" aria-hidden="true">
-        <circle class="pl-ticks" cx="100" cy="100" r="94" fill="none" stroke="rgba(227,195,114,.35)" stroke-width="1.2" stroke-dasharray="1.6 5.4" />
-        <circle class="pl-track" cx="100" cy="100" r="82" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="3" />
-        <circle class="pl-arc" id="plArc" cx="100" cy="100" r="82" fill="none" stroke="var(--gold-lt)" stroke-width="3" stroke-linecap="round" stroke-dasharray="515.22" stroke-dashoffset="515.22" transform="rotate(-90 100 100)" />
-        <circle class="pl-inner-ring" cx="100" cy="100" r="68" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1" />
-        <circle class="pl-inner-ring-2" cx="100" cy="100" r="58" fill="none" stroke="rgba(227,195,114,.12)" stroke-width="0.5" />
-      </svg>
-      <div class="pl-prop" aria-hidden="true">
-        <div class="pl-prop-glow"></div>
-        <img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=120&height=120&resize=contain&quality=90" alt="">
-      </div>
-      <div class="pl-readout" id="plPct">
-        <span class="pl-num" id="plNum">00</span><span class="pl-sym">%</span>
-      </div>
-    </div>
-    <div class="pl-status" id="plStatus" aria-hidden="true">
-      <div class="pl-stat" data-at="28"><i></i><span>Propulsion</span></div>
-      <div class="pl-stat" data-at="62"><i></i><span>Hull &amp; structure</span></div>
-      <div class="pl-stat" data-at="100"><i></i><span>Workshop online</span></div>
-    </div>
+    <div class="pl-rail"><i class="pl-rail-fill" id="plRail"></i></div>
   </div>
 </div>
 <div class="grain"></div>
@@ -72,34 +50,44 @@
   <div class="in"><div class="ey">Get in touch</div><h1 class="ti">Contact</h1></div>
 </section>
 <div class="panel-body">
-  <div class="contact-grid">
-    <div class="info p-rv">
+  <div class="cm-info p-rv">
+    <div class="cm-i"><b>Visit</b><span>8th Street East, Industrial Area<br>Walvis Bay, Namibia</span></div>
+    <div class="cm-i"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
+    <div class="cm-i"><b>Email</b><span><a href="#" data-mail data-mail-text>Loading&hellip;</a></span></div>
+    <div class="cm-i"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00 &middot; Sat closed &middot; Sun on request</span></div>
+  </div>
+  <div class="contact-split p-rv">
+    <div class="cs-form-col">
       <span class="eyebrow">Reach us</span>
       <h3>Tell us what needs fixing</h3>
       <p>When a vessel is in dock or a plant component fails, WBME is ready to respond &mdash; call, email or send job details below.</p>
-      <div class="row"><div class="ic">LOC</div><div><b>Visit</b><span>8th Street East, Industrial Area<br>Walvis Bay, Namibia</span></div></div>
-      <div class="row"><div class="ic">TEL</div><div><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div></div>
-      <div class="row"><div class="ic">MAIL</div><div><b>Email</b><span><a href="#" data-mail data-mail-text>Loading&hellip;</a></span></div></div>
-      <div class="row"><div class="ic">HRS</div><div><b>Hours</b><span>Monday&ndash;Friday 07:00&ndash;17:00 &middot; Saturday closed &middot; Sunday available on request</span></div></div>
-    </div>
-    <div class="formcard p-rv">
       <form id="contactForm" novalidate>
         <div class="frow">
-          <div class="field"><label for="cname">Name</label><input id="cname" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
-          <div class="field"><label for="cemail">Email</label><input id="cemail" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
+          <div class="ticket-field"><label for="cname">Name</label><input id="cname" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
+          <div class="ticket-field"><label for="cemail">Email</label><input id="cemail" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
         </div>
         <div class="frow">
-          <div class="field"><label for="cphone">Phone</label><input id="cphone" name="phone" placeholder="+264 &hellip;"></div>
-          <div class="field"><label for="cservice">Service</label><select id="cservice" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
+          <div class="ticket-field"><label for="cphone">Phone</label><input id="cphone" name="phone" placeholder="+264 &hellip;"></div>
+          <div class="ticket-field"><label for="cservice">Service</label><select id="cservice" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
         </div>
-        <div class="field"><label for="cmsg">Message</label><textarea id="cmsg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
-        <button type="submit" class="btn-lime">Send request &rarr;</button>
+        <div class="ticket-field"><label for="cmsg">Message</label><textarea id="cmsg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
+        <button type="submit" class="btn-brass">Send request &rarr;</button>
         <p class="form-note">This opens your email app with the request filled in. Urgent job? Call +264 (0)64 285 700.</p>
       </form>
       <div class="form-ok">&check; Thanks! Your email app should open with your request ready to send.</div>
     </div>
+    <div class="cs-photo">
+      <div class="hero-bg" data-parallax="0.1" style="background-image:url('images/3.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg"></div>
+      <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="dispatch-status"><i class="dot"></i>Workshop online</div>
+      <div class="dispatch-coord"><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
+    </div>
   </div>
-  <div class="map p-rv"><iframe title="WBME location" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
+  <div class="map-frame p-rv">
+    <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="map-frame-label"><span class="eyebrow">Find us</span><span class="dispatch-coord">22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
+    <div class="map"><iframe title="WBME location" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
+  </div>
 </div>
 </main>
 
@@ -142,8 +130,8 @@
 </div>
 
 <script src="js/bucket-assets.js?v=43"></script>
-<script src="js/experience.js?v=60"></script>
-<script src="js/glass-fx.js?v=2"></script>
+<script src="js/experience.js?v=61"></script>
+<script src="js/glass-fx.js?v=3"></script>
 <script src="js/chatbot.js?v=2"></script>
 </body>
 </html>

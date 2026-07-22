@@ -227,58 +227,31 @@
   try {
   /* ===== PRELOADER ===== */
   (function preload () {
-    var pre = document.getElementById('preloader'), arc = document.getElementById('plArc'), pct = document.getElementById('plPct');
-    var plNum = pct ? pct.querySelector('#plNum') : null;
-    var plStats = pre ? pre.querySelectorAll('.pl-stat') : [];
-    var plTag = document.getElementById('plTag');
+    var pre = document.getElementById('preloader'), rail = document.getElementById('plRail');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
     var SEEN_KEY = 'wbme_preloader_seen';
     var seenBefore = false;
     try { seenBefore = sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* sessionStorage unavailable (privacy mode) */ }
     if (seenBefore) {
       pre.classList.add('fast-skip');
-      setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 220);
+      setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 150);
       return;
     }
     try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
-    var MIN = 1200, CAP = 2600, start = Date.now();
-    var CIRC = 2 * Math.PI * 82;
-    var heroBg = document.querySelector('.stage-photo-img');
-    var heroBgUrl = heroBg && heroBg.style.backgroundImage ? heroBg.style.backgroundImage.replace(/^url\((['"]?)(.*)\1\)$/, '$2') : '';
-    var urls = [heroBgUrl].filter(Boolean);
-    var total = urls.length + 1, loaded = 0, finished = false;
+    var MIN = 500, CAP = 1400, start = Date.now();
+    var total = 1, loaded = 0, finished = false;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
-      if (arc) arc.style.strokeDashoffset = CIRC * (1 - p);
-      var pctVal = Math.round(p * 100);
-      if (plNum) plNum.textContent = (pctVal < 10 ? '0' : '') + pctVal;
-      plStats.forEach(function (el) { el.classList.toggle('lit', pctVal >= (+el.dataset.at || 0)); });
+      if (rail) rail.style.transform = 'scaleX(' + p + ')';
     }
     function bump () { loaded++; }
-    function finish () { if (finished) return; finished = true; setBar(1); if (plTag) plTag.classList.add('done'); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 300); }
-    urls.forEach(function (u) { var im = new Image(); im.onload = bump; im.onerror = bump; im.src = u; });
+    function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 150); }
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
     (function tick () {
       var el = Date.now() - start, assetsDone = loaded >= total, timeP = Math.min(1, el / MIN);
       setBar(assetsDone ? timeP : Math.min(0.92, timeP));
       if ((el >= MIN && assetsDone) || el >= CAP) { finish(); return; }
       requestAnimationFrame(tick);
-    })();
-    (function typeTag () {
-      if (!plTag || reduce) return;
-      var text = plTag.textContent;
-      plTag.textContent = '';
-      var i = 0;
-      function type () {
-        if (i < text.length) {
-          plTag.textContent += text.charAt(i);
-          i++;
-          setTimeout(type, 30 + Math.random() * 25);
-        } else {
-          setTimeout(function () { plTag.classList.add('done'); }, 350);
-        }
-      }
-      setTimeout(type, 250);
     })();
   })();
 
