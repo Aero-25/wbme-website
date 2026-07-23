@@ -56,10 +56,7 @@
      Deliberately NOT gated on prefers-reduced-motion (owner requirement:
      must work on every machine — the OS "reduce animations" setting was
      silently disabling it before). Normalised across the viewport so the
-     turn is unmistakable: cursor at a screen edge = full tilt.
-     On touch devices there's no pointer to face, so it gets a continuous
-     idle sway instead (see @media(hover:none) in experience.css) rather
-     than sitting dead still. */
+     turn is unmistakable: cursor at a screen edge = full tilt. */
   var faceLogo = document.querySelector('.about-mark-logo');
   if (faceLogo && HAS_HOVER) {
     var FACE_MAX_TILT = 38;
@@ -73,8 +70,7 @@
     }, { passive: true });
   }
 
-  /* Founder portrait: subtle tilt toward the pointer within the frame
-     (touch gets the same idle-sway substitute as the About logo). */
+  /* Founder portrait: subtle tilt toward the pointer within the frame. */
   var founderFrame = document.querySelector('.founder-portrait-frame');
   if (founderFrame && HAS_HOVER) {
     founderFrame.addEventListener('pointermove', function (e) {
@@ -87,6 +83,36 @@
       founderFrame.style.setProperty('--tiltx', '0deg');
       founderFrame.style.setProperty('--tilty', '0deg');
     });
+  }
+
+  /* Touch devices have no pointer to face, so both tilt pieces are driven
+     by scroll position instead: as each one rises through the viewport its
+     "coin" rocks from one side to the other, levelling out through the
+     centre, rather than sitting dead still or looping on autopilot.
+     Same --tiltx/--tilty variables the hover path uses, and — matching that
+     path — deliberately not gated on prefers-reduced-motion. */
+  if (!HAS_HOVER && (faceLogo || founderFrame)) {
+    var scrollTiltTargets = [];
+    if (faceLogo) scrollTiltTargets.push({ el: faceLogo, tiltx: 32, tilty: 16 });
+    if (founderFrame) scrollTiltTargets.push({ el: founderFrame, tiltx: 9, tilty: 6 });
+    var scrollTiltQueued = false;
+    function updateScrollTilt () {
+      scrollTiltQueued = false;
+      var vh = window.innerHeight;
+      scrollTiltTargets.forEach(function (t) {
+        var r = t.el.getBoundingClientRect();
+        var centerY = r.top + r.height / 2;
+        var progress = Math.max(-1, Math.min(1, (vh / 2 - centerY) / (vh / 2)));
+        t.el.style.setProperty('--tiltx', (progress * t.tiltx).toFixed(1) + 'deg');
+        t.el.style.setProperty('--tilty', (progress * t.tilty).toFixed(1) + 'deg');
+      });
+    }
+    window.addEventListener('scroll', function () {
+      if (scrollTiltQueued) return;
+      scrollTiltQueued = true;
+      requestAnimationFrame(updateScrollTilt);
+    }, { passive: true });
+    updateScrollTilt();
   }
 
   /* Service tile hover-tilt: each card leans toward the pointer within it. */

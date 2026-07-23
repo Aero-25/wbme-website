@@ -1188,9 +1188,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   .about-break-hero{height:auto;min-height:100dvh}
 }
 @media(prefers-reduced-motion:reduce){.founder-portrait-frame{transition:none}}
-@media(hover:none){.founder-portrait-frame{animation:idle-tilt-portrait 8s ease-in-out infinite}}
-@keyframes idle-tilt-portrait{0%,100%{transform:perspective(900px) rotateX(2deg) rotateY(-4deg)}50%{transform:perspective(900px) rotateX(-2deg) rotateY(4deg)}}
-@media(hover:none) and (prefers-reduced-motion:reduce){.founder-portrait-frame{animation:none}}
 
 /* ===========================================================
    NORMAL-FLOW SITE CHROME — header nav, footer, scroll progress
@@ -1440,11 +1437,6 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 .about-mark-glow{position:absolute;width:72%;padding-top:72%;border-radius:50%;background:radial-gradient(circle,rgba(227,195,114,.4),transparent 68%);filter:blur(2px)}
 /* "face the cursor" tilt: --tiltx/--tilty set document-wide by glass-fx.js */
 .about-mark-logo{position:relative;width:min(94%,360px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.28));transform:perspective(900px) rotateX(var(--tilty,0deg)) rotateY(var(--tiltx,0deg));transition:transform .18s cubic-bezier(.16,1,.3,1);will-change:transform}
-/* touch devices have no pointer to "face", so the medallion gets a gentle
-   autonomous sway instead of sitting dead still */
-@media(hover:none){.about-mark-logo{animation:idle-tilt-logo 7s ease-in-out infinite}}
-@keyframes idle-tilt-logo{0%,100%{transform:perspective(900px) rotateX(6deg) rotateY(-14deg)}50%{transform:perspective(900px) rotateX(-6deg) rotateY(14deg)}}
-@media(hover:none) and (prefers-reduced-motion:reduce){.about-mark-logo{animation:none}}
 
 @media(max-width:860px){
   .about-float{padding:32px 18px 64px}
@@ -1459,16 +1451,24 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
    disabled under prefers-reduced-motion — owner requires them on every
    machine, including those with the OS "reduce animations" setting on. */
 
-/* ===== OUR PROJECTS — fixed/pinned background, content scrolls over it ===== */
-.showcase-fixed{position:relative;min-height:80vh;display:flex;align-items:center;overflow:hidden;background-size:cover;background-position:center;background-attachment:fixed}
+/* ===== OUR PROJECTS — pinned background, content scrolls over it.
+   Built with position:sticky rather than background-attachment:fixed —
+   iOS Safari never honoured the fixed-background trick (it silently falls
+   back to scroll), so mobile got a "half-working" version of this effect.
+   A sticky media layer, exactly as tall as its section, pins for exactly
+   one screen's worth of scroll and then releases as the next section
+   covers it — identical result on desktop and mobile. ===== */
+.showcase-fixed{position:relative;height:100vh;overflow:hidden}
+.showcase-fixed-media{position:sticky;top:0;left:0;width:100%;height:100vh;background-size:cover;background-position:center;z-index:0}
 .showcase-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,10,18,.84) 0%,rgba(5,10,18,.5) 46%,rgba(5,10,18,.22) 100%),linear-gradient(0deg,rgba(5,10,18,.4),transparent 40%)}
 .showcase-fixed .corner-marks{z-index:3}
-.showcase-content{position:relative;z-index:2;padding:0 clamp(24px,6vw,80px);max-width:620px}
+.showcase-content{position:absolute;top:50%;left:0;z-index:2;transform:translateY(-50%);padding:0 clamp(24px,6vw,80px);max-width:620px}
 .showcase-content .eyebrow{margin-bottom:18px}
 .showcase-content h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.4rem,5vw,4rem);line-height:.98;margin-bottom:20px;text-wrap:balance}
 .showcase-content p{color:var(--mut);font-size:1.05rem;line-height:1.7;margin-bottom:30px;max-width:52ch}
-@media(max-width:860px){
-  .showcase-fixed{min-height:64vh;background-attachment:scroll} /* iOS Safari ignores fixed anyway; avoid a half-working effect */
+@media(max-width:960px){
+  .showcase-fixed{height:100dvh}
+  .showcase-fixed-media{height:100dvh}
 }
 
 /* ===== VIDEO SHOWCASE — full-bleed autoplaying (muted) loop, viewport-gated ===== */
