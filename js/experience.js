@@ -249,7 +249,7 @@
       return;
     }
     try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
-    var MIN = 500, CAP = 1400, start = Date.now();
+    var MIN = 3000, CAP = 6000, start = Date.now();
     var total = 1, loaded = 0, finished = false;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));

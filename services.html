@@ -14,17 +14,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=91">
+<link rel="stylesheet" href="css/experience.css?v=92">
 </head>
 <body data-page="services">
 
 <div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
   <div class="pl-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="pl-glow" aria-hidden="true"></div>
   <div class="pl-inner">
-    <img class="pl-logo" src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90" alt="Walvis Bay Marine Engineering">
-    <div class="pl-prop" aria-hidden="true">
-      <img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=120&height=120&resize=contain&quality=90" alt="">
+    <div class="pl-emblem">
+      <svg class="pl-ring" viewBox="0 0 240 240" aria-hidden="true">
+        <defs><path id="plRingPath" d="M120,120 m-96,0 a96,96 0 1,1 192,0 a96,96 0 1,1 -192,0"></path></defs>
+        <text><textPath href="#plRingPath" startOffset="0%">WALVIS BAY MARINE ENGINEERING &#8226; EST. 1999 &#8226; </textPath></text>
+      </svg>
+      <div class="pl-prop" aria-hidden="true">
+        <img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=160&height=160&resize=contain&quality=90" alt="">
+      </div>
     </div>
+    <div class="pl-word">WB<b>ME</b></div>
+    <div class="pl-tagline">Marine &amp; Metal Engineering</div>
     <div class="pl-rail"><i class="pl-rail-fill" id="plRail"></i></div>
   </div>
 </div>
@@ -78,6 +86,7 @@
   </div>
   <div class="sf-bottom">
     <span>&copy; 2026 Walvis Bay Marine Engineering &middot; Est. 1999</span>
+    <span class="sf-credit">Created and managed by <a href="https://aerodigital.space" target="_blank" rel="noopener">Aero</a></span>
     <a href="admin.html">Admin</a>
   </div>
 </footer>
@@ -141,7 +150,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=43"></script>
-<script src="js/experience.js?v=65"></script>
+<script src="js/experience.js?v=66"></script>
 <script src="js/glass-fx.js?v=5"></script>
 <script src="js/chatbot.js?v=2"></script>
 </body>
