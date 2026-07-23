@@ -1502,6 +1502,20 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
   .svc-tile:hover .svc-tile-bg{transform:scale(1.02)}
 }
 
+/* ===== CLOSING CTA — glass dispatch band before the footer, so Home ends
+   with a deliberate push instead of trailing straight into the footer ===== */
+.closing-cta{position:relative;overflow:hidden;text-align:center;padding:clamp(72px,10vw,120px) clamp(20px,5vw,64px);background:linear-gradient(160deg,#0f2c52 0%,#0a1f3d 55%,#071a33 100%);border-top:1px solid rgba(227,195,114,.16)}
+.cc-glow{position:absolute;left:50%;top:50%;width:min(700px,120vw);aspect-ratio:1;transform:translate(-50%,-50%) scale(1);pointer-events:none;background:radial-gradient(circle,rgba(227,195,114,.2),transparent 68%);filter:blur(50px);animation:cc-glow-pulse 4s ease-in-out infinite}
+@keyframes cc-glow-pulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.9;transform:translate(-50%,-50%) scale(1.08)}}
+.closing-cta .corner-marks{inset:24px}
+.cc-status{position:relative;display:inline-flex;align-items:center;gap:9px;margin-bottom:24px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt)}
+.cc-status i{width:7px;height:7px;border-radius:50%;background:var(--status-online);box-shadow:0 0 0 3px rgba(109,224,138,.22);animation:dispatch-pulse 2.2s ease-in-out infinite}
+.closing-cta h2{position:relative;font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.04;margin-bottom:20px;max-width:18ch;margin-left:auto;margin-right:auto;text-wrap:balance}
+.closing-cta p{position:relative;color:var(--mut);font-size:1.05rem;max-width:52ch;margin:0 auto 34px}
+.cc-actions{position:relative;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
+.cc-actions .btn-brass{width:auto;padding:1rem 2rem}
+@media(prefers-reduced-motion:reduce){.cc-glow{animation:none;opacity:.7}}
+
 /* ===== PROJECTS BLOG — listing grid + single-post view, backed by Supabase ===== */
 .blog-loading,.blog-empty,.blog-error{display:flex;align-items:center;gap:12px;padding:48px 0;color:var(--mut);font-family:'Archivo';font-weight:600;font-size:.9rem}
 .blog-spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(227,195,114,.25);border-top-color:var(--gold-lt);animation:blog-spin .7s linear infinite;flex:none}
@@ -1554,6 +1568,7 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 
 /* login */
 .admin-login{position:relative;display:flex;justify-content:center;padding-top:clamp(20px,6vw,60px);min-height:60vh;align-items:center}
+.admin-login[hidden]{display:none}
 .admin-login-glow{position:absolute;left:50%;top:50%;width:min(560px,90vw);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(circle,rgba(227,195,114,.22),transparent 68%);filter:blur(48px);animation:pl-glow-pulse 3.4s ease-in-out infinite}
 .admin-login-card{
   position:relative;z-index:1;max-width:420px;width:100%;padding:clamp(36px,5vw,48px) clamp(30px,4vw,40px);
