@@ -311,10 +311,11 @@ img{display:block;max-width:100%}
 /* ===========================================================
    MAGNIFICENT LAYER
    =========================================================== */
-/* preloader — a living medallion: rotating brand-ring text around a spinning
-   propeller, a breathing brass glow, bold WBME wordmark. Minimum 3s display
-   (see js/experience.js), so the sequence is built to read as an intentional
-   moment, not a flash of content. */
+/* preloader — a sonar-scan medallion: a rotating radar sweep and rotating
+   brand-ring text around a spinning propeller, a breathing brass glow, a
+   letter-by-letter WBME reveal, and a live percentage readout. Minimum 3s
+   display (see js/experience.js), so the sequence is built to read as an
+   intentional moment, not a flash of content. */
 .preloader{position:fixed;inset:0;z-index:var(--z-preloader);display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at center,#0e2038 0%,#050b14 78%);transition:opacity .4s var(--ease-out),visibility 0s linear .4s}
 .preloader.done{opacity:0;visibility:hidden;pointer-events:none}
 
@@ -328,9 +329,25 @@ img{display:block;max-width:100%}
 .pl-glow{position:absolute;width:min(820px,150vw);aspect-ratio:1;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(227,195,114,.24),transparent 68%);filter:blur(46px);animation:pl-glow-pulse 3.2s ease-in-out infinite}
 @keyframes pl-glow-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
 
+/* brass streak that sweeps across the whole screen the instant the
+   preloader is dismissed — plays out during the parent's own .4s fade. */
+.pl-exit-flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.55) 49%,rgba(227,195,114,.5) 53%,transparent 62%)}
+.preloader.done .pl-exit-flash{animation:pl-exit-sweep .55s ease-out forwards}
+@keyframes pl-exit-sweep{0%{opacity:0;transform:translateX(-38%)}35%{opacity:1}100%{opacity:0;transform:translateX(38%)}}
+
 .pl-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;animation:pl-fade-up .5s var(--ease-out) both}
 
 .pl-emblem{position:relative;width:min(230px,58vw);aspect-ratio:1;margin-bottom:clamp(22px,4.5vw,32px)}
+
+/* static sonar rings + a rotating radar-style sweep wedge behind the ring/propeller */
+.pl-rings{position:absolute;inset:0;border-radius:50%;pointer-events:none}
+.pl-rings:before,.pl-rings:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(227,195,114,.16)}
+.pl-rings:before{inset:13%}
+.pl-rings:after{inset:27%}
+.pl-sweep{position:absolute;inset:6%;border-radius:50%;overflow:hidden;pointer-events:none;animation:pl-sweep-spin 2.6s linear infinite}
+.pl-sweep:before{content:"";position:absolute;inset:-4%;background:conic-gradient(from 0deg,rgba(227,195,114,.5) 0deg,rgba(227,195,114,.08) 34deg,transparent 60deg,transparent 360deg)}
+@keyframes pl-sweep-spin{to{transform:rotate(360deg)}}
+
 .pl-ring{position:absolute;inset:0;width:100%;height:100%;animation:pl-ring-spin 16s linear infinite}
 .pl-ring text{font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.16em;fill:var(--gold-lt)}
 @keyframes pl-ring-spin{to{transform:rotate(360deg)}}
@@ -343,10 +360,19 @@ img{display:block;max-width:100%}
 }
 @keyframes propeller-spin{to{transform:rotate(360deg)}}
 
-.pl-word{font-family:'Anton';text-transform:uppercase;font-size:clamp(2.1rem,7vw,3.1rem);line-height:1;color:#fff;letter-spacing:.02em;margin-bottom:8px}
-.pl-word b{color:var(--gold-lt)}
-.pl-tagline{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(227,195,114,.72);margin-bottom:clamp(26px,5vw,36px)}
+/* WBME wordmark — letters assemble in one at a time instead of arriving as a block */
+.pl-word{display:flex;justify-content:center;font-family:'Anton';text-transform:uppercase;font-size:clamp(2.1rem,7vw,3.1rem);line-height:1;color:#fff;letter-spacing:.02em;margin-bottom:8px}
+.pl-letter{display:inline-block;opacity:0;transform:translateY(16px);animation:pl-letter-in .5s var(--ease-out) forwards}
+.pl-letter:nth-child(1){animation-delay:.1s}
+.pl-letter:nth-child(2){animation-delay:.18s}
+.pl-letter:nth-child(3){animation-delay:.26s}
+.pl-letter:nth-child(4){animation-delay:.34s}
+.pl-letter-gold{color:var(--gold-lt)}
+@keyframes pl-letter-in{to{opacity:1;transform:none}}
+.pl-tagline{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(227,195,114,.72);margin-bottom:clamp(20px,4vw,28px)}
 
+.pl-status{display:flex;align-items:center;justify-content:space-between;width:min(230px,58vw);margin-bottom:9px;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(227,195,114,.55)}
+.pl-percent{font-variant-numeric:tabular-nums;color:var(--gold-lt);font-weight:600}
 .pl-rail{position:relative;width:min(230px,58vw);height:3px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
 .pl-rail-fill{position:absolute;inset:0;width:100%;background:var(--gold-lt);border-radius:999px;transform-origin:0 50%;transform:scaleX(0);transition:transform .15s linear;box-shadow:0 0 10px rgba(227,195,114,.5)}
 
@@ -358,6 +384,8 @@ img{display:block;max-width:100%}
   .pl-inner{animation:none;opacity:1;transform:none}
   .pl-glow{animation:none;opacity:.7}
   .pl-ring{animation:none}
+  .pl-sweep{animation:none}
+  .pl-letter{animation:none;opacity:1;transform:none}
   .pl-rail-fill{transition:none}
 }
 
@@ -1260,10 +1288,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 
 /* magnetic buttons: JS sets --tx/--ty on pointer devices only */
 .explore,.hero-call,.btn-brass,.nav-cta{transform:translate(var(--tx,0px),var(--ty,0px));transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s var(--ease-out),color .25s var(--ease-out),border-color .25s var(--ease-out)}
-
-/* repeat-navigation preloader: quick fade instead of the full gauge animation */
-.preloader.fast-skip{transition:opacity .2s ease}
-.preloader.fast-skip.done{opacity:0;pointer-events:none}
 
 /* ===========================================================
    HOME — static hero copy + scroll teaser sections

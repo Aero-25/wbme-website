@@ -238,22 +238,18 @@
   try {
   /* ===== PRELOADER ===== */
   (function preload () {
-    var pre = document.getElementById('preloader'), rail = document.getElementById('plRail');
+    var pre = document.getElementById('preloader'), rail = document.getElementById('plRail'), pct = document.getElementById('plPercent');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
-    var SEEN_KEY = 'wbme_preloader_seen';
-    var seenBefore = false;
-    try { seenBefore = sessionStorage.getItem(SEEN_KEY) === '1'; } catch (e) { /* sessionStorage unavailable (privacy mode) */ }
-    if (seenBefore) {
-      pre.classList.add('fast-skip');
-      setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 150);
-      return;
-    }
-    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch (e) { /* ignore */ }
+    /* Always plays the full minimum-3s sequence on every page load — this is
+       a deliberate owner requirement (a per-session "seen before" skip was
+       tried earlier and made the loader flash for ~150ms after the first
+       page view, which read as broken). */
     var MIN = 3000, CAP = 6000, start = Date.now();
     var total = 1, loaded = 0, finished = false;
     function setBar (p) {
       p = Math.max(0, Math.min(1, p));
       if (rail) rail.style.transform = 'scaleX(' + p + ')';
+      if (pct) pct.textContent = Math.round(p * 100) + '%';
     }
     function bump () { loaded++; }
     function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 150); }
