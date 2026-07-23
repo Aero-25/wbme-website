@@ -1109,8 +1109,14 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .page-hero.about-hero{height:100vh;min-height:640px}
 @media(max-width:720px){.page-hero.about-hero{height:auto;min-height:100dvh}}
 .about-hero-video{width:100%;height:100%;object-fit:cover;object-position:center;background:#05080d}
+/* content moved off the bottom-left corner (it was clipping against the
+   viewport edge and colliding with the fixed chatbot launcher there) and
+   centred as one big cinematic title card, matching the full-bleed canvas. */
+.about-hero{align-items:center;justify-content:center;text-align:center}
+.about-hero .in{max-width:640px;padding:0 28px}
+.about-hero .ti{font-size:clamp(3.6rem,9vw,7.5rem)}
 .about-hero-quote{
-  margin-top:18px;font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+  margin:18px auto 0;font-family:'Fraunces',serif;font-style:italic;font-weight:500;
   color:#fff;font-size:clamp(1.3rem,2.6vw,1.9rem);text-wrap:balance;max-width:20ch;
 }
 
@@ -1158,6 +1164,16 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .industry-tags{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
 .industry-tags span{font-family:'Archivo';font-weight:600;font-size:.82rem;padding:9px 16px;border-radius:999px;border:1px solid rgba(227,195,114,.3);color:var(--gold-lt)}
 .standard-note{color:var(--mut);font-size:.92rem;line-height:1.6;max-width:40ch}
+
+/* ---- working hours: compact glass info card ---- */
+.hours-panel{position:relative;max-width:520px;margin:0 auto clamp(48px,6vw,68px);padding:clamp(28px,4vw,40px) clamp(28px,4.5vw,44px);border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(227,195,114,.2);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.hours-head{display:flex;align-items:center;gap:12px;font-family:'Archivo';font-weight:700;font-size:.92rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:16px}
+.hours-head:before{content:"";width:3px;height:18px;background:var(--gold);border-radius:2px}
+.hours-note{color:var(--mut);font-size:.92rem;line-height:1.6;margin-bottom:22px}
+.hours-list{list-style:none;display:flex;flex-direction:column;gap:12px;padding-top:18px;border-top:1px solid rgba(227,195,114,.16)}
+.hours-list li{display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.86rem}
+.hours-list span{color:var(--mut)}
+.hours-list b{color:#fff;font-weight:600;letter-spacing:.02em}
 
 /* ---- mid-page break: full-bleed atmospheric hero (not a thin divider) ---- */
 .about-break-hero{height:100vh;min-height:600px;padding:0;margin:0 0 clamp(48px,6vw,68px)}
@@ -1262,6 +1278,14 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 }
 .sf-top-btn:hover{transform:translateY(-2px);border-color:var(--gold-lt);background:rgba(199,154,62,.18)}
 .sf-top-btn:focus-visible{outline:3px solid var(--gold-lt);outline-offset:3px}
+.sf-hours{
+  max-width:1180px;margin:0 auto;
+  display:flex;flex-wrap:wrap;align-items:center;gap:18px;
+  padding:0 clamp(20px,5vw,64px) 18px;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.03em;color:var(--mut);
+}
+.sf-hours-tag{font-family:'Archivo';font-weight:700;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt)}
+.sf-hours-row b{color:#fff;font-weight:600}
 .sf-bottom{
   max-width:1180px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
@@ -1273,6 +1297,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 @media(max-width:640px){
   .sf-row{padding:22px 20px;justify-content:center;text-align:center}
   .sf-links{justify-content:center}
+  .sf-hours{justify-content:center;text-align:center;padding:0 20px 18px}
   .sf-bottom{justify-content:center;text-align:center}
 }
 
