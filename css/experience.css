@@ -1514,7 +1514,8 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 @media(max-width:640px){.cc-card{padding:40px 26px;border-radius:24px}}
 @media(prefers-reduced-motion:reduce){
   .cc-glow,.cc-glow-2{animation:none;opacity:.6}
-  .cc-card,.cc-card:before{transition:none;animation:none;opacity:0}
+  .cc-card{transition:none}
+  .cc-card:before{animation:none;opacity:0}
 }
 
 /* ===== ABOUT PAGE — editorial heritage pass ===== */
