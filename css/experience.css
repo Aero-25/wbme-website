@@ -1520,19 +1520,50 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
   .svc-tile:hover .svc-tile-bg{transform:scale(1.02)}
 }
 
-/* ===== CLOSING CTA — glass dispatch band before the footer, so Home ends
-   with a deliberate push instead of trailing straight into the footer ===== */
-.closing-cta{position:relative;overflow:hidden;text-align:center;padding:clamp(72px,10vw,120px) clamp(20px,5vw,64px);background:linear-gradient(160deg,#0f2c52 0%,#0a1f3d 55%,#071a33 100%);border-top:1px solid rgba(227,195,114,.16)}
+/* ===== CLOSING CTA — a floating glass card (sheen sweep + cursor spotlight +
+   hover lift), not just a flat gradient band, so Home ends on the same
+   "wow" register as the About card instead of trailing into the footer ===== */
+.closing-cta{position:relative;overflow:hidden;text-align:center;padding:clamp(64px,9vw,110px) clamp(20px,5vw,64px);background:linear-gradient(160deg,#0f2c52 0%,#0a1f3d 55%,#071a33 100%);border-top:1px solid rgba(227,195,114,.16)}
 .cc-glow{position:absolute;left:50%;top:50%;width:min(700px,120vw);aspect-ratio:1;transform:translate(-50%,-50%) scale(1);pointer-events:none;background:radial-gradient(circle,rgba(227,195,114,.2),transparent 68%);filter:blur(50px);animation:cc-glow-pulse 4s ease-in-out infinite}
+.cc-glow-2{width:min(420px,80vw);background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%);filter:blur(40px);animation-duration:5.5s;animation-direction:reverse}
 @keyframes cc-glow-pulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.9;transform:translate(-50%,-50%) scale(1.08)}}
-.closing-cta .corner-marks{inset:24px}
-.cc-status{position:relative;display:inline-flex;align-items:center;gap:9px;margin-bottom:24px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt)}
+
+.cc-card{
+  position:relative;z-index:2;max-width:860px;margin:0 auto;overflow:hidden;
+  padding:clamp(48px,7vw,76px) clamp(28px,5vw,56px);border-radius:32px;
+  background:linear-gradient(160deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(227,195,114,.32);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
+  box-shadow:0 40px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18),0 0 50px rgba(199,154,62,.16);
+  transition:transform .4s var(--ease-out),box-shadow .4s var(--ease-out);
+}
+.cc-card:hover{transform:translateY(-5px);box-shadow:0 50px 110px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.22),0 0 70px rgba(199,154,62,.26)}
+.cc-card:before{
+  content:"";position:absolute;top:-60%;left:-70%;width:55%;height:220%;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.5) 48%,rgba(227,195,114,.42) 54%,transparent 72%);
+  transform:rotate(8deg) translateX(-20%);
+  animation:about-sheen 7s ease-in-out infinite;
+  mix-blend-mode:overlay;
+}
+.cc-card:after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,50%),rgba(227,195,114,.4),transparent 62%);
+  transition:opacity .35s var(--ease-out);
+}
+.cc-card:hover:after{opacity:1}
+.cc-card > *{position:relative;z-index:2}
+.cc-card .corner-marks{inset:18px}
+.cc-status{display:inline-flex;align-items:center;gap:9px;margin-bottom:24px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt)}
 .cc-status i{width:7px;height:7px;border-radius:50%;background:var(--status-online);box-shadow:0 0 0 3px rgba(109,224,138,.22);animation:dispatch-pulse 2.2s ease-in-out infinite}
-.closing-cta h2{position:relative;font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.04;margin-bottom:20px;max-width:18ch;margin-left:auto;margin-right:auto;text-wrap:balance}
-.closing-cta p{position:relative;color:var(--mut);font-size:1.05rem;max-width:52ch;margin:0 auto 34px}
-.cc-actions{position:relative;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
+.closing-cta h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.04;margin-bottom:20px;max-width:18ch;margin-left:auto;margin-right:auto;text-wrap:balance}
+.closing-cta p{color:var(--mut);font-size:1.05rem;max-width:52ch;margin:0 auto 34px}
+.cc-actions{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
 .cc-actions .btn-brass{width:auto;padding:1rem 2rem}
-@media(prefers-reduced-motion:reduce){.cc-glow{animation:none;opacity:.7}}
+@media(max-width:640px){.cc-card{padding:40px 26px;border-radius:24px}}
+@media(prefers-reduced-motion:reduce){
+  .cc-glow,.cc-glow-2{animation:none;opacity:.6}
+  .cc-card,.cc-card:before{transition:none;animation:none;opacity:0}
+}
 
 /* ===== ABOUT PAGE — editorial heritage pass ===== */
 .lead-statement{font-family:'Fraunces',serif;font-style:italic;font-weight:500;line-height:1.35}
