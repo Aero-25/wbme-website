@@ -1311,14 +1311,19 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
   position:relative;z-index:3;margin:-28px auto 0;max-width:1180px;
   display:grid;grid-template-columns:1.3fr 1fr;align-items:stretch;
   border-radius:32px;overflow:hidden;
-  background:linear-gradient(135deg,rgba(255,255,255,.52) 0%,rgba(255,255,255,.24) 100%);
+  /* 3D brass frame: gradient border (light catches top-left, shadow falls
+     bottom-right, glint at the tail) drawn in the border-box layer while the
+     glass gradient fills the padding-box — works with the rounded corners. */
+  border:3px solid transparent;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.52) 0%,rgba(255,255,255,.24) 100%) padding-box,
+    linear-gradient(160deg,#f6e6b6 0%,#e3c372 18%,#c79a3e 42%,#7b5619 68%,#a67828 84%,#f1dca6 100%) border-box;
   -webkit-backdrop-filter:blur(34px) saturate(1.6);backdrop-filter:blur(34px) saturate(1.6);
-  border:1px solid rgba(255,255,255,.55);
-  box-shadow:0 30px 64px rgba(5,10,18,.45),inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(255,255,255,.15);
+  box-shadow:0 30px 64px rgba(5,10,18,.45),0 0 0 1px rgba(123,86,25,.5),inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(255,255,255,.15);
   transform:perspective(1400px) rotateX(1.2deg);
   transition:transform .45s var(--ease-out),box-shadow .45s var(--ease-out);
 }
-.about-card:hover{transform:perspective(1400px) rotateX(0deg) translateY(-4px);box-shadow:0 40px 80px rgba(5,10,18,.4),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(255,255,255,.18)}
+.about-card:hover{transform:perspective(1400px) rotateX(0deg) translateY(-4px);box-shadow:0 40px 80px rgba(5,10,18,.4),0 0 0 1px rgba(123,86,25,.5),0 0 34px rgba(227,195,114,.35),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(255,255,255,.18)}
 /* continuous light sweep — glass catching light, like real refraction */
 .about-card:before{
   content:"";position:absolute;top:-60%;left:-70%;width:55%;height:220%;z-index:4;pointer-events:none;
@@ -1350,7 +1355,7 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 .about-mark{position:relative;z-index:5;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:36px}
 .about-mark-glow{position:absolute;width:72%;padding-top:72%;border-radius:50%;background:radial-gradient(circle,rgba(227,195,114,.4),transparent 68%);filter:blur(2px)}
 /* "face the cursor" tilt: --tiltx/--tilty set document-wide by glass-fx.js */
-.about-mark-logo{position:relative;width:min(78%,260px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.28));transform:perspective(700px) rotateX(var(--tilty,0deg)) rotateY(var(--tiltx,0deg));transition:transform .25s cubic-bezier(.16,1,.3,1);will-change:transform}
+.about-mark-logo{position:relative;width:min(94%,360px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.28));transform:perspective(900px) rotateX(var(--tilty,0deg)) rotateY(var(--tiltx,0deg));transition:transform .18s cubic-bezier(.16,1,.3,1);will-change:transform}
 
 @media(max-width:860px){
   .about-float{padding:32px 18px 64px}
@@ -1361,12 +1366,9 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
   .about-copy{padding:32px 26px}
   .about-stats{gap:22px}
 }
-@media(prefers-reduced-motion:reduce){
-  .about-card{transition:none}
-  .about-mark-logo{transition:none}
-  .about-card-glow{animation:none;opacity:.6}
-  .about-card:before{animation:none;opacity:0}
-}
+/* NOTE: the About-card effects (glow, sheen, logo tilt) are deliberately NOT
+   disabled under prefers-reduced-motion — owner requires them on every
+   machine, including those with the OS "reduce animations" setting on. */
 
 /* ===== OUR PROJECTS — fixed/pinned background, content scrolls over it ===== */
 .showcase-fixed{position:relative;min-height:80vh;display:flex;align-items:center;overflow:hidden;background-size:cover;background-position:center;background-attachment:fixed}

@@ -29,34 +29,36 @@
     });
   });
 
-  /* "Face the cursor" — the About card logo subtly turns toward the pointer
-     anywhere on the page (not just on hover), like it's tracking you. */
+  /* "Face the cursor" — the About card logo turns toward the pointer
+     anywhere on the page, like a medallion swivelling to track you.
+     Deliberately NOT gated on prefers-reduced-motion (owner requirement:
+     must work on every machine — the OS "reduce animations" setting was
+     silently disabling it before). Normalised across the viewport so the
+     turn is unmistakable: cursor at a screen edge = full tilt. */
   var faceLogo = document.querySelector('.about-mark-logo');
-  if (faceLogo && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var FACE_MAX_TILT = 16, FACE_RANGE = 700;
+  if (faceLogo) {
+    var FACE_MAX_TILT = 38;
     document.addEventListener('pointermove', function (e) {
       var r = faceLogo.getBoundingClientRect();
       var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      var dx = Math.max(-1, Math.min(1, (e.clientX - cx) / FACE_RANGE));
-      var dy = Math.max(-1, Math.min(1, (e.clientY - cy) / FACE_RANGE));
+      var dx = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
+      var dy = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
       faceLogo.style.setProperty('--tiltx', (dx * FACE_MAX_TILT).toFixed(1) + 'deg');
       faceLogo.style.setProperty('--tilty', (-dy * FACE_MAX_TILT).toFixed(1) + 'deg');
     }, { passive: true });
   }
 
   /* Service tile hover-tilt: each card leans toward the pointer within it. */
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.svc-tile').forEach(function (el) {
-      el.addEventListener('pointermove', function (e) {
-        var r = el.getBoundingClientRect();
-        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-        el.style.setProperty('--rx', ((px - 0.5) * 14).toFixed(1) + 'deg');
-        el.style.setProperty('--ry', ((0.5 - py) * 10).toFixed(1) + 'deg');
-      });
-      el.addEventListener('pointerleave', function () {
-        el.style.setProperty('--rx', '0deg');
-        el.style.setProperty('--ry', '0deg');
-      });
+  document.querySelectorAll('.svc-tile').forEach(function (el) {
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      el.style.setProperty('--rx', ((px - 0.5) * 14).toFixed(1) + 'deg');
+      el.style.setProperty('--ry', ((0.5 - py) * 10).toFixed(1) + 'deg');
     });
-  }
+    el.addEventListener('pointerleave', function () {
+      el.style.setProperty('--rx', '0deg');
+      el.style.setProperty('--ry', '0deg');
+    });
+  });
 })();
