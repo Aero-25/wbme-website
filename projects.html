@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=85">
+<link rel="stylesheet" href="css/experience.css?v=86">
 </head>
 <body data-page="projects">
 
@@ -88,19 +88,10 @@
   <div class="cm-backdrop" data-contact-close></div>
   <div class="cm-panel" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
     <button class="cm-x" type="button" data-contact-close aria-label="Close contact form">&times;</button>
-    <div class="cm-head">
-      <span class="eyebrow">Get in touch</span>
-      <h3 id="contactModalTitle">Contact WBME</h3>
-      <p>Vessel in dock or component down? Call, email or send job details below &mdash; WBME responds fast when work is time-critical.</p>
-    </div>
-    <div class="cm-info">
-      <div class="cm-i"><b>Visit</b><span>8th Street East, Industrial Area, Walvis Bay</span></div>
-      <div class="cm-i"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
-      <div class="cm-i"><b>Email</b><span><a href="#" data-mail data-mail-text>Loading&hellip;</a></span></div>
-      <div class="cm-i"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00</span></div>
-    </div>
-    <div class="contact-split">
-      <div class="cs-form-col">
+    <div class="cm-grid">
+      <div class="cm-form-side">
+        <span class="eyebrow">Get in touch</span>
+        <h3 id="contactModalTitle">Contact WBME</h3>
         <form class="cm-form" id="contactModalForm" novalidate>
           <div class="frow">
             <div class="ticket-field"><label for="mm-name">Name</label><input id="mm-name" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
@@ -112,16 +103,18 @@
           </div>
           <div class="ticket-field"><label for="mm-msg">Message</label><textarea id="mm-msg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
           <button type="submit" class="btn-brass">Send request &rarr;</button>
-          <p class="form-note">This opens your email app with the request filled in. Urgent job? Call +264 (0)64 285 700.</p>
+          <p class="form-note">Opens your email app with the request filled in.</p>
         </form>
         <div class="form-ok">&check; Thanks! Your email app should open with your request ready to send.</div>
       </div>
-      <div class="cs-photo">
-        <div class="hero-bg" style="background-image:url('images/3.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg"></div>
-        <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-        <div class="dispatch-status"><i class="dot"></i>Workshop online</div>
-        <div class="dispatch-coord"><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
-      </div>
+      <aside class="cm-side" aria-label="WBME contact details and location">
+        <div class="cm-d"><b>Visit</b><span>8th Street East, Industrial Area, Walvis Bay, Namibia</span></div>
+        <div class="cm-d"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
+        <div class="cm-d"><b>Email</b><span><a href="#" data-mail data-mail-text>Loading&hellip;</a></span></div>
+        <div class="cm-d"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00</span></div>
+        <div class="cm-map"><iframe title="WBME location map" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
+        <div class="cm-side-foot"><span class="cm-status"><i></i>Workshop online</span><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
+      </aside>
     </div>
   </div>
 </div>
@@ -154,7 +147,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="js/bucket-assets.js?v=43"></script>
 <script src="js/supabase-client.js?v=1"></script>
-<script src="js/experience.js?v=63"></script>
+<script src="js/experience.js?v=64"></script>
 <script src="js/glass-fx.js?v=5"></script>
 <script src="js/chatbot.js?v=2"></script>
 <script src="js/projects-blog.js?v=1"></script>

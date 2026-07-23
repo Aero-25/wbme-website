@@ -207,7 +207,7 @@
       e.preventDefault();
       var ok = true;
       form.querySelectorAll('[required]').forEach(function (inp) {
-        var f = inp.closest('.field'), v = inp.value.trim() !== '';
+        var f = inp.closest('.ticket-field,.field'), v = inp.value.trim() !== '';
         if (inp.type === 'email' && v) v = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value.trim());
         f.classList.toggle('invalid', !v); if (!v) ok = false;
       });
@@ -226,7 +226,7 @@
         .catch(mailto);
     });
     form.querySelectorAll('input,textarea').forEach(function (i) {
-      i.addEventListener('input', function () { i.closest('.field').classList.remove('invalid'); });
+      i.addEventListener('input', function () { var f = i.closest('.ticket-field,.field'); if (f) f.classList.remove('invalid'); });
     });
   }
   wireContactForm(document.getElementById('contactForm'));
