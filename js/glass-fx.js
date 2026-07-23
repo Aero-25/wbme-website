@@ -5,7 +5,7 @@
   'use strict';
   if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
 
-  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass,.about-card,.svc-tile';
+  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass,.about-card,.svc-tile,.blog-card';
   document.addEventListener('pointermove', function (e) {
     var t = e.target.closest && e.target.closest(SEL);
     if (!t) return;

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=95">
+<link rel="stylesheet" href="css/experience.css?v=96">
 </head>
 <body data-page="contact">
 
@@ -57,43 +57,37 @@
   <div class="in"><div class="ey">Get in touch</div><h1 class="ti">Contact</h1></div>
 </section>
 <div class="panel-body">
-  <div class="cm-info p-rv">
-    <div class="cm-i"><b>Visit</b><span>8th Street East, Industrial Area<br>Walvis Bay, Namibia</span></div>
-    <div class="cm-i"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
-    <div class="cm-i"><b>Email</b><span><a href="#" data-mail data-mail-text>Loading&hellip;</a></span></div>
-    <div class="cm-i"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00 &middot; Sat closed &middot; Sun on request</span></div>
-  </div>
-  <div class="contact-split p-rv">
-    <div class="cs-form-col">
-      <span class="eyebrow">Reach us</span>
-      <h3>Tell us what needs fixing</h3>
-      <p>When a vessel is in dock or a plant component fails, WBME is ready to respond &mdash; call, email or send job details below.</p>
-      <form id="contactForm" novalidate>
-        <div class="frow">
-          <div class="ticket-field"><label for="cname">Name</label><input id="cname" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
-          <div class="ticket-field"><label for="cemail">Email</label><input id="cemail" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
-        </div>
-        <div class="frow">
-          <div class="ticket-field"><label for="cphone">Phone</label><input id="cphone" name="phone" placeholder="+264 &hellip;"></div>
-          <div class="ticket-field"><label for="cservice">Service</label><select id="cservice" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
-        </div>
-        <div class="ticket-field"><label for="cmsg">Message</label><textarea id="cmsg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
-        <button type="submit" class="btn-brass">Send request &rarr;</button>
-        <p class="form-note">This opens your email app with the request filled in. Urgent job? Call +264 (0)64 285 700.</p>
-      </form>
-      <div class="form-ok">&check; Thanks! Your email app should open with your request ready to send.</div>
+  <div class="contact-panel p-rv">
+    <div class="contact-panel-glow" aria-hidden="true"></div>
+    <div class="cm-grid">
+      <div class="cm-form-side">
+        <span class="eyebrow">Reach us</span>
+        <h3>Tell us what needs fixing</h3>
+        <p>When a vessel is in dock or a plant component fails, WBME is ready to respond &mdash; call, email or send job details below.</p>
+        <form id="contactForm" novalidate>
+          <div class="frow">
+            <div class="ticket-field"><label for="cname">Name</label><input id="cname" name="name" required placeholder="Your name"><span class="err">Please enter your name.</span></div>
+            <div class="ticket-field"><label for="cemail">Email</label><input id="cemail" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
+          </div>
+          <div class="frow">
+            <div class="ticket-field"><label for="cphone">Phone</label><input id="cphone" name="phone" placeholder="+264 &hellip;"></div>
+            <div class="ticket-field"><label for="cservice">Service</label><select id="cservice" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
+          </div>
+          <div class="ticket-field"><label for="cmsg">Message</label><textarea id="cmsg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
+          <button type="submit" class="btn-brass">Send request &rarr;</button>
+          <p class="form-note">This opens your email app with the request filled in. Urgent job? Call +264 (0)64 285 700.</p>
+        </form>
+        <div class="form-ok">&check; Thanks! Your email app should open with your request ready to send.</div>
+      </div>
+      <aside class="cm-side" aria-label="WBME contact details and location">
+        <div class="cm-d"><b>Visit</b><span>8th Street East, Industrial Area, Walvis Bay, Namibia</span></div>
+        <div class="cm-d"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
+        <div class="cm-d"><b>Email</b><span><a href="#" data-mail>Send an email &rarr;</a></span></div>
+        <div class="cm-d"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00 &middot; Sat closed &middot; Sun on request</span></div>
+        <div class="cm-map"><iframe title="WBME location map" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
+        <div class="cm-side-foot"><span class="cm-status"><i></i>Workshop online</span><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
+      </aside>
     </div>
-    <div class="cs-photo">
-      <div class="hero-bg" data-parallax="0.1" style="background-image:url('images/3.jpg')" data-bucket-bg="wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg"></div>
-      <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-      <div class="dispatch-status"><i class="dot"></i>Workshop online</div>
-      <div class="dispatch-coord"><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
-    </div>
-  </div>
-  <div class="map-frame p-rv">
-    <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <div class="map-frame-label"><span class="eyebrow">Find us</span><span class="dispatch-coord">22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
-    <div class="map"><iframe title="WBME location" loading="lazy" src="https://www.google.com/maps?q=8th+Street+East,+Industrial+Area,+Walvis+Bay,+Namibia&output=embed"></iframe></div>
   </div>
 </div>
 </main>
@@ -122,7 +116,7 @@
 <div class="drawer" id="drawer">
   <div class="top"><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
   <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact.html">Contact</a>
-  <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail data-mail-text>Email</a><span>8th Street East, Walvis Bay</span></div>
+  <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail>Email us</a><span>8th Street East, Walvis Bay</span></div>
 </div>
 
 <button class="chatbot-fab" id="chatbotFab" type="button" aria-label="Chat with the WBME assistant" aria-expanded="false">
@@ -144,7 +138,7 @@
 
 <script src="js/bucket-assets.js?v=43"></script>
 <script src="js/experience.js?v=66"></script>
-<script src="js/glass-fx.js?v=5"></script>
+<script src="js/glass-fx.js?v=6"></script>
 <script src="js/chatbot.js?v=2"></script>
 </body>
 </html>
