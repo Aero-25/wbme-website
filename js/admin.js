@@ -62,6 +62,7 @@
 
   /* ===== LIST ===== */
   var listEl = document.getElementById('adminList');
+  var statsEl = document.getElementById('adminStats');
   var currentRows = [];
 
   function loadList () {
@@ -69,16 +70,29 @@
     sb.from('projects').select('*').order('created_at', { ascending: false }).then(function (res) {
       if (res.error) { listEl.innerHTML = '<p class="admin-empty">Could not load projects: ' + esc(res.error.message) + '</p>'; return; }
       currentRows = res.data || [];
+      renderStats(currentRows);
       renderList(currentRows);
     });
+  }
+
+  function renderStats (rows) {
+    if (!statsEl) return;
+    var published = rows.filter(function (r) { return r.published; }).length;
+    statsEl.innerHTML =
+      '<div class="admin-stat"><b>' + rows.length + '</b><span>Total posts</span></div>' +
+      '<div class="admin-stat"><b>' + published + '</b><span>Published</span></div>' +
+      '<div class="admin-stat"><b>' + (rows.length - published) + '</b><span>Drafts</span></div>';
   }
 
   function renderList (rows) {
     if (!rows.length) { listEl.innerHTML = '<p class="admin-empty">No projects yet. Click &ldquo;New project&rdquo; to add the first one.</p>'; return; }
     listEl.innerHTML = rows.map(function (p) {
+      var badge = p.published
+        ? '<span class="admin-badge is-published">Published</span>'
+        : '<span class="admin-badge is-draft">Draft</span>';
       return '<div class="admin-row" data-id="' + p.id + '">' +
         '<div class="admin-row-thumb" style="background-image:url(\'' + img(p.cover_path) + '\')"></div>' +
-        '<div class="admin-row-body"><b>' + esc(p.title) + '</b><span>' + esc(p.discipline) + ' &middot; ' + (p.published ? 'Published' : 'Draft') + '</span></div>' +
+        '<div class="admin-row-body"><b>' + esc(p.title) + '</b><div class="admin-row-meta"><span>' + esc(p.discipline) + '</span>' + badge + '</div></div>' +
         '<div class="admin-row-actions"><button type="button" class="btn-ghost-sm admin-edit">Edit</button><button type="button" class="btn-ghost-sm admin-del">Delete</button></div>' +
       '</div>';
     }).join('');
