@@ -1,37 +1,43 @@
-# Walvis Bay Marine Engineering (WBME) — Website
+# Walvis Bay Marine Engineering website
 
-A cinematic, five-page marketing site for WBME — a marine & metal engineering firm in Walvis Bay, Namibia (est. 1999).
+A cinematic static website for WBME, a marine and metal engineering workshop in Walvis Bay, Namibia, established in 1999.
 
-**Demo build** — static HTML/CSS/JS, no build step.
+## Experience
 
-## The experience
-Five real, normally-scrollable pages — **Home · About · Services · Projects · Contact** — sharing one header/nav/footer/chatbot and one scroll-effects system: reveal-on-scroll, parallax drift, a header that solidifies on scroll, a scroll progress bar, and magnetic buttons.
+Six normally scrolling routes share one responsive design system:
 
-- Same look on desktop and mobile (nav collapses to a hamburger drawer under 960px).
-- `prefers-reduced-motion` aware — every effect (reveal, parallax, magnetic pull) disables cleanly.
-- Blue + brass/gold, dark cinematic, ANTON display titles.
+- Home, About, Services, Projects, Contact, and Legal
+- Dark navy and brass visual language built around real WBME yard photography
+- Self-hosted display, interface, body, and technical fonts
+- Keyboard-ready mobile navigation, quote modal, project lightbox, forms, and on-site assistant
+- Fail-safe reveal motion, CSS scroll progress, and full `prefers-reduced-motion` support
+- Local image fallbacks that progressively upgrade to optimized WebP workshop photography
+- Responsive layouts with no horizontal overflow and touch targets sized for mobile use
 
 ## Structure
-```
-├── index.html, about.html, services.html, projects.html, contact.html
-├── css/experience.css      # shared design system + scroll-effects engine
-├── js/experience.js        # header/nav state, reveals, parallax, progress, lightbox, form
-├── js/glass-fx.js          # cursor spotlight + magnetic buttons
-├── js/chatbot.js           # on-site assistant
-├── js/bucket-assets.js     # Supabase Storage image hydration
-├── images/                 # logo, photography, service icons
-└── docs/superpowers/specs/ # design specs
+
+```text
+├── index.html, about.html, services.html, projects.html, contact.html, legal.html
+├── css/experience.css      # shared visual system and responsive layouts
+├── js/experience.js        # navigation, overlays, forms, gallery, and lightbox
+├── js/chatbot.js           # local on-site workshop assistant
+├── js/bucket-assets.js     # progressive Supabase image upgrades
+├── fonts/                  # self-hosted web fonts
+├── images/                 # brand assets, local fallbacks, and generated texture
+├── robots.txt
+└── sitemap.xml
 ```
 
 ## Run locally
-Serve the folder (don't open via `file://` — the contact form's `fetch()` POST to Formspree can misbehave from a `file://` origin in some browsers):
+
+There is no build step. Serve the repository root and open the local URL:
+
 ```bash
-python -m http.server 8000   # then http://localhost:8000
+python -m http.server 8000
 ```
 
-## Notes
-- Contact form opens the visitor's email client to `info@wbme.com.na` (swap for a hosted endpoint for in-page sending).
-- Placeholder logo lockup + demo photography; real brand assets to be dropped in.
+Then visit `http://localhost:8000`.
 
----
-*Walvis Bay Marine Engineering — "No job too big, no job too small."*
+## Contact behavior
+
+Quote forms validate in the browser and open a prepared email to `info@wbme.com.na`. Replace the placeholder Formspree endpoint in `js/experience.js` when hosted in-page submission is configured.
