@@ -5,7 +5,7 @@
   'use strict';
   if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
 
-  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass';
+  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass,.about-card,.svc-tile';
   document.addEventListener('pointermove', function (e) {
     var t = e.target.closest && e.target.closest(SEL);
     if (!t) return;
@@ -42,5 +42,21 @@
       faceLogo.style.setProperty('--tiltx', (dx * FACE_MAX_TILT).toFixed(1) + 'deg');
       faceLogo.style.setProperty('--tilty', (-dy * FACE_MAX_TILT).toFixed(1) + 'deg');
     }, { passive: true });
+  }
+
+  /* Service tile hover-tilt: each card leans toward the pointer within it. */
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.svc-tile').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--rx', ((px - 0.5) * 14).toFixed(1) + 'deg');
+        el.style.setProperty('--ry', ((0.5 - py) * 10).toFixed(1) + 'deg');
+      });
+      el.addEventListener('pointerleave', function () {
+        el.style.setProperty('--rx', '0deg');
+        el.style.setProperty('--ry', '0deg');
+      });
+    });
   }
 })();
