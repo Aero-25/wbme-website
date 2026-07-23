@@ -194,15 +194,8 @@ img{display:block;max-width:100%}
   position:relative;z-index:1;width:min(1080px,100%);max-height:min(90vh,720px);overflow-y:auto;
   background:linear-gradient(165deg,rgba(27,58,99,.5) 0%,rgba(7,26,51,.62) 100%);
   -webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);
-  /* rope frame: a real photographed rope image used as a CSS border-image —
-     square corners (the source is a picture-frame rope, not a rounded one),
-     so border-radius drops to match instead of fighting the photo's corners. */
-  border-style:solid;border-width:28px;border-radius:6px;
-  border-image-source:url('https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/ChatGPT%20Image%20Jul%2023,%202026,%2007_40_58%20AM.png');
-  border-image-slice:167 135 223 134;
-  border-image-width:28px;
-  border-image-repeat:round;
-  box-shadow:0 50px 120px rgba(0,0,0,.6),0 0 40px rgba(199,154,62,.22),inset 0 1px 0 rgba(255,255,255,.24);
+  border:1px solid rgba(255,255,255,.18);border-radius:30px;
+  box-shadow:0 50px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.24);
   padding:clamp(28px,4vw,48px);
   opacity:0;filter:blur(10px);transform:scale(.94) translateY(14px);
   transition:opacity .4s var(--ease-out),transform .4s var(--ease-out),filter .4s var(--ease-out);
