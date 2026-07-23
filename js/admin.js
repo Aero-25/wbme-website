@@ -67,7 +67,7 @@
 
   function loadList () {
     listEl.innerHTML = '<p class="admin-empty">Loading&hellip;</p>';
-    sb.from('projects').select('*').order('created_at', { ascending: false }).then(function (res) {
+    sb.from('projects').select('*').order('project_date', { ascending: false }).order('created_at', { ascending: false }).then(function (res) {
       if (res.error) { listEl.innerHTML = '<p class="admin-empty">Could not load projects: ' + esc(res.error.message) + '</p>'; return; }
       currentRows = res.data || [];
       renderStats(currentRows);
@@ -119,6 +119,7 @@
     title: document.getElementById('pf-title'),
     discipline: document.getElementById('pf-discipline'),
     slug: document.getElementById('pf-slug'),
+    date: document.getElementById('pf-date'),
     summary: document.getElementById('pf-summary'),
     body: document.getElementById('pf-body'),
     cover: document.getElementById('pf-cover'),
@@ -138,6 +139,7 @@
     pf.title.value = p ? p.title : '';
     pf.discipline.value = p ? p.discipline : 'General';
     pf.slug.value = p ? p.slug : '';
+    pf.date.value = p && p.project_date ? p.project_date : new Date().toISOString().slice(0, 10);
     pf.summary.value = p ? p.summary : '';
     pf.body.value = p ? p.body : '';
     pf.published.checked = p ? !!p.published : true;
@@ -185,6 +187,7 @@
       var row = {
         title: pf.title.value.trim(),
         slug: slugify(pf.slug.value || pf.title.value),
+        project_date: pf.date.value || new Date().toISOString().slice(0, 10),
         discipline: pf.discipline.value,
         summary: pf.summary.value.trim(),
         body: pf.body.value.trim(),

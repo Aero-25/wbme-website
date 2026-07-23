@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=103">
+<link rel="stylesheet" href="css/experience.css?v=104">
 </head>
 <body data-page="admin">
 
@@ -76,7 +76,10 @@
           </select>
         </div>
       </div>
-      <div class="ticket-field"><label for="pf-slug">Slug (URL)</label><input id="pf-slug" required placeholder="e.g. new-ships-rudder"></div>
+      <div class="frow">
+        <div class="ticket-field"><label for="pf-slug">Slug (URL)</label><input id="pf-slug" required placeholder="e.g. new-ships-rudder"></div>
+        <div class="ticket-field"><label for="pf-date">Project date</label><input id="pf-date" type="date" required><span class="admin-file-hint">Controls sort order &mdash; newest date shows first, not upload order.</span></div>
+      </div>
       <div class="ticket-field"><label for="pf-summary">Summary (card blurb)</label><textarea id="pf-summary" required rows="2"></textarea></div>
       <div class="ticket-field"><label for="pf-body">Full write-up</label><textarea id="pf-body" rows="6"></textarea></div>
       <b class="admin-form-section">Photos</b>
@@ -98,6 +101,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="js/bucket-assets.js?v=43"></script>
 <script src="js/supabase-client.js?v=1"></script>
-<script src="js/admin.js?v=2"></script>
+<script src="js/admin.js?v=3"></script>
 </body>
 </html>
