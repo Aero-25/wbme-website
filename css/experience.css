@@ -1261,8 +1261,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 }
 .sf-bottom a{color:#7f8fa6;transition:color .2s var(--ease-out)}
 .sf-bottom a:hover{color:var(--gold-lt)}
-.sf-status{display:inline-flex;align-items:center;gap:7px;text-transform:uppercase;color:#7f8fa6}
-.sf-status i{width:6px;height:6px;border-radius:50%;background:var(--status-online);box-shadow:0 0 0 3px rgba(109,224,138,.2);animation:dispatch-pulse 2.2s ease-in-out infinite}
 @media(max-width:640px){
   .sf-row{padding:22px 20px;justify-content:center;text-align:center}
   .sf-links{justify-content:center}
