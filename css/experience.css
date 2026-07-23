@@ -1320,6 +1320,39 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 }
 @media(prefers-reduced-motion:reduce){.about-card{transition:none}}
 
+/* ===== OUR PROJECTS — fixed/pinned background, content scrolls over it ===== */
+.showcase-fixed{position:relative;min-height:80vh;display:flex;align-items:center;overflow:hidden;background-size:cover;background-position:center;background-attachment:fixed}
+.showcase-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,10,18,.84) 0%,rgba(5,10,18,.5) 46%,rgba(5,10,18,.22) 100%),linear-gradient(0deg,rgba(5,10,18,.4),transparent 40%)}
+.showcase-fixed .corner-marks{z-index:3}
+.showcase-content{position:relative;z-index:2;padding:0 clamp(24px,6vw,80px);max-width:620px}
+.showcase-content .eyebrow{margin-bottom:18px}
+.showcase-content h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.4rem,5vw,4rem);line-height:.98;margin-bottom:20px;text-wrap:balance}
+.showcase-content p{color:var(--mut);font-size:1.05rem;line-height:1.7;margin-bottom:30px;max-width:52ch}
+@media(max-width:860px){
+  .showcase-fixed{min-height:64vh;background-attachment:scroll} /* iOS Safari ignores fixed anyway; avoid a half-working effect */
+}
+
+/* ===== VIDEO SHOWCASE — full-bleed autoplaying (muted) loop, viewport-gated ===== */
+.video-showcase{position:relative;min-height:86vh;display:flex;align-items:flex-end;overflow:hidden;background:#050a12}
+.video-showcase-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.video-showcase-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(5,10,18,.86) 0%,rgba(5,10,18,.28) 45%,rgba(5,10,18,.38) 100%)}
+.video-showcase .corner-marks{z-index:3}
+.video-showcase-content{position:relative;z-index:2;padding:0 clamp(24px,6vw,80px) clamp(56px,8vw,96px);max-width:640px}
+.video-showcase-content .eyebrow{margin-bottom:16px}
+.video-showcase-content h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.2rem,4.6vw,3.6rem);line-height:.98;text-wrap:balance}
+.video-sound-toggle{position:absolute;right:clamp(20px,5vw,56px);bottom:clamp(32px,6vw,64px);z-index:3;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(5,10,18,.55);border:1.5px solid rgba(227,195,114,.5);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background .2s var(--ease-out),border-color .2s var(--ease-out),transform .2s var(--ease-out)}
+.video-sound-toggle:hover{border-color:var(--gold-lt);transform:translateY(-2px)}
+.video-sound-toggle:focus-visible{outline:3px solid var(--gold-lt);outline-offset:3px}
+.video-sound-toggle svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8}
+.video-sound-toggle .ico-sound{display:none}
+.video-sound-toggle.is-unmuted{border-color:var(--gold-lt);background:rgba(199,154,62,.22)}
+.video-sound-toggle.is-unmuted .ico-mute{display:none}
+.video-sound-toggle.is-unmuted .ico-sound{display:block}
+@media(max-width:860px){
+  .video-showcase{min-height:70vh}
+  .video-sound-toggle{width:54px;height:54px;right:20px;bottom:24px}
+}
+
 /* ===== PROJECTS BLOG — listing grid + single-post view, backed by Supabase ===== */
 .blog-loading,.blog-empty,.blog-error{display:flex;align-items:center;gap:12px;padding:48px 0;color:var(--mut);font-family:'Archivo';font-weight:600;font-size:.9rem}
 .blog-spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(227,195,114,.25);border-top-color:var(--gold-lt);animation:blog-spin .7s linear infinite;flex:none}
