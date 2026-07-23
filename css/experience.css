@@ -184,32 +184,47 @@ img{display:block;max-width:100%}
 .lightbox .ln:hover{background:var(--gold);color:var(--ink)}
 .lightbox .lp{left:24px}.lightbox .lnx{right:24px}
 
-/* contact modal — replaces the standalone Contact page as the primary way to reach WBME from any page */
+/* contact modal — glass panel: frosted, translucent, refractive edge.
+   A deliberate exception to the site's usual solid navy panels — the one
+   surface on the site meant to feel like a pane of glass, not steel. */
 .contact-modal{position:fixed;inset:0;z-index:var(--z-contact-modal);display:none;align-items:center;justify-content:center;padding:24px}
 .contact-modal.open{display:flex}
-.cm-backdrop{position:absolute;inset:0;background:rgba(5,10,18,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cm-backdrop{position:absolute;inset:0;background:rgba(4,9,16,.62);-webkit-backdrop-filter:blur(12px) saturate(1.1);backdrop-filter:blur(12px) saturate(1.1)}
 .cm-panel{
-  position:relative;z-index:1;width:min(720px,100%);max-height:min(88vh,780px);overflow-y:auto;
-  background:linear-gradient(165deg,var(--ink2) 0%,var(--ink) 100%);
-  border:1px solid rgba(227,195,114,.28);box-shadow:0 40px 90px rgba(0,0,0,.5);
-  padding:clamp(28px,4vw,48px);
+  position:relative;z-index:1;width:min(760px,100%);max-height:min(88vh,800px);overflow-y:auto;
+  background:linear-gradient(165deg,rgba(27,58,99,.5) 0%,rgba(7,26,51,.62) 100%);
+  -webkit-backdrop-filter:blur(28px) saturate(1.7);backdrop-filter:blur(28px) saturate(1.7);
+  border:1px solid rgba(255,255,255,.16);border-radius:28px;
+  box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.22);
+  padding:clamp(30px,4.5vw,52px);
   opacity:0;transform:scale(.96) translateY(10px);transition:opacity .32s var(--ease-out),transform .32s var(--ease-out);
 }
 .contact-modal.open .cm-panel{opacity:1;transform:none}
-.cm-x{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(227,195,114,.3);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;transition:border-color .2s var(--ease-out),background .2s var(--ease-out)}
-.cm-x:hover{border-color:var(--gold-lt);background:rgba(199,154,62,.14)}
+.cm-x{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:border-color .2s var(--ease-out),background .2s var(--ease-out)}
+.cm-x:hover{border-color:var(--gold-lt);background:rgba(199,154,62,.22)}
 .cm-x:focus-visible{outline:2px solid var(--gold-lt);outline-offset:3px}
 .cm-head{margin-bottom:26px;padding-right:40px}
 .cm-head h3{font-family:'Anton';text-transform:uppercase;letter-spacing:.01em;font-size:clamp(1.6rem,3.4vw,2.2rem);margin:10px 0 8px;color:#fff}
-.cm-head p{color:var(--mut);max-width:52ch}
-.cm-info{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;padding-bottom:24px;border-bottom:1px solid rgba(227,195,114,.16)}
-.cm-i b{display:block;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px}
-.cm-i span{display:block;font-size:.86rem;color:#dfe5ee;line-height:1.4}
-.cm-i a{color:#dfe5ee}
+.cm-head p{color:rgba(223,229,238,.85);max-width:52ch}
+.cm-info{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.cm-i{padding:14px 14px 15px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12)}
+.cm-i b{display:block;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px}
+.cm-i span{display:block;font-size:.84rem;color:#eef1f6;line-height:1.4}
+.cm-i a{color:#eef1f6}
 .cm-i a:hover{color:var(--gold-lt)}
+/* glass-scoped field treatment: full frosted fields, distinct from the plain
+   underline style ticket-field keeps on the standalone Contact page and Admin. */
+.cm-panel .ticket-field label{color:rgba(227,195,114,.92)}
+.cm-panel .ticket-field input,.cm-panel .ticket-field textarea,.cm-panel .ticket-field select{
+  border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.065);
+  padding:.8rem 1rem;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+.cm-panel .ticket-field input:focus,.cm-panel .ticket-field textarea:focus,.cm-panel .ticket-field select:focus{border-color:var(--gold-lt);background:rgba(255,255,255,.1)}
+.cm-panel .ticket-field input::placeholder,.cm-panel .ticket-field textarea::placeholder{color:rgba(223,229,238,.55)}
+.cm-panel .cs-photo{border:1px solid rgba(255,255,255,.16)}
 @media(max-width:640px){
   .contact-modal{padding:0}
-  .cm-panel{width:100%;height:100%;max-height:none;border:0;padding:24px 20px 32px}
+  .cm-panel{width:100%;height:100%;max-height:none;border:0;border-radius:0;padding:24px 20px 32px}
   .cm-info{grid-template-columns:1fr 1fr}
 }
 
