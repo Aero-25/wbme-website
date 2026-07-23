@@ -1,4 +1,4 @@
-/* WBME Assistant: self-contained, on-site knowledge engine.
+/* WBME Assistant — self-contained, on-site knowledge engine.
    No external services: intents + company knowledge live here, and the
    assistant can navigate the site (open panels, start calls, compose email). */
 (function () {
@@ -35,7 +35,7 @@
   }
   var ACT = {
     about:    ['Open About', 'link', 'about.html'],
-    why:      ['Why WBME', 'link', 'about.html'],
+    why:      ['Why WBME', 'link', 'about.html#why-wbme'],
     services: ['Open Services', 'link', 'services.html'],
     projects: ['See Projects', 'link', 'projects.html'],
     contact:  ['Open Contact', 'link', 'contact.html'],
@@ -49,67 +49,67 @@
   var SVC_LIST = '<b>Six disciplines, one workshop:</b><br>· Rigging<br>· Fitting &amp; Turning<br>· Boiler Making<br>· Fabrication<br>· Pipe Works<br>· Welding';
   var INTENTS = [
     { id: 'greet', kw: [['hi', 2], ['hello', 2], ['hey', 2], ['howzit', 2], ['morning', 2], ['afternoon', 2], ['evening', 2], ['greetings', 2]],
-      reply: function () { return 'Welcome to WBME, Walvis Bay Marine Engineering. Ask me about our services, past projects, quotes, or how to reach the workshop.'; },
+      reply: function () { return 'Welcome to WBME — Walvis Bay Marine Engineering. Ask me about our services, past projects, quotes, or how to reach the workshop.'; },
       acts: [ACT.services, ACT.quote], chips: ['What do you do?', 'Get a quote', 'Where are you?'] },
 
     { id: 'services', kw: [['service', 2], ['services', 2], 'offer', 'capabilities', 'disciplines', ['do you do', 2], ['what do you', 2], 'workshop', 'skills'],
-      reply: function () { return SVC_LIST + '<br><br>All handled in-house from our Walvis Bay workshop. No job too big, no job too small.'; },
+      reply: function () { return SVC_LIST + '<br><br>All handled in-house from our Walvis Bay workshop — no job too big, no job too small.'; },
       acts: [ACT.services, ACT.quote], chips: ['Tell me about welding', 'Pipe works', 'Get a quote'] },
 
     { id: 'rigging', kw: [['rigging', 3], ['rig', 2], 'alternator', 'generator', 'compressor', 'pump', 'motor'],
-      reply: function () { return '<b>Rigging.</b> General rigging for propeller shafts, rudder shafts, engines, alternators, generators, compressors, pumps and motors, plus pipe work, tanks, burners and steel structures prepared for installation.'; },
+      reply: function () { return '<b>Rigging.</b> General rigging for propeller shafts, rudder shafts, engines, alternators, generators, compressors, pumps and motors — plus pipe work, tanks, burners and steel structures prepared for installation.'; },
       acts: [ACT.services, ACT.quote] },
 
     { id: 'fitting', kw: [['fitting', 3], ['turning', 3], ['machining', 3], 'overhaul', 'lathe', 'liner', 'bush', 'bushes', 'thordon', 'strip'],
-      reply: function () { return '<b>Fitting &amp; Turning.</b> Strip, overhaul, repair, new parts, re-assembly and installation. Machined replacements and precision repairs are prepared fit for installation.'; },
+      reply: function () { return '<b>Fitting &amp; Turning.</b> Strip, overhaul, repair, new parts, re-assembly and installation — machined replacements and precision repairs, fit for install.'; },
       acts: [ACT.services, ACT.projects] },
 
     { id: 'boiler', kw: [['boiler', 3], ['boilermaking', 3], 'structural', 'hull', 'deck', 'mast', 'gantry', 'walkway', 'ladder', 'plate'],
-      reply: function () { return '<b>Boiler Making.</b> General steel structural works cover renewal, modification and complete new builds: hull, deck, bridge, walkways, ladders, masts, trawl doors, gantries, A-frames and ducting in mild steel, stainless or aluminium.'; },
+      reply: function () { return '<b>Boiler Making.</b> General steel structural works: renewal, modification and complete new builds — hull, deck, bridge, walkways, ladders, masts, trawl doors, gantries, A-frames and ducting, in mild steel, stainless or aluminium.'; },
       acts: [ACT.services, ACT.quote] },
 
     { id: 'fabrication', kw: [['fabrication', 3], ['fabricate', 3], 'tank', 'tanks', 'rolling', 'bending', 'cutting', 'stainless', 'dome', 'skip'],
-      reply: function () { return '<b>Fabrication.</b> Profile cutting, rolling, bending, manufacture and installation for domes, tanks, burners, condensers, skips, base plates and custom structural work.'; },
+      reply: function () { return '<b>Fabrication.</b> Profile cutting, rolling, bending, manufacture and installation — domes, tanks, burners, condensers, skips, base plates and custom structural work for marine and industry.'; },
       acts: [ACT.services, ACT.projects] },
 
     { id: 'pipe', kw: [['pipe', 3], ['pipes', 3], ['pipework', 3], 'manifold', 'valve', 'valves', 'condenser', 'strainer'],
-      reply: function () { return '<b>Pipe Works.</b> Renewal, modification and complete new pipe work, including design, jigs and material preparation for pumps, motors, manifolds, main engines, tanks, condensers and valves.'; },
+      reply: function () { return '<b>Pipe Works.</b> Renewal, modification and complete new pipe work, including design, jigs and material preparation — pumps, motors, manifolds, main engines, tanks, condensers and valves, in steel, copper or galvanized.'; },
       acts: [ACT.services, ACT.quote] },
 
     { id: 'welding', kw: [['weld', 3], ['welding', 3], 'mig', 'tig', 'arc', 'brazing', 'soldering', 'aluminium', 'aluminum', 'cast'],
-      reply: function () { return '<b>Welding.</b> Gas welding, brazing, silver soldering, MIG, TIG and arc welding across mild steel, stainless, aluminium and cast iron.'; },
+      reply: function () { return '<b>Welding.</b> Gas welding, brazing, silver soldering, MIG, TIG and arc welding — mild steel, stainless, aluminium and cast iron, including strengthening and repairs to existing structures.'; },
       acts: [ACT.services, ACT.quote] },
 
     { id: 'about', kw: [['about', 2], 'history', 'founder', 'founded', 'established', 'started', 'story', 'cruys', 'crüys', ['who are you', 3], ['the company', 2], 'old'],
-      reply: function () { return 'WBME was established in 1999 by the late Mr. Uwe Crüys and registered in October 2000. The workshop serves vessels, mines and industrial clients around Walvis Bay, built on craftsmanship, character and the motto <b>"No job too big, no job too small."</b>'; },
+      reply: function () { return 'WBME was established in 1999 by the late Mr. Uwe Crüys and registered in October 2000. For 25+ years the workshop has served vessels, mines and industrial clients around Walvis Bay — built on craftsmanship, character and the motto <b>"No job too big, no job too small."</b>'; },
       acts: [ACT.about, ACT.why], chips: ['Why choose WBME?', 'What do you do?'] },
 
     { id: 'why', kw: [['why', 2], 'choose', 'different', 'better', 'trust', 'standard', 'reputation', 'apart'],
-      reply: function () { return '<b>Why WBME:</b> high-standard workmanship at competitive prices, skilled tradesmen, practical job planning and customers treated as long-term partners, not once-off tickets.'; },
+      reply: function () { return '<b>Why WBME:</b> high-standard workmanship at competitive prices, skilled tradesmen backed by professional engineers, a 25+ year reputation in the local marine industry, safety-first job planning, and customers treated as long-term partners — not once-off tickets.'; },
       acts: [ACT.why, ACT.quote] },
 
     { id: 'industries', kw: [['industries', 3], ['industry', 2], 'sector', 'sectors', 'fishing', 'seafood', 'mining', 'mine', 'offshore', 'energy', 'port', 'ports', 'harbour', 'cargo', 'shipping', 'serve'],
-      reply: function () { return 'We serve <b>fishing and seafood, shipping and cargo, mining and minerals, offshore and energy, ports and harbour</b>, plus general industrial metal work.'; },
+      reply: function () { return 'We serve the local marine industry first — <b>fishing &amp; seafood, shipping &amp; cargo</b> — and are expanding into <b>mining, offshore &amp; energy, ports &amp; harbour</b> and general industrial metal work.'; },
       acts: [ACT.about, ACT.quote] },
 
     { id: 'safety', kw: [['safety', 3], ['quality', 2], 'compliance', 'standards', 'safe', 'certified'],
-      reply: function () { return 'Every job is planned around a practical standard: <b>safe work, reliable workmanship, efficient execution and cost control</b>.'; },
+      reply: function () { return 'Every job is planned around a practical standard: <b>safe work, reliable workmanship, efficient execution and cost control</b> — checked and finished to a consistent standard, aligned with recognised marine and engineering practice.'; },
       acts: [ACT.why] },
 
     { id: 'quote', kw: [['quote', 3], ['quotation', 3], ['price', 2], ['cost', 2], 'estimate', 'budget', 'charge', 'rates', 'enquiry', 'inquire'],
-      reply: function () { return 'Every job is priced on its scope. Send us the details and we will come back with a practical quote. Email is best for drawings and photos; for urgent work, call <b>' + PHONE_DISPLAY + '</b>.'; },
+      reply: function () { return 'Every job is priced on its scope — send us the details and we’ll come back with a practical quote. Email is best for drawings and photos; for urgent work, call the workshop directly on <b>' + PHONE_DISPLAY + '</b>.'; },
       acts: [ACT.quote, ACT.contact, ACT.call], chips: ['Working hours', 'Where are you?'] },
 
     { id: 'urgent', kw: [['urgent', 3], ['emergency', 3], 'breakdown', 'asap', 'immediately', ['right now', 3], 'dock', 'dry-dock', 'drydock'],
-      reply: function () { return 'For urgent work, call the workshop directly on <b>' + PHONE_DISPLAY + '</b>. When a vessel is in dock or a component fails, WBME responds with straight answers and the right hands.'; },
+      reply: function () { return 'For urgent work, call the workshop directly — <b>' + PHONE_DISPLAY + '</b>. When a vessel is in dock or a component fails, WBME responds with straight answers and the right hands.'; },
       acts: [ACT.call, ACT.contact] },
 
     { id: 'phone', kw: [['phone', 3], ['call', 2], ['number', 2], 'tel', 'telephone', 'ring'],
-      reply: function () { return 'You can reach the workshop on <b>' + PHONE_DISPLAY + '</b>, Monday to Friday from 07:00 to 17:00.'; },
+      reply: function () { return 'You can reach the workshop on <b>' + PHONE_DISPLAY + '</b> — Monday to Friday, 07:00 to 17:00.'; },
       acts: [ACT.call] },
 
     { id: 'email', kw: [['email', 3], ['mail', 2], ['e-mail', 3], 'write'],
-      reply: function () { return 'Email us at <b>' + esc(email()) + '</b>. Attach photos or drawings if you have them; it helps us quote faster.'; },
+      reply: function () { return 'Email us at <b>' + esc(email()) + '</b> — attach photos or drawings if you have them, it helps us quote faster.'; },
       acts: [ACT.email] },
 
     { id: 'where', kw: [['where', 2], ['address', 3], ['located', 3], ['location', 3], 'map', 'directions', 'visit', 'find', 'premises'],
@@ -117,23 +117,23 @@
       acts: [ACT.map, ACT.contact] },
 
     { id: 'hours', kw: [['hours', 3], ['open', 2], ['opening', 3], 'closed', 'weekend', 'saturday', 'sunday', 'when', 'times'],
-      reply: function () { return '<b>Workshop hours:</b><br>Monday to Friday, 07:00 to 17:00<br>Saturday, closed<br>Sunday, available on request. Urgent jobs? Call us.'; },
+      reply: function () { return '<b>Workshop hours:</b><br>Monday–Friday · 07:00–17:00<br>Saturday · closed<br>Sunday · available on request. Urgent jobs? Call us.'; },
       acts: [ACT.call] },
 
     { id: 'projects', kw: [['projects', 3], ['project', 2], 'portfolio', 'gallery', 'photos', 'pictures', 'examples', 'facebook', ['past work', 3], ['your work', 2]],
-      reply: function () { return 'Recent work includes a <b>Kort nozzle and shaft conversion</b> (CPP to fixed), machining new seal liners, a stainless steel tank build and hull plate replacement. The Projects page shows the full photo gallery.'; },
+      reply: function () { return 'Recent work includes a <b>kort nozzle &amp; shaft conversion</b> (CPP to fixed), machining new seal liners, a stainless steel tank build and hull plate replacement — plus a full photo gallery and our live Facebook feed.'; },
       acts: [ACT.projects, ACT.quote] },
 
     { id: 'video', kw: [['video', 3], 'watch', 'clip', 'footage'],
-      reply: function () { return 'There is a short film of our propulsion work near the end of the About page.'; },
+      reply: function () { return 'There’s a short film of our propulsion work at the end of the About page — worth a watch.'; },
       acts: [ACT.about] },
 
     { id: 'contact', kw: [['contact', 3], 'reach', ['get in touch', 3], ['talk to', 2], 'human', 'person', 'someone', 'speak'],
-      reply: function () { return 'Here is how to reach WBME:<br><b>Call:</b> ' + PHONE_DISPLAY + '<br><b>Email:</b> ' + esc(email()) + '<br><b>Visit:</b> 8th Street East, Industrial Area, Walvis Bay.'; },
+      reply: function () { return 'Straight to the point — here’s how to reach WBME:<br><b>Call:</b> ' + PHONE_DISPLAY + '<br><b>Email:</b> ' + esc(email()) + '<br><b>Visit:</b> 8th Street East, Industrial Area, Walvis Bay.'; },
       acts: [ACT.contact, ACT.call, ACT.email] },
 
     { id: 'thanks', kw: [['thank', 2], ['thanks', 2], 'cheers', 'appreciated', 'great', 'awesome', 'perfect'],
-      reply: function () { return 'Anytime. If a job comes up, no job too big, no job too small.'; },
+      reply: function () { return 'Anytime. If a job comes up — no job too big, no job too small.'; },
       acts: [ACT.quote] },
 
     { id: 'bye', kw: [['bye', 2], 'goodbye', 'later', 'ciao'],
@@ -141,7 +141,7 @@
   ];
 
   var FALLBACK = {
-    reply: function () { return 'I might not have that one, but a person will. Try asking about <b>services, projects, quotes, hours</b> or <b>where to find us</b>, or reach the workshop directly.'; },
+    reply: function () { return 'I might not have that one — but a person will. Try asking about <b>services, projects, quotes, hours</b> or <b>where to find us</b>, or reach the workshop directly.'; },
     acts: [ACT.call, ACT.contact],
     chips: ['What do you do?', 'Get a quote', 'Working hours', 'Where are you?']
   };
@@ -167,7 +167,7 @@
   var NAV_RE = /(?:open|show(?:\s+me)?|go\s+to|take\s+me\s+to|view|see)\s+(?:the\s+|your\s+)?(about|why|services?|projects?|contact|gallery|quote)/;
   var NAV_KEY = { about: 'about', why: 'why', service: 'services', services: 'services', project: 'projects', projects: 'projects', gallery: 'projects', contact: 'contact', quote: 'contact' };
   var PANEL_NAME = { about: 'About', why: 'Why WBME', services: 'Services', projects: 'Projects', contact: 'Contact' };
-  var NAV_URL = { about: 'about.html', why: 'about.html', services: 'services.html', projects: 'projects.html', contact: 'contact.html' };
+  var NAV_URL = { about: 'about.html', why: 'about.html#why-wbme', services: 'services.html', projects: 'projects.html', contact: 'contact.html' };
 
   function think (q) {
     var text = norm(q), toks = tokens(q);
@@ -208,15 +208,15 @@
   function respond (q) {
     var r = think(q);
     if (r.nav) {
-      typing(180, function () {
+      typing(420, function () {
         addBot('Taking you to <b>' + PANEL_NAME[r.nav] + '</b>…');
-        setTimeout(function () { goLink(NAV_URL[r.nav]); }, reduce ? 0 : 160);
+        setTimeout(function () { goLink(NAV_URL[r.nav]); }, reduce ? 60 : 520);
       });
       return;
     }
     var it = r.intent;
     lastIntent = it;
-    typing(240, function () {
+    typing(520 + Math.random() * 380, function () {
       addBot(it.reply() + actsHtml(it.acts));
       setChips(it.chips);
     });
@@ -248,14 +248,8 @@
 
   /* ===== open/close ===== */
   var isOpen = false, welcomed = false;
-  function setInstant (instant) {
-    if (!instant) return;
-    box.classList.add('no-motion');
-    setTimeout(function () { box.classList.remove('no-motion'); }, 40);
-  }
-  function open (instant) {
+  function open () {
     if (isOpen) return;
-    setInstant(instant);
     isOpen = true;
     box.classList.add('open');
     box.setAttribute('aria-hidden', 'false');
@@ -264,31 +258,29 @@
       welcomed = true;
       var h = new Date().getHours();
       var sal = h < 12 ? 'Good morning' : (h < 17 ? 'Good afternoon' : 'Good evening');
-      typing(240, function () {
-        addBot(sal + '. Welcome aboard. I’m the <b>WBME assistant</b>. Ask me anything about the workshop, or tap a suggestion below. I can also take you straight to any page.');
+      typing(520, function () {
+        addBot(sal + ' — welcome aboard. I’m the <b>WBME assistant</b>. Ask me anything about the workshop, or tap a suggestion below. I can also take you straight to any page.');
         setChips(DEFAULT_CHIPS);
       });
     }
-    setTimeout(function () { input.focus(); }, (reduce || instant) ? 0 : 220);
+    setTimeout(function () { input.focus(); }, reduce ? 0 : 320);
   }
-  function close (instant) {
+  function close () {
     if (!isOpen) return;
-    setInstant(instant);
     isOpen = false;
     box.classList.remove('open');
     box.setAttribute('aria-hidden', 'true');
     fab.setAttribute('aria-expanded', 'false');
   }
-  function toggle (instant) { if (isOpen) { close(instant); fab.focus(); } else { open(instant); } }
+  function toggle () { if (isOpen) { close(); fab.focus(); } else { open(); } }
 
-  fab.addEventListener('click', function (e) { toggle(e.detail === 0); });
   form.addEventListener('submit', function (e) { e.preventDefault(); send(null); });
-  if (closeBtn) closeBtn.addEventListener('click', function (e) { close(e.detail === 0); fab.focus(); });
-  box.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.stopPropagation(); close(true); fab.focus(); } });
+  if (closeBtn) closeBtn.addEventListener('click', function () { close(); fab.focus(); });
+  box.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.stopPropagation(); close(); fab.focus(); } });
 
   /* if a panel opens by any route, tuck the assistant away */
   new MutationObserver(function () {
-    if (document.body.classList.contains('is-locked') && isOpen) close();
+    if (document.body.classList.contains('locked') && isOpen) close();
   }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   window.WBME_CHATBOT = { open: open, close: close, toggle: toggle };
