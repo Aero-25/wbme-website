@@ -305,4 +305,25 @@
 
   } catch (err) { /* enhancements are optional — core experience already running */ }
 
+  /* ===== PROPELLER SPIN WATCHDOG =====
+     The FAB propeller must visibly spin on every machine, always (owner
+     requirement). If the CSS animation isn't running for any reason —
+     stale cached stylesheet, an OS/browser setting stripping animations,
+     an overriding rule — drive the rotation from JS instead. */
+  (function propellerWatchdog () {
+    setTimeout(function () {
+      document.querySelectorAll('.chatbot-ring img, .cb-prop img').forEach(function (img) {
+        var cs = getComputedStyle(img);
+        if (cs.animationName !== 'none' && cs.animationPlayState !== 'paused') return;
+        var angle = 0, last = null;
+        (function spin (ts) {
+          if (last !== null) angle = (angle + (ts - last) * 0.4) % 360; // 0.4deg/ms ≈ 0.9s per rotation
+          last = ts;
+          img.style.transform = 'rotate(' + angle.toFixed(1) + 'deg)';
+          requestAnimationFrame(spin);
+        })(performance.now());
+      });
+    }, 600);
+  })();
+
 })();
