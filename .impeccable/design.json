@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-29T00:00:00+02:00",
+  "title": "Design System: Walvis Bay Marine Engineering",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Harbour Ink",
+        "canonical": "#0c1726",
+        "tonalRamp": ["#04080d", "#07101a", "#0c1726", "#142740", "#1b375a", "#4f6684", "#9fb0c6", "#e9eef5"]
+      },
+      "panel-navy": {
+        "role": "neutral",
+        "displayName": "Lifted Panel Navy",
+        "canonical": "#1b2e4d",
+        "tonalRamp": ["#08101c", "#10203a", "#1b2e4d", "#2a4268", "#49658a", "#768ba9", "#aebccd", "#e9eef5"]
+      },
+      "brass": {
+        "role": "primary",
+        "displayName": "Brass Worklight",
+        "canonical": "#c79a3e",
+        "tonalRamp": ["#211808", "#4d3510", "#7b5619", "#a67828", "#c79a3e", "#e3c372", "#f1dca6", "#fbf1d7"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Cinematic Display",
+        "purpose": "Hero and panel titles only."
+      },
+      "body": {
+        "displayName": "Readable Workshop Body",
+        "purpose": "Long-form panel copy and form text."
+      },
+      "label": {
+        "displayName": "Mechanical Label",
+        "purpose": "Navigation, tags, buttons and metadata."
+      }
+    },
+    "shadows": [
+      {
+        "name": "rail-card-lift",
+        "value": "0 14px 30px rgba(0,0,0,.4)",
+        "purpose": "Default card presence over the hero."
+      },
+      {
+        "name": "focused-card-lift",
+        "value": "0 30px 54px rgba(0,0,0,.55)",
+        "purpose": "Active card and hover emphasis."
+      },
+      {
+        "name": "panel-lift",
+        "value": "0 50px 120px rgba(0,0,0,.62)",
+        "purpose": "Full modal panel only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23,1,0.32,1)",
+        "purpose": "Default state transitions and panel chrome."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32,0.72,0,1)",
+        "purpose": "Mobile drawer motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "860px"
+      },
+      {
+        "name": "narrow",
+        "value": "520px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Use for primary contact and form submission.",
+      "html": "<button class=\"ds-btn-primary\">Send request</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:16px 30px;border:0;border-radius:999px;background:#c79a3e;color:#0c1726;font-family:Archivo,Arial,sans-serif;font-size:.86rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:background .22s cubic-bezier(0.23,1,0.32,1),transform .15s cubic-bezier(0.23,1,0.32,1)}.ds-btn-primary:hover{background:#e3c372}.ds-btn-primary:active{transform:scale(.97)}.ds-btn-primary:focus-visible{outline:3px solid #e3c372;outline-offset:3px}"
+    },
+    {
+      "name": "Ghost Explore Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Use for contextual exploration in the hero.",
+      "html": "<button class=\"ds-btn-ghost\">Explore services</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:15px 30px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:transparent;color:#fff;font-family:Archivo,Arial,sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .22s cubic-bezier(0.23,1,0.32,1),color .22s cubic-bezier(0.23,1,0.32,1),transform .15s cubic-bezier(0.23,1,0.32,1),border-color .22s cubic-bezier(0.23,1,0.32,1)}.ds-btn-ghost:hover{background:#c79a3e;border-color:#c79a3e;color:#0c1726}.ds-btn-ghost:active{transform:scale(.97)}.ds-btn-ghost:focus-visible{outline:3px solid #e3c372;outline-offset:3px}"
+    },
+    {
+      "name": "Service Proof Card",
+      "kind": "card",
+      "refersTo": "panel-card",
+      "description": "Use for service capability with a practical job example.",
+      "html": "<article class=\"ds-service-card\"><h3>Fitting & Turning</h3><p>Strip, overhaul, repair, new parts, re-assembly and installation.</p><div><b>Typical jobs</b><span>Machined replacements, overhauls and precision repairs.</span></div></article>",
+      "css": ".ds-service-card{max-width:320px;padding:30px 26px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.065);color:#fff;font-family:Barlow,Arial,sans-serif}.ds-service-card h3{margin:0 0 8px;font-family:Archivo,Arial,sans-serif;font-size:1.2rem}.ds-service-card p{margin:0;color:#c9d4e3;line-height:1.55}.ds-service-card div{margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.10)}.ds-service-card b{display:block;margin-bottom:4px;color:#e3c372;font-family:Archivo,Arial,sans-serif;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase}.ds-service-card span{display:block;color:#c9d4e3;font-size:.84rem;line-height:1.55}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Use in the contact panel.",
+      "html": "<label class=\"ds-field\">Name<input placeholder=\"Your name\"></label>",
+      "css": ".ds-field{display:grid;gap:6px;color:#fff;font-family:Archivo,Arial,sans-serif;font-size:.84rem;font-weight:600}.ds-field input{width:100%;padding:.8rem .95rem;border:1.5px solid rgba(255,255,255,.10);border-radius:11px;background:rgba(255,255,255,.06);color:#fff;font-family:Barlow,Arial,sans-serif;font-size:.94rem}.ds-field input::placeholder{color:#7e8b9c}.ds-field input:focus{outline:none;border-color:#c79a3e;background:rgba(0,0,0,.4)}.ds-field input:focus-visible{outline:3px solid #e3c372;outline-offset:3px}"
+    },
+    {
+      "name": "Mobile Quick Actions",
+      "kind": "nav",
+      "refersTo": "quick-actions",
+      "description": "Urgent mobile contact actions shown when no panel is open.",
+      "html": "<nav class=\"ds-quick-actions\"><a>Call</a><a>Email</a><a>Directions</a></nav>",
+      "css": ".ds-quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:420px}.ds-quick-actions a{min-height:46px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(8,16,26,.72);color:#f4f7fb;font-family:Archivo,Arial,sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.ds-quick-actions a:first-child{background:#c79a3e;border-color:#c79a3e;color:#0c1726}.ds-quick-actions a:focus-visible{outline:3px solid #e3c372;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Yard at Dusk",
+    "overview": "WBME should feel like a real Walvis Bay workshop photographed with care: steel, salt air, brass light, dark navy surfaces, and plain-spoken confidence. The interface is cinematic because the work is serious, not because it wants to perform.",
+    "keyCharacteristics": [
+      "Full-bleed worksite imagery carries credibility.",
+      "Dark marine navy gives the site weight and contrast.",
+      "Brass is a proof accent, used sparingly for action, focus and active state.",
+      "Copy stays direct, specific and practical.",
+      "Motion is purposeful, fast and optional under reduced-motion settings."
+    ],
+    "rules": [
+      {
+        "name": "The Brass Is Earned Rule",
+        "body": "Brass appears on actions, active states, focus and proof marks. Do not wash whole sections in gold.",
+        "section": "colors"
+      },
+      {
+        "name": "The Real Yard Rule",
+        "body": "Photography must remain visible enough to prove the work. Avoid scrims so heavy that images become generic dark texture.",
+        "section": "colors"
+      },
+      {
+        "name": "The Plain Workshop Rule",
+        "body": "Use direct nouns and verbs. Avoid brochure language, fake testimonials and inflated claims.",
+        "section": "typography"
+      },
+      {
+        "name": "The Heavy Object Rule",
+        "body": "Large shadows belong to large moving surfaces: cards, panels and lightbox media. Small controls stay crisp.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do show real work: steel, propellers, welding, dry dock, machinery and workshop conditions.",
+      "Do keep mobile contact actions visible when no panel is open.",
+      "Do use brass for decisive interactions, not decorative wash.",
+      "Do preserve keyboard access, focus return, Esc close behavior and reduced-motion fallbacks.",
+      "Do make capability concrete with job types, materials, disciplines and contact paths."
+    ],
+    "donts": [
+      "Don't use generic blue-gradient corporate engineering templates.",
+      "Don't use SaaS landing-page patterns: hero metric blocks, repeated icon-card grids, pastel gradients or glassmorphism.",
+      "Don't make the site feel like a travel brochure with no grit.",
+      "Don't ship over-animated carnival effects that fight usability or stall on mobile.",
+      "Don't publish fake testimonials. Use real quotes, case studies, readiness proof or no testimonial section.",
+      "Don't use thick one-sided colored borders as card accents. Use full borders, proof marks or tonal contrast."
+    ]
+  }
+}

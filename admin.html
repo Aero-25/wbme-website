@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin | Walvis Bay Marine Engineering</title>
+<link rel="icon" type="image/png" sizes="128x128" href="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/propeller.png?width=128&height=128&resize=contain&quality=90">
+<link rel="preconnect" href="https://kbmgpqwmgthswjkfmqfe.supabase.co" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/experience.css?v=81">
+</head>
+<body data-page="admin">
+
+<div class="grain"></div>
+
+<header class="admin-hdr">
+  <a class="admin-brand" href="index.html">WB<b>ME</b> <span>Admin</span></a>
+  <div class="admin-hdr-actions">
+    <span id="adminWho" class="admin-who" hidden></span>
+    <button id="adminSignOut" class="btn-ghost-sm" type="button" hidden>Sign out</button>
+  </div>
+</header>
+
+<main class="admin-main">
+
+  <section id="adminLogin" class="admin-login">
+    <div class="admin-login-card">
+      <span class="eyebrow">Admin</span>
+      <h1>Sign in</h1>
+      <p>Manage WBME&rsquo;s project posts. Admin access only &mdash; ask the site owner for a login.</p>
+      <form id="adminLoginForm" novalidate>
+        <div class="ticket-field"><label for="al-email">Email</label><input id="al-email" type="email" required autocomplete="username"></div>
+        <div class="ticket-field"><label for="al-pass">Password</label><input id="al-pass" type="password" required autocomplete="current-password"></div>
+        <button type="submit" class="btn-brass">Sign in &rarr;</button>
+        <p class="admin-login-error" id="adminLoginError" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="adminDash" class="admin-dash" hidden>
+    <div class="admin-dash-head">
+      <div><span class="eyebrow">Admin</span><h1>Project posts</h1></div>
+      <button id="adminNew" class="btn-brass admin-new-btn" type="button">+ New project</button>
+    </div>
+    <div id="adminList" class="admin-list" aria-label="Existing project posts"></div>
+  </section>
+
+  <section id="adminForm" class="admin-form-panel" hidden>
+    <div class="admin-form-head">
+      <h2 id="adminFormTitle">New project</h2>
+      <button id="adminFormCancel" class="btn-ghost-sm" type="button">Cancel</button>
+    </div>
+    <form id="adminProjectForm" novalidate>
+      <input type="hidden" id="pf-id">
+      <div class="frow">
+        <div class="ticket-field"><label for="pf-title">Title</label><input id="pf-title" required></div>
+        <div class="ticket-field">
+          <label for="pf-discipline">Discipline</label>
+          <select id="pf-discipline">
+            <option>Ship Repair</option><option>Rigging</option><option>Fitting &amp; Turning</option>
+            <option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option>
+            <option>Welding</option><option>General</option>
+          </select>
+        </div>
+      </div>
+      <div class="ticket-field"><label for="pf-slug">Slug (URL)</label><input id="pf-slug" required placeholder="e.g. new-ships-rudder"></div>
+      <div class="ticket-field"><label for="pf-summary">Summary (card blurb)</label><textarea id="pf-summary" required rows="2"></textarea></div>
+      <div class="ticket-field"><label for="pf-body">Full write-up</label><textarea id="pf-body" rows="6"></textarea></div>
+      <div class="ticket-field"><label for="pf-cover">Cover photo</label><input id="pf-cover" type="file" accept="image/*"><span class="admin-file-hint" id="pf-cover-hint">No file chosen</span></div>
+      <div class="ticket-field"><label for="pf-gallery">Extra photos (optional, multiple)</label><input id="pf-gallery" type="file" accept="image/*" multiple><span class="admin-file-hint" id="pf-gallery-hint">No files chosen</span></div>
+      <label class="admin-check"><input type="checkbox" id="pf-published" checked> Published (visible on the public Projects page)</label>
+      <div class="admin-form-actions">
+        <button type="submit" class="btn-brass" id="pf-save">Save project</button>
+        <span class="admin-form-status" id="pf-status"></span>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/bucket-assets.js?v=43"></script>
+<script src="js/supabase-client.js?v=1"></script>
+<script src="js/admin.js?v=1"></script>
+</body>
+</html>
