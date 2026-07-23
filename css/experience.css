@@ -1281,18 +1281,18 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
   transition:transform .45s var(--ease-out),box-shadow .45s var(--ease-out);
 }
 .about-card:hover{transform:perspective(1400px) rotateX(0deg) translateY(-4px);box-shadow:0 40px 80px rgba(5,10,18,.6),0 0 0 1px rgba(255,255,255,.28) inset,0 -50px 110px -16px rgba(199,154,62,.4)}
-.about-copy{padding:clamp(36px,5vw,64px);color:var(--panel)}
-.about-copy .eyebrow{display:inline-block;margin-bottom:16px;font-family:'Archivo';font-weight:700;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(7,26,51,.62)}
-.about-copy h2{font-family:'Anton';text-transform:uppercase;font-size:clamp(1.9rem,3.2vw,2.6rem);line-height:1.04;color:var(--panel);max-width:20ch;text-wrap:balance;margin-bottom:18px}
-.about-copy p{font-family:'Barlow';font-size:1rem;line-height:1.65;color:rgba(7,26,51,.82);max-width:52ch;margin-bottom:28px}
+.about-copy{padding:clamp(36px,5vw,64px);color:#fff}
+.about-copy .eyebrow{display:inline-block;margin-bottom:16px;font-family:'Archivo';font-weight:700;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.68)}
+.about-copy h2{font-family:'Anton';text-transform:uppercase;font-size:clamp(1.9rem,3.2vw,2.6rem);line-height:1.04;color:#fff;max-width:20ch;text-wrap:balance;margin-bottom:18px}
+.about-copy p{font-family:'Barlow';font-size:1rem;line-height:1.65;color:rgba(255,255,255,.88);max-width:52ch;margin-bottom:28px}
 .about-stats{display:flex;gap:28px;margin-bottom:30px;flex-wrap:wrap}
-.about-stats span{display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(7,26,51,.6)}
-.about-stats b{font-family:'Anton';font-size:1.5rem;letter-spacing:0;text-transform:none;color:var(--panel)}
-.about-link{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--panel);border-bottom:2px solid rgba(7,26,51,.35);padding-bottom:4px;transition:border-color .2s var(--ease-out),transform .2s var(--ease-out)}
-.about-link:hover{border-color:var(--panel);transform:translateX(4px)}
-.about-mark{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(160deg,#0f2c52 0%,#0a1f3d 62%,#071a33 100%);padding:36px}
-.about-mark:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:36px 36px;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000,transparent 72%)}
-.about-mark-glow{position:absolute;width:72%;padding-top:72%;border-radius:50%;background:radial-gradient(circle,rgba(227,195,114,.4),transparent 68%);filter:blur(2px)}
+.about-stats span{display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.68)}
+.about-stats b{font-family:'Anton';font-size:1.5rem;letter-spacing:0;text-transform:none;color:#fff}
+.about-link{display:inline-flex;align-items:center;gap:8px;font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#fff;border-bottom:2px solid rgba(255,255,255,.45);padding-bottom:4px;transition:border-color .2s var(--ease-out),transform .2s var(--ease-out)}
+.about-link:hover{border-color:#fff;transform:translateX(4px)}
+.about-mark{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--white-steel);padding:36px}
+.about-mark:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(7,26,51,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(7,26,51,.06) 1px,transparent 1px);background-size:36px 36px;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 72%);mask-image:radial-gradient(circle at 50% 50%,#000,transparent 72%)}
+.about-mark-glow{position:absolute;width:72%;padding-top:72%;border-radius:50%;background:radial-gradient(circle,rgba(227,195,114,.5),transparent 68%);filter:blur(2px)}
 .about-mark-logo{position:relative;width:min(78%,260px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.4))}
 
 @media(max-width:860px){
