@@ -1073,8 +1073,13 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
    shared glass closing-cta card with legacy-toned copy.
    =========================================================== */
 
-/* ---- hero: taller, autoplaying video background, Fraunces pull-quote ---- */
-.about-hero{min-height:74vh}
+/* ---- hero: full viewport, autoplaying video background, Fraunces pull-quote.
+   Doubled class (.page-hero.about-hero) so this beats the generic
+   .page-hero{min-height:56vh} rule declared later in the file — plain
+   .about-hero{min-height:74vh} used to lose that cascade fight and silently
+   render short. ---- */
+.page-hero.about-hero{height:100vh;min-height:640px}
+@media(max-width:720px){.page-hero.about-hero{height:auto;min-height:100dvh}}
 .about-hero-video{width:100%;height:100%;object-fit:cover;object-position:center;background:#05080d}
 .about-hero-quote{
   margin-top:18px;font-family:'Fraunces',serif;font-style:italic;font-weight:500;
@@ -1126,13 +1131,8 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .industry-tags span{font-family:'Archivo';font-weight:600;font-size:.82rem;padding:9px 16px;border-radius:999px;border:1px solid rgba(227,195,114,.3);color:var(--gold-lt)}
 .standard-note{color:var(--mut);font-size:.92rem;line-height:1.6;max-width:40ch}
 
-/* ---- video: framed like the rest of the glass system ---- */
-.about-video-panel{position:relative;margin:0 0 clamp(48px,6vw,68px);padding:14px;border-radius:22px;background:rgba(255,255,255,.035);border:1px solid rgba(227,195,114,.24);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 30px 64px rgba(0,0,0,.35)}
-.about-video-panel .corner-marks{inset:22px;z-index:2}
-.about-video-panel video{position:relative;z-index:1;width:100%;aspect-ratio:16/9;display:block;background:#05080d;object-fit:cover;border-radius:14px}
-.about-video-caption{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 10px 6px}
-.about-video-caption b{font-family:'Archivo';font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#fff}
-.about-video-caption span{color:var(--mut);font-size:.88rem;line-height:1.4}
+/* ---- mid-page break: full-bleed atmospheric hero (not a thin divider) ---- */
+.about-break-hero{height:100vh;min-height:600px;padding:0;margin:0 0 clamp(48px,6vw,68px)}
 
 @media(max-width:860px){
   .founder-panel-grid{grid-template-columns:1fr}
@@ -1140,6 +1140,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   .founder-portrait-frame{min-height:260px}
   .standard-panel{grid-template-columns:1fr}
   .standard-divider{width:100%;height:1px}
+  .about-break-hero{height:auto;min-height:100dvh}
 }
 @media(prefers-reduced-motion:reduce){.founder-portrait-frame{transition:none}}
 
