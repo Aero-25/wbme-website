@@ -5,7 +5,7 @@
   'use strict';
   if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
 
-  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass,.about-card,.svc-tile,.blog-card,.cc-card';
+  var SEL = '.svc,.ind,.work-card,.ready-card,.explore,.btn-brass,.about-card,.svc-tile,.blog-card,.cc-card,.founder-panel-grid';
   document.addEventListener('pointermove', function (e) {
     var t = e.target.closest && e.target.closest(SEL);
     if (!t) return;
@@ -46,6 +46,21 @@
       faceLogo.style.setProperty('--tiltx', (dx * FACE_MAX_TILT).toFixed(1) + 'deg');
       faceLogo.style.setProperty('--tilty', (-dy * FACE_MAX_TILT).toFixed(1) + 'deg');
     }, { passive: true });
+  }
+
+  /* Founder portrait: subtle tilt toward the pointer within the frame. */
+  var founderFrame = document.querySelector('.founder-portrait-frame');
+  if (founderFrame) {
+    founderFrame.addEventListener('pointermove', function (e) {
+      var r = founderFrame.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      founderFrame.style.setProperty('--tiltx', ((px - 0.5) * 10).toFixed(1) + 'deg');
+      founderFrame.style.setProperty('--tilty', ((0.5 - py) * 8).toFixed(1) + 'deg');
+    });
+    founderFrame.addEventListener('pointerleave', function () {
+      founderFrame.style.setProperty('--tiltx', '0deg');
+      founderFrame.style.setProperty('--tilty', '0deg');
+    });
   }
 
   /* Service tile hover-tilt: each card leans toward the pointer within it. */
