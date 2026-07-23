@@ -1217,21 +1217,64 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:var(--z-modal-progress);pointer-events:none}
 .scroll-progress i{display:block;height:100%;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left center}
 
-.site-footer{background:var(--panel);border-top:1px solid var(--line);padding:56px 40px 28px}
-.sf-top{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:32px;padding-bottom:32px;border-bottom:1px solid var(--line)}
-.sf-brand{font-family:'Archivo';font-weight:700;font-size:1.3rem;color:#fff}
-.sf-brand b{color:var(--gold-lt)}
-.sf-links{display:flex;flex-wrap:wrap;gap:22px}
-.sf-links a{font-family:'Archivo';font-weight:600;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
-.sf-links a:hover{color:var(--gold-lt)}
-.sf-contact{display:flex;flex-direction:column;gap:6px;font-family:'Barlow';font-size:.9rem;color:var(--mut);text-align:right}
-.sf-contact a{color:var(--mut)}
-.sf-contact a:hover{color:var(--gold-lt)}
-.sf-bottom{max-width:1180px;margin:0 auto;padding-top:22px;font-family:'Archivo';font-weight:600;font-size:.7rem;letter-spacing:.06em;color:var(--mut);text-align:center}
-@media(max-width:720px){
-  .site-footer{padding:40px 22px 24px}
-  .sf-top{flex-direction:column;gap:22px}
-  .sf-contact{text-align:left}
+/* ===== FOOTER — "the yard at night": deep ink stage, faint blueprint grid,
+   brass worklight glow, giant outline WBME watermark sinking below the fold,
+   and a four-column layout anchored by the brand mark + motto. ===== */
+.site-footer{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--panel) 0%,#050d18 100%);
+  border-top:1px solid rgba(227,195,114,.22);
+  padding:clamp(56px,7vw,88px) clamp(24px,5vw,64px) 0;
+}
+.site-footer:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);
+  mask-image:linear-gradient(180deg,#000 0%,transparent 85%);
+}
+.sf-glow{position:absolute;left:50%;top:-120px;width:min(760px,90%);height:280px;transform:translateX(-50%);pointer-events:none;background:radial-gradient(ellipse at center,rgba(227,195,114,.16),transparent 70%);filter:blur(30px)}
+.site-footer .corner-marks{inset:20px;z-index:1}
+.sf-main{position:relative;z-index:2;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1.1fr 1.1fr;gap:clamp(28px,4vw,56px);padding-bottom:clamp(40px,5vw,64px)}
+.sf-logo{display:inline-block;margin-bottom:18px}
+.sf-logo img{width:clamp(180px,16vw,240px);filter:drop-shadow(0 10px 24px rgba(0,0,0,.5))}
+.sf-motto{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.15rem;line-height:1.5;color:#dfe5ee;max-width:26ch;margin-bottom:20px}
+.sf-status{display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt)}
+.sf-status i{width:7px;height:7px;border-radius:50%;background:var(--status-online);box-shadow:0 0 0 3px rgba(109,224,138,.22);animation:dispatch-pulse 2.2s ease-in-out infinite}
+.sf-col{display:flex;flex-direction:column;gap:11px}
+.sf-col b{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:6px}
+.sf-col a,.sf-col span{font-family:'Barlow';font-size:.94rem;color:var(--mut);line-height:1.5}
+.sf-col a{width:fit-content;transition:color .2s var(--ease-out),transform .2s var(--ease-out)}
+.sf-col a:hover{color:var(--gold-lt);transform:translateX(4px)}
+.sf-coord{font-family:'JetBrains Mono',monospace!important;font-size:.7rem!important;letter-spacing:.08em;color:#7f8fa6!important;margin-top:6px}
+.sf-watermark{
+  position:relative;z-index:1;pointer-events:none;user-select:none;
+  text-align:center;font-family:'Anton';line-height:.72;letter-spacing:.05em;
+  font-size:clamp(7rem,21vw,19rem);color:transparent;
+  -webkit-text-stroke:1.5px rgba(227,195,114,.17);
+  margin-bottom:-.13em;
+}
+.sf-bottom{
+  position:relative;z-index:2;max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:18px 0 22px;border-top:1px solid rgba(255,255,255,.09);
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.06em;color:var(--mut);
+}
+.sf-bottom a{color:var(--mut)}
+.sf-bottom a:hover{color:var(--gold-lt)}
+.sf-top-btn{
+  width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(227,195,114,.4);color:var(--gold-lt);
+  font-size:1.1rem;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  transition:transform .2s var(--ease-out),border-color .2s var(--ease-out),background .2s var(--ease-out);
+}
+.sf-top-btn:hover{transform:translateY(-3px);border-color:var(--gold-lt);background:rgba(199,154,62,.18)}
+.sf-top-btn:focus-visible{outline:3px solid var(--gold-lt);outline-offset:3px}
+@media(max-width:960px){.sf-main{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){
+  .site-footer{padding:48px 22px 0}
+  .sf-main{grid-template-columns:1fr;gap:30px}
+  .sf-bottom{justify-content:center;text-align:center}
 }
 
 /* page-hero: a shorter version of the full-viewport home hero, used on About/Services/Projects/Contact */

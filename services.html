@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=86">
+<link rel="stylesheet" href="css/experience.css?v=87">
 </head>
 <body data-page="services">
 
@@ -63,18 +63,41 @@
 </main>
 
 <footer class="site-footer">
-  <div class="sf-top">
-    <a class="sf-brand" href="index.html">WB<b>ME</b></a>
-    <nav class="sf-links" aria-label="Footer">
-      <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="#" data-contact-open>Contact</a>
+  <div class="sf-glow" aria-hidden="true"></div>
+  <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="sf-main">
+    <div class="sf-brand-col">
+      <a class="sf-logo" href="index.html" aria-label="Walvis Bay Marine Engineering home"><img src="https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90" alt="Walvis Bay Marine Engineering" loading="lazy"></a>
+      <p class="sf-motto">&ldquo;No job too big, no job too small.&rdquo;</p>
+      <div class="sf-status"><i></i>Workshop online &middot; Walvis Bay</div>
+    </div>
+    <nav class="sf-col" aria-label="Footer">
+      <b>Explore</b>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="#" data-contact-open>Contact</a>
     </nav>
-    <div class="sf-contact">
+    <div class="sf-col">
+      <b>Contact</b>
       <a href="tel:+26464285700">+264 (0)64 285 700</a>
       <a href="#" data-mail data-mail-text>Loading&hellip;</a>
-      <span>8th Street East, Industrial Area, Walvis Bay</span>
+      <span>8th Street East, Industrial Area<br>Walvis Bay, Namibia</span>
+    </div>
+    <div class="sf-col">
+      <b>Workshop</b>
+      <span>Mon&ndash;Fri &middot; 07:00&ndash;17:00</span>
+      <span>Urgent dock work &mdash; on call</span>
+      <span class="sf-coord">22&deg;57&prime;S &middot; 14&deg;30&prime;E</span>
     </div>
   </div>
-  <div class="sf-bottom">&copy; 2026 Walvis Bay Marine Engineering &middot; No job too big, no job too small.</div>
+  <div class="sf-watermark" aria-hidden="true">WBME</div>
+  <div class="sf-bottom">
+    <span>&copy; 2026 Walvis Bay Marine Engineering &middot; Est. 1999</span>
+    <button class="sf-top-btn" type="button" data-scroll-top aria-label="Back to top">&uarr;</button>
+    <span><a href="admin.html">Admin</a></span>
+  </div>
 </footer>
 
 <div class="drawer" id="drawer">
@@ -136,7 +159,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=43"></script>
-<script src="js/experience.js?v=64"></script>
+<script src="js/experience.js?v=65"></script>
 <script src="js/glass-fx.js?v=5"></script>
 <script src="js/chatbot.js?v=2"></script>
 </body>

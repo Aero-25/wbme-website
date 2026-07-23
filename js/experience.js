@@ -152,7 +152,9 @@
     var opener = e.target.closest && e.target.closest('[data-contact-open]');
     if (opener) { e.preventDefault(); openContactModal(); return; }
     var closer = e.target.closest && e.target.closest('[data-contact-close]');
-    if (closer) closeContactModal();
+    if (closer) { closeContactModal(); return; }
+    var topBtn = e.target.closest && e.target.closest('[data-scroll-top]');
+    if (topBtn) window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
