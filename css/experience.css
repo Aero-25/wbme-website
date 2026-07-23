@@ -1452,17 +1452,21 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
    machine, including those with the OS "reduce animations" setting on. */
 
 /* ===== OUR PROJECTS — pinned background, content scrolls over it.
-   Built with position:sticky rather than background-attachment:fixed —
-   iOS Safari never honoured the fixed-background trick (it silently falls
-   back to scroll), so mobile got a "half-working" version of this effect.
-   A sticky "window" (media+scrim+content together, so they move as one)
-   pins at the top of the viewport for as long as its outer section — twice
-   the window's own height — keeps feeding it scroll runway; once that
-   runway runs out the next section slides up and covers it. Desktop and
-   mobile behave identically since sticky, unlike fixed backgrounds, is
-   universally supported. */
+   Built with explicit JS-driven states (see initShowcasePin in
+   experience.js) rather than relying on position:sticky's native
+   "release at container end" behaviour or background-attachment:fixed —
+   the former produced an inconsistent blank gap before the next section,
+   the latter iOS Safari never honoured at all (it silently falls back to
+   plain scroll). The window (media+scrim+content together, so they move
+   as one) rests at the top of its 2x-viewport-tall wrapper until reached,
+   switches to position:fixed for exactly as long as there's runway left,
+   then rests at the wrapper's bottom edge and scrolls away normally as the
+   next section covers it — identical, deterministic result on desktop and
+   mobile. */
 .showcase-fixed{position:relative;height:200vh}
-.showcase-fixed-pin{position:sticky;top:0;height:100vh;overflow:hidden}
+.showcase-fixed-pin{position:absolute;top:0;left:0;width:100%;height:100vh;overflow:hidden}
+.showcase-fixed-pin.is-pinned{position:fixed;top:0;left:0;right:0;width:auto}
+.showcase-fixed-pin.is-past{position:absolute;top:auto;bottom:0}
 .showcase-fixed-media{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
 .showcase-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,10,18,.84) 0%,rgba(5,10,18,.5) 46%,rgba(5,10,18,.22) 100%),linear-gradient(0deg,rgba(5,10,18,.4),transparent 40%)}
 .showcase-fixed .corner-marks{z-index:3}
