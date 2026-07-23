@@ -192,10 +192,24 @@ img{display:block;max-width:100%}
 .cm-backdrop{position:absolute;inset:0;background:rgba(4,9,16,.62);-webkit-backdrop-filter:blur(12px) saturate(1.1);backdrop-filter:blur(12px) saturate(1.1)}
 .cm-panel{
   position:relative;z-index:1;width:min(1080px,100%);max-height:min(90vh,720px);overflow-y:auto;
-  background:linear-gradient(165deg,rgba(27,58,99,.5) 0%,rgba(7,26,51,.62) 100%);
+  /* rope frame: a twisted-strand band drawn in the border-box layer — the
+     diagonal brass/bronze stripes read as rope fibres wrapping the pane,
+     dark outer/inner hairlines give the lay of the rope its depth. The
+     glass gradient fills the padding-box so the frosted pane sits inside. */
+  border:12px solid transparent;border-radius:34px;
+  background:
+    linear-gradient(165deg,rgba(27,58,99,.5) 0%,rgba(7,26,51,.62) 100%) padding-box,
+    repeating-linear-gradient(55deg,
+      #59400f 0 2px,#a67828 2px 5px,#e3c372 5px 8px,
+      #f6e6b6 8px 10px,#c79a3e 10px 13px,#59400f 13px 16px) border-box;
   -webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);
-  border:1px solid rgba(255,255,255,.18);border-radius:30px;
-  box-shadow:0 50px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.24);
+  box-shadow:
+    0 50px 120px rgba(0,0,0,.6),
+    0 0 0 2px rgba(48,33,8,.95),
+    0 0 0 3px rgba(246,230,182,.28),
+    0 0 46px rgba(199,154,62,.3),
+    inset 0 0 0 1px rgba(48,33,8,.9),
+    inset 0 1px 0 rgba(255,255,255,.22);
   padding:clamp(28px,4vw,48px);
   opacity:0;filter:blur(10px);transform:scale(.94) translateY(14px);
   transition:opacity .4s var(--ease-out),transform .4s var(--ease-out),filter .4s var(--ease-out);
