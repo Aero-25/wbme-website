@@ -81,11 +81,11 @@
       acts: [ACT.services, ACT.quote] },
 
     { id: 'about', kw: [['about', 2], 'history', 'founder', 'founded', 'established', 'started', 'story', 'cruys', 'crüys', ['who are you', 3], ['the company', 2], 'old'],
-      reply: function () { return 'WBME was established in 1999 by the late Mr. Uwe Crüys and registered in October 2000. For 25+ years the workshop has served vessels, mines and industrial clients around Walvis Bay — built on craftsmanship, character and the motto <b>"No job too big, no job too small."</b>'; },
+      reply: function () { return 'WBME was established in 1999 by the late Mr. Uwe Crüys and registered in October 2000. For 35+ years the workshop has served vessels, mines and industrial clients around Walvis Bay — built on craftsmanship, character and the motto <b>"No job too big, no job too small."</b>'; },
       acts: [ACT.about, ACT.why], chips: ['Why choose WBME?', 'What do you do?'] },
 
     { id: 'why', kw: [['why', 2], 'choose', 'different', 'better', 'trust', 'standard', 'reputation', 'apart'],
-      reply: function () { return '<b>Why WBME:</b> high-standard workmanship at competitive prices, skilled tradesmen backed by professional engineers, a 25+ year reputation in the local marine industry, safety-first job planning, and customers treated as long-term partners — not once-off tickets.'; },
+      reply: function () { return '<b>Why WBME:</b> high-standard workmanship at competitive prices, skilled tradesmen backed by professional engineers, a 35+ year reputation in the local marine industry, safety-first job planning, and customers treated as long-term partners — not once-off tickets.'; },
       acts: [ACT.why, ACT.quote] },
 
     { id: 'industries', kw: [['industries', 3], ['industry', 2], 'sector', 'sectors', 'fishing', 'seafood', 'mining', 'mine', 'offshore', 'energy', 'port', 'ports', 'harbour', 'cargo', 'shipping', 'serve'],
