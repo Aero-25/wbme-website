@@ -139,9 +139,11 @@
 
   /* ===== CONTACT MODAL (replaces the standalone Contact page as the primary contact flow) ===== */
   var contactModal = document.getElementById('contactModal');
+  var serviceModal = document.getElementById('serviceModal');
   function openContactModal () {
     if (!contactModal) return;
     closeDrawer();
+    if (serviceModal) serviceModal.classList.remove('open'); // swap straight over from a service popup, no double lock/unlock
     contactModal.classList.add('open');
     lock();
     var firstField = contactModal.querySelector('input,textarea,select');
@@ -156,6 +158,91 @@
     var topBtn = e.target.closest && e.target.closest('[data-scroll-top]');
     if (topBtn) window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+
+  /* ===== SERVICE DETAIL MODAL (Services page "Learn more" popups) ===== */
+  if (serviceModal) {
+    var SERVICES_DATA = {
+      rigging: {
+        num: '01 → 06', title: 'Rigging',
+        images: ['wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg', 'wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg'],
+        desc: "Rigging is the first job on almost every propulsion or plant repair — safely lifting, aligning and positioning propeller shafts, rudder shafts, engines, alternators, generators, compressors, pumps and motors before any strip-down or refit can begin. WBME plans the lift around the vessel or plant's own constraints: tight engine rooms, awkward access, and equipment that can't simply be craned out in one piece. Get the rigging wrong and everything downstream — machining tolerances, seal fit, alignment — is compromised, so it's treated as precision work in its own right, not a preliminary step.",
+        scope: 'Components prepared for installation, plus pipe work, tanks, burners and steel structures.',
+        tags: ['Shafts', 'Engines', 'Pumps', 'Motors']
+      },
+      fitting: {
+        num: '02 → 06', title: 'Fitting & Turning',
+        images: ['wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg', 'wbme photos for web 2026/Pics for T/Machining/Machining of new seal liners.jpg'],
+        desc: "Fitting and turning covers the full strip-overhaul-rebuild cycle: stripping worn components down, machining new parts or repairing existing ones to tolerance, then re-assembling and installing them back into service. This is where WBME's machine shop does its work — new thordon bushes, seal liners and shaft components turned to the exact dimensions a vessel or plant needs, so equipment goes back into service fitting as well as it did the day it was built.",
+        scope: 'Machined replacements, overhauls, precision repairs and fit-for-install components.',
+        tags: ['Overhaul', 'New parts', 'Install']
+      },
+      boiler: {
+        num: '03 → 06', title: 'Boiler Making',
+        images: ['wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg', 'wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 2.jpg'],
+        desc: 'Boiler making covers the structural steelwork a vessel or plant depends on: hull plate, deck, bridge, walkways, ladders, masts, trawl doors, gantries, A-frames and ducting. WBME handles renewal and modification of existing structures as well as complete new builds, working from design and templates through to material preparation and fabrication in mild steel, stainless and aluminium — matched to the corrosion and load demands of the marine environment.',
+        scope: 'Hull, deck, bridge, walkways, ladders, masts, trawl doors, gantries, A-frames and ducting.',
+        tags: ['Mild steel', 'Stainless', 'Aluminium']
+      },
+      fabrication: {
+        num: '04 → 06', title: 'Fabrication',
+        images: ['wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 1.jpg', 'wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 2.jpg'],
+        desc: 'Fabrication turns raw steel into the domes, tanks, burners, droppers, condensers, skips, base plates and custom structural work a job calls for. WBME profile-cuts, rolls and bends material to spec, then manufactures and installs the finished structure on site or in the workshop — stainless steel tanks and pressure vessels built to hold up under continuous marine and industrial use.',
+        scope: 'Domes, tanks, burners, droppers, condensers, skips, base plates and custom structural work.',
+        tags: ['Cutting', 'Rolling', 'Bending', 'Install']
+      },
+      pipework: {
+        num: '05 → 06', title: 'Pipe Works',
+        images: ['wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg', 'wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 2.jpg'],
+        desc: 'Pipe works covers the renewal, modification and complete replacement of piping systems across pumps, motors, manifolds, auxiliaries, main engines, tanks, condensers, water refiners and valves — sea water inlet strainers included. WBME designs the run, builds the jigs and prepares every material in steel, copper and galvanized pipe before installation, so systems go back into service without a leak or a misaligned joint.',
+        scope: 'Pumps, motors, manifolds, auxiliaries, main engines, tanks, condensers, water refiners and valves.',
+        tags: ['Steel', 'Copper', 'Galvanized', 'Valves']
+      },
+      welding: {
+        num: '06 → 06', title: 'Welding',
+        images: ['wbme photos for web 2026/New Complete Ships Rudder/6.jpg', 'wbme photos for web 2026/New Complete Ships Rudder/11.jpg'],
+        desc: "Welding underpins almost every other discipline at WBME — gas welding, brazing, silver soldering, MIG, TIG and arc welding across mild steel, stainless steel, aluminium and cast iron. It's the joining and repair work that turns fabricated parts and structural steel into a finished, load-bearing result, and the strengthening work that keeps an ageing structure or hull in service rather than being scrapped.",
+        scope: 'Mild steel, stainless steel, aluminium, cast iron, strengthening and repairs to existing structures.',
+        tags: ['MIG', 'TIG', 'Arc', 'Cast iron']
+      }
+    };
+    var smGallery = document.getElementById('smGallery');
+    var smNum = document.getElementById('smNum');
+    var smTitle = document.getElementById('serviceModalTitle');
+    var smDesc = document.getElementById('smDesc');
+    var smScope = document.getElementById('smScope');
+    var smTags = document.getElementById('smTags');
+    function openServiceModal (key) {
+      var d = SERVICES_DATA[key];
+      if (!d) return;
+      if (smGallery) {
+        smGallery.innerHTML = d.images.map(function (path) {
+          var url = window.WBME_BUCKET_IMAGE ? window.WBME_BUCKET_IMAGE(path, { width: 900, quality: 75, resize: 'cover' }) : '';
+          return '<div class="sm-shot" style="background-image:url(\'' + url.replace(/'/g, '%27') + '\')"></div>';
+        }).join('');
+      }
+      if (smNum) smNum.textContent = d.num;
+      if (smTitle) smTitle.textContent = d.title;
+      if (smDesc) smDesc.textContent = d.desc;
+      if (smScope) smScope.textContent = d.scope;
+      if (smTags) smTags.innerHTML = d.tags.map(function (t) { return '<span>' + t + '</span>'; }).join('');
+      closeDrawer();
+      serviceModal.classList.add('open');
+      lock();
+    }
+    function closeServiceModal () {
+      serviceModal.classList.remove('open');
+      if (!(contactModal && contactModal.classList.contains('open'))) unlock();
+    }
+    document.addEventListener('click', function (e) {
+      var opener = e.target.closest && e.target.closest('[data-service-open]');
+      if (opener) { e.preventDefault(); openServiceModal(opener.getAttribute('data-service-open')); return; }
+      var closer = e.target.closest && e.target.closest('[data-service-close]');
+      if (closer) closeServiceModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && serviceModal.classList.contains('open')) closeServiceModal();
+    });
+  }
 
   /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
   initScrollReveal();
