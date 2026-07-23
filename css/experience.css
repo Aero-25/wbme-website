@@ -1295,7 +1295,7 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
    colour departure: a lifted, warm-toned panel breaking out of the dark
    navy rhythm so it reads as a genuine "signature moment", not a repeat
    of the panel-navy cards used everywhere else. ===== */
-.about-float{position:relative;background:var(--panel);padding:56px clamp(20px,5vw,64px) 90px;z-index:2;overflow:visible}
+.about-float{position:relative;background:var(--panel);padding:48px clamp(20px,5vw,64px) 64px;z-index:2;overflow:visible}
 /* ambient breathing glow — sits behind the card, bleeds past its edges */
 .about-card-glow{
   position:absolute;left:50%;top:50%;z-index:2;pointer-events:none;
@@ -1405,8 +1405,8 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 
 /* ===== SERVICES GRID — six small panels, one per discipline, with a
    cursor-tilt + cursor-spotlight + Ken-Burns hover reveal per tile ===== */
-.services-grid{position:relative;background:var(--panel);padding:clamp(64px,8vw,110px) clamp(20px,5vw,64px);border-top:1px solid rgba(227,195,114,.14)}
-.services-grid-head{max-width:1180px;margin:0 auto clamp(32px,5vw,48px)}
+.services-grid{position:relative;background:var(--panel);padding:clamp(36px,4.5vw,56px) clamp(20px,5vw,64px) clamp(56px,7vw,90px);border-top:1px solid rgba(227,195,114,.14)}
+.services-grid-head{max-width:1180px;margin:0 auto clamp(20px,3vw,30px)}
 .services-grid-head h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2rem,4vw,3.2rem);margin-top:14px;text-wrap:balance}
 .services-grid-list{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .svc-tile{
