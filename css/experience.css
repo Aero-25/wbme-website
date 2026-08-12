@@ -45,7 +45,7 @@ img{display:block;max-width:100%}
 /* header */
 .brand{font-family:'Archivo';font-weight:700;letter-spacing:.04em;font-size:1.4rem}
 .brand b{color:var(--gold-lt)}
-.brand::before{content:"";display:block;width:156px;height:58px;background:rgba(255,255,255,.06) url("https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo.png?width=460&resize=contain&quality=90") center/contain no-repeat;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
+.brand::before{content:"";display:block;width:156px;height:58px;background:rgba(255,255,255,.06) url("https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo%20Big.png?width=460&resize=contain&quality=90") center/contain no-repeat;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
 .brand-logo{display:none}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px}
 .burger span{width:26px;height:2px;background:#fff;border-radius:2px}
@@ -1213,16 +1213,16 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   background:rgba(244,247,251,.97);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
   box-shadow:0 16px 36px rgba(15,44,82,.22),0 0 0 1px rgba(15,44,82,.06);
 }
-.site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:clamp(240px,21vw,330px);transition:min-width .3s var(--ease-out)}
+.site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:clamp(110px,10vw,130px);transition:min-width .3s var(--ease-out)}
 .site-hdr .brand::before{display:none}
 /* Scaled up visually via transform (not width/height), so the logo can render
    much larger than the header's own box without ever growing the header bar —
    transform is paint-only and never contributes to layout/flex sizing. The
    brand slot's min-width above reserves the matching horizontal room so the
    enlarged logo doesn't overlap the nav links; header HEIGHT is untouched. */
-.site-hdr .brand-logo{display:block;width:clamp(160px,14vw,220px);aspect-ratio:4.2/1;object-fit:cover;object-position:center;transform:scale(1.5);transform-origin:left center;transition:transform .3s var(--ease-out)}
+.site-hdr .brand-logo{display:block;height:52px;width:auto;object-fit:contain;transform:scale(1.35);transform-origin:left center;transition:transform .3s var(--ease-out)}
 .site-hdr.scrolled .brand{min-width:0}
-.site-hdr.scrolled .brand-logo{transform:scale(1.05)}
+.site-hdr.scrolled .brand-logo{transform:scale(1)}
 .site-nav{display:flex;align-items:center;gap:30px}
 .site-nav a{font-family:'Archivo';font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);opacity:.78;transition:opacity .2s var(--ease-out),color .2s var(--ease-out);position:relative}
 .site-nav a:hover{opacity:1;color:var(--brass-deep)}
@@ -1238,7 +1238,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   .site-nav,.hdr-phone{display:none}
   .site-hdr{padding:calc(16px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) 16px calc(20px + env(safe-area-inset-left,0px))}
   .site-hdr.scrolled{padding:11px 20px;left:14px;right:14px}
-  .site-hdr .brand-logo{width:clamp(150px,40vw,220px);transform:scale(1.4)}
+  .site-hdr .brand-logo{height:44px;transform:scale(1.25)}
 }
 
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:var(--z-modal-progress);pointer-events:none}
@@ -1672,6 +1672,7 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
 @media(max-width:820px){.contact-panel{border-radius:22px}}
 
 /* ===== PROJECTS BLOG — listing grid + single-post view, backed by Supabase ===== */
+#projectsBlog [hidden]{display:none!important}
 .blog-loading,.blog-empty,.blog-error{display:flex;align-items:center;gap:12px;padding:48px 0;color:var(--mut);font-family:'Archivo';font-weight:600;font-size:.9rem}
 .blog-spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(227,195,114,.25);border-top-color:var(--gold-lt);animation:blog-spin .7s linear infinite;flex:none}
 @keyframes blog-spin{to{transform:rotate(360deg)}}
