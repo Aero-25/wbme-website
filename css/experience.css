@@ -1213,16 +1213,16 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   background:rgba(244,247,251,.97);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
   box-shadow:0 16px 36px rgba(15,44,82,.22),0 0 0 1px rgba(15,44,82,.06);
 }
-.site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:clamp(110px,10vw,130px);transition:min-width .3s var(--ease-out)}
+.site-hdr .brand{display:inline-flex;flex-direction:row;align-items:center;gap:10px;min-width:clamp(140px,12vw,165px);transition:min-width .3s var(--ease-out)}
 .site-hdr .brand::before{display:none}
 /* Scaled up visually via transform (not width/height), so the logo can render
    much larger than the header's own box without ever growing the header bar —
    transform is paint-only and never contributes to layout/flex sizing. The
    brand slot's min-width above reserves the matching horizontal room so the
    enlarged logo doesn't overlap the nav links; header HEIGHT is untouched. */
-.site-hdr .brand-logo{display:block;height:52px;width:auto;object-fit:contain;transform:scale(1.35);transform-origin:left center;transition:transform .3s var(--ease-out)}
+.site-hdr .brand-logo{display:block;height:52px;width:auto;object-fit:contain;transform:scale(1.7);transform-origin:left center;transition:transform .3s var(--ease-out)}
 .site-hdr.scrolled .brand{min-width:0}
-.site-hdr.scrolled .brand-logo{transform:scale(1)}
+.site-hdr.scrolled .brand-logo{transform:scale(1.15)}
 .site-nav{display:flex;align-items:center;gap:30px}
 .site-nav a{font-family:'Archivo';font-weight:600;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);opacity:.78;transition:opacity .2s var(--ease-out),color .2s var(--ease-out);position:relative}
 .site-nav a:hover{opacity:1;color:var(--brass-deep)}
@@ -1238,7 +1238,7 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   .site-nav,.hdr-phone{display:none}
   .site-hdr{padding:calc(16px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) 16px calc(20px + env(safe-area-inset-left,0px))}
   .site-hdr.scrolled{padding:11px 20px;left:14px;right:14px}
-  .site-hdr .brand-logo{height:44px;transform:scale(1.25)}
+  .site-hdr .brand-logo{height:44px;transform:scale(1.5)}
 }
 
 .scroll-progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:var(--z-modal-progress);pointer-events:none}
