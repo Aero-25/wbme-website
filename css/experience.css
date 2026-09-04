@@ -45,7 +45,7 @@ img{display:block;max-width:100%}
 /* header */
 .brand{font-family:'Archivo';font-weight:700;letter-spacing:.04em;font-size:1.4rem}
 .brand b{color:var(--gold-lt)}
-.brand::before{content:"";display:block;width:156px;height:58px;background:rgba(255,255,255,.06) url("https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/New%20Logo%20Big.png?width=460&resize=contain&quality=90") center/contain no-repeat;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
+.brand::before{content:"";display:block;width:156px;height:58px;background:rgba(255,255,255,.06) url("https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/New%20Logo%20Big.png") center/contain no-repeat;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
 .brand-logo{display:none}
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px}
 .burger span{width:26px;height:2px;background:#fff;border-radius:2px}
