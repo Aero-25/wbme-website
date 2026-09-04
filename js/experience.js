@@ -49,43 +49,6 @@
     });
   }
 
-  /* ===== "OUR PROJECTS" PINNED IMAGE (Home) =====
-     Explicit scroll-position states instead of relying on position:sticky's
-     native "release at container end" behaviour — that native release
-     turned out inconsistent (produced a blank gap between the pinned image
-     and the marquee), so this drives the same three states directly off
-     getBoundingClientRect: resting at the top before the section is
-     reached, fixed to the viewport while there's runway left, then resting
-     at the bottom of its own (2x-viewport-tall) wrapper once exhausted —
-     at which point it scrolls away normally as the next section covers it. */
-  function initShowcasePin () {
-    var section = document.querySelector('.showcase-fixed');
-    var pin = section && section.querySelector('.showcase-fixed-pin');
-    if (!section || !pin) return;
-    var ticking = false;
-    function update () {
-      ticking = false;
-      var rect = section.getBoundingClientRect();
-      var vh = window.innerHeight;
-      if (rect.top <= 0 && rect.bottom > vh) {
-        pin.classList.add('is-pinned');
-        pin.classList.remove('is-past');
-      } else if (rect.bottom <= vh) {
-        pin.classList.remove('is-pinned');
-        pin.classList.add('is-past');
-      } else {
-        pin.classList.remove('is-pinned', 'is-past');
-      }
-    }
-    window.addEventListener('scroll', function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  }
-
   /* ===== HEADER SCROLL STATE ===== */
   function initHeaderScrollState () {
     var hdr = document.querySelector('.site-hdr');
@@ -284,7 +247,6 @@
   /* ===== NEW ENGINE: reveal / parallax / header state / active nav / progress / counters ===== */
   initScrollReveal();
   initParallax();
-  initShowcasePin();
   initHeaderScrollState();
   markActiveNav();
   initScrollProgress();
