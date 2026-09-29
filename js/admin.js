@@ -38,10 +38,13 @@
   }
 
   function showLoggedOut () {
+    document.body.classList.remove('admin-checking');
+    document.body.classList.add('admin-out');
     loginSection.hidden = false; dashSection.hidden = true; formSection.hidden = true;
     whoEl.hidden = true; signOutBtn.hidden = true;
   }
   function showLoggedIn (email) {
+    document.body.classList.remove('admin-checking', 'admin-out');
     loginSection.hidden = true; formSection.hidden = true; dashSection.hidden = false;
     whoEl.hidden = false; whoEl.textContent = email;
     signOutBtn.hidden = false;
@@ -56,17 +59,36 @@
     e.preventDefault();
     loginError.hidden = true;
     var btn = loginForm.querySelector('button[type=submit]');
-    btn.disabled = true;
+    var label = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Signing in…';
     api('POST', '/api/admin/login', {
-      email: document.getElementById('al-email').value.trim(),
+      username: document.getElementById('al-email').value.trim(),
       password: document.getElementById('al-pass').value
     }).then(function (me) {
       document.getElementById('al-pass').value = '';
       showLoggedIn(me.email);
     }, function (err) {
       loginError.textContent = err.message; loginError.hidden = false;
-    }).then(function () { btn.disabled = false; });
+    }).then(function () { btn.disabled = false; btn.innerHTML = label; });
   });
+  /* show / hide password, and warn when Caps Lock is on */
+  var passInput = document.getElementById('al-pass');
+  var eye = document.getElementById('alEye');
+  var caps = document.getElementById('alCaps');
+  if (eye) eye.addEventListener('click', function () {
+    var show = passInput.type === 'password';
+    passInput.type = show ? 'text' : 'password';
+    eye.textContent = show ? 'Hide' : 'Show';
+    eye.setAttribute('aria-pressed', String(show));
+    passInput.focus();
+  });
+  ['keydown', 'keyup'].forEach(function (evt) {
+    passInput.addEventListener(evt, function (e) {
+      if (caps && e.getModifierState) caps.hidden = !e.getModifierState('CapsLock');
+    });
+  });
+  passInput.addEventListener('blur', function () { if (caps) caps.hidden = true; });
+
   signOutBtn.addEventListener('click', function () {
     api('POST', '/api/admin/logout').then(showLoggedOut, showLoggedOut);
   });

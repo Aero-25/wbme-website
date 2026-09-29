@@ -10,9 +10,9 @@
 <link rel="preload" href="media/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/experience.css?v=117">
+<link rel="stylesheet" href="css/experience.css?v=120">
 </head>
-<body data-page="admin">
+<body data-page="admin" class="admin-out admin-checking">
 
 <div class="grain"></div>
 
@@ -31,20 +31,43 @@
 <main class="admin-main">
 
   <section id="adminLogin" class="admin-login">
-    <div class="admin-login-glow" aria-hidden="true"></div>
-    <div class="admin-login-card">
-      <div class="admin-login-mark">
-        <img src="media/brand/propeller-320.webp" alt="">
+    <div class="al-visual">
+      <div class="al-photo" aria-hidden="true"></div>
+      <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <a class="al-brand" href="index.html" aria-label="Walvis Bay Marine Engineering website">
+        <img src="media/brand/propeller-320.webp" alt="" width="320" height="320">
+        <span>WB<b>ME</b></span>
+      </a>
+      <div class="al-statement">
+        <span class="al-kicker">Workshop admin</span>
+        <h2>Put the yard&rsquo;s work on record.</h2>
+        <p>Publish finished jobs to the Projects page &mdash; photos, the write-up and the date the work was done.</p>
       </div>
-      <span class="eyebrow">Admin access</span>
-      <h1>Sign in to WBME</h1>
-      <p>Manage project posts &mdash; ask the site owner for a login.</p>
-      <form id="adminLoginForm" novalidate>
-        <div class="ticket-field"><label for="al-email">Email</label><input id="al-email" type="email" required autocomplete="username" placeholder="you@wbme.com.na"></div>
-        <div class="ticket-field"><label for="al-pass">Password</label><input id="al-pass" type="password" required autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-        <button type="submit" class="btn-brass">Sign in &rarr;</button>
-        <p class="admin-login-error" id="adminLoginError" hidden></p>
-      </form>
+      <div class="al-meta" aria-hidden="true"><span>Walvis Bay &middot; 22&deg;57&prime;S 14&deg;30&prime;E</span><span>Est. 1999</span></div>
+    </div>
+    <div class="al-panel">
+      <div class="al-form-wrap">
+        <span class="eyebrow">Admin access</span>
+        <h1>Sign in</h1>
+        <p class="al-sub">Only people with an admin login can publish or edit project posts.</p>
+        <form id="adminLoginForm" novalidate>
+          <div class="al-field">
+            <label for="al-email">Username</label>
+            <input id="al-email" name="username" type="text" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+          </div>
+          <div class="al-field">
+            <label for="al-pass">Password</label>
+            <div class="al-pass">
+              <input id="al-pass" name="password" type="password" required autocomplete="current-password">
+              <button type="button" class="al-eye" id="alEye" aria-controls="al-pass" aria-pressed="false">Show</button>
+            </div>
+            <p class="al-caps" id="alCaps" hidden>Caps Lock is on</p>
+          </div>
+          <button type="submit" class="btn-brass al-submit">Sign in &rarr;</button>
+          <p class="admin-login-error" id="adminLoginError" role="alert" hidden></p>
+        </form>
+        <a class="al-back" href="index.html">&larr; Back to the website</a>
+      </div>
     </div>
   </section>
 
@@ -99,6 +122,6 @@
 </main>
 
 <script src="js/bucket-assets.js?v=47"></script>
-<script src="js/admin.js?v=4"></script>
+<script src="js/admin.js?v=5"></script>
 </body>
 </html>

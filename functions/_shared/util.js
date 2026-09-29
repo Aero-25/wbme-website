@@ -5,7 +5,8 @@
      DB              D1 database "wbme"
      MEDIA           R2 bucket "wbme-media"
      SESSION_SECRET  secret, long random string (signs admin cookies)
-     ADMIN_USERS     secret, JSON {"email": "pbkdf2$<iter>$<salt>$<hash>"}
+     ADMIN_USERS     secret, JSON {"username": "pbkdf2$<iter>$<salt>$<hash>"}
+                     (usernames are lowercase; an email works as a username too)
                      (generate entries with scripts/hash-password.mjs) */
 
 const enc = new TextEncoder();
