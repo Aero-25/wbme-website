@@ -326,17 +326,21 @@
      A cutting torch travels a chalk line across a steel plate; loading
      progress is the cut. At 100% the plate parts and reveals the page
      (CSS handles the split, see .preloader.done in experience.css).
-     Always plays the full minimum-3s sequence on every page load — this is
-     a deliberate owner requirement (a per-session "seen before" skip was
-     tried earlier and made the loader flash for ~150ms after the first
-     page view, which read as broken). */
+     Plays on the first page of a visit only, with a 1.5s minimum. Later
+     pages skip it: an inline script in <head> sets .pl-seen before first
+     paint, so the loader is never rendered at all. (An earlier skip that
+     decided after paint made the loader flash for ~150ms and read as
+     broken; deciding before paint avoids that.) */
   (function preload () {
     var pre = document.getElementById('preloader');
-    if (!pre) { ready = true; document.body.classList.add('ready'); return; }
+    if (!pre || document.documentElement.classList.contains('pl-seen')) {
+      if (pre) pre.parentNode.removeChild(pre);
+      ready = true; document.body.classList.add('ready'); return;
+    }
     var pct = document.getElementById('plPercent'), torch = document.getElementById('plTorch'),
         seam = document.getElementById('plSeam'), prop = document.getElementById('plProp'),
         canvas = document.getElementById('plSparks');
-    var MIN = 3000, CAP = 6000, start = Date.now();
+    var MIN = 1500, CAP = 5000, start = Date.now();
     var total = 1, loaded = 0, finished = false, finishedAt = 0;
     var shown = 0, angle = 0, lastTs = null, seamW = 0, seamY = 0;
     var sparks = (!reduce && canvas) ? makeSparks(canvas) : null;
@@ -409,6 +413,7 @@
       shown = 1; setProgress(1);
       if (sparks) sparks.emit(seamW, seamY, 110, true);
       pre.classList.add('done');
+      setTimeout(function () { pre.style.display = 'none'; }, reduce ? 450 : 1150);
       setTimeout(function () { document.body.classList.add('ready'); ready = true; }, 320);
     }
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
