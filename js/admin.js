@@ -143,48 +143,110 @@
     });
   }
 
-  /* ===== FORM (create / edit) ===== */
+  /* ===== FORM (create / edit) =====
+     One description box, one photo list (first photo is the cover), and two
+     buttons that decide whether the post is public. The web address comes
+     from the title, and the card text from the description's first sentence. */
   var newBtn = document.getElementById('adminNew');
   var cancelBtn = document.getElementById('adminFormCancel');
   var formTitle = document.getElementById('adminFormTitle');
+  var form = document.getElementById('adminProjectForm');
   var pf = {
-    id: document.getElementById('pf-id'),
     title: document.getElementById('pf-title'),
-    discipline: document.getElementById('pf-discipline'),
-    date: document.getElementById('pf-date'),
-    summary: document.getElementById('pf-summary'),
     body: document.getElementById('pf-body'),
-    cover: document.getElementById('pf-cover'),
-    coverHint: document.getElementById('pf-cover-hint'),
-    gallery: document.getElementById('pf-gallery'),
-    galleryHint: document.getElementById('pf-gallery-hint'),
-    published: document.getElementById('pf-published'),
+    date: document.getElementById('pf-date'),
+    files: document.getElementById('pf-files'),
+    drop: document.getElementById('pf-drop'),
+    thumbs: document.getElementById('pf-thumbs'),
     status: document.getElementById('pf-status'),
-    saveBtn: document.getElementById('pf-save')
+    saveBtn: document.getElementById('pf-save'),
+    draftBtn: document.getElementById('pf-draft')
   };
-  var editingCoverPath = '', editingGalleryPaths = [], editingSlug = '';
+  var editing = null;   // the post being edited, or null for a new one
+  var photos = [];      // { path } for stored photos, { file, url } for new ones
+
+  function today () { return new Date().toISOString().slice(0, 10); }
+
+  function setDiscipline (value) {
+    var radios = form.querySelectorAll('input[name=discipline]');
+    var match = false;
+    Array.prototype.forEach.call(radios, function (r) { r.checked = r.value === value; if (r.checked) match = true; });
+    if (!match) form.querySelector('input[name=discipline][value="General"]').checked = true;
+  }
+  function getDiscipline () {
+    var r = form.querySelector('input[name=discipline]:checked');
+    return r ? r.value : 'General';
+  }
+
+  function showErr (name, on) {
+    var el = form.querySelector('[data-err="' + name + '"]');
+    if (el) el.hidden = !on;
+  }
 
   function openForm (p) {
+    editing = p || null;
     dashSection.hidden = true; formSection.hidden = false;
     formTitle.textContent = p ? 'Edit project' : 'New project';
-    pf.id.value = p ? p.id : '';
     pf.title.value = p ? p.title : '';
-    pf.discipline.value = p ? p.discipline : 'General';
-    editingSlug = p ? p.slug : '';
-    pf.date.value = p && p.project_date ? p.project_date : new Date().toISOString().slice(0, 10);
-    pf.summary.value = p ? p.summary : '';
-    pf.body.value = p ? p.body : '';
-    pf.published.checked = p ? !!p.published : true;
-    pf.cover.value = ''; pf.gallery.value = '';
-    editingCoverPath = p ? p.cover_path : '';
-    editingGalleryPaths = (p && Array.isArray(p.gallery)) ? p.gallery.slice() : [];
-    pf.coverHint.textContent = editingCoverPath ? 'Current: ' + editingCoverPath.split('/').pop() : 'No file chosen';
-    pf.galleryHint.textContent = editingGalleryPaths.length ? editingGalleryPaths.length + ' existing photo(s) — new files add to these' : 'No files chosen';
+    pf.body.value = p ? (p.body || p.summary || '') : '';
+    pf.date.value = p && p.project_date ? p.project_date : today();
+    setDiscipline(p ? p.discipline : 'General');
+    photos.forEach(function (ph) { if (ph.url) URL.revokeObjectURL(ph.url); });
+    photos = p ? [p.cover_path].concat(Array.isArray(p.gallery) ? p.gallery : []).filter(Boolean).map(function (path) { return { path: path }; }) : [];
+    renderThumbs();
+    pf.saveBtn.textContent = p && p.published ? 'Save changes' : 'Publish';
+    pf.draftBtn.textContent = p && p.published ? 'Move to drafts' : 'Save as draft';
     pf.status.textContent = '';
+    ['title', 'body', 'photos'].forEach(function (n) { showErr(n, false); });
+    window.scrollTo(0, 0);
     pf.title.focus();
   }
+  pf.title.addEventListener('input', function () { if (pf.title.value.trim()) showErr('title', false); });
+  pf.body.addEventListener('input', function () { if (pf.body.value.trim()) showErr('body', false); });
+  function closeForm () { formSection.hidden = true; dashSection.hidden = false; }
   newBtn.addEventListener('click', function () { openForm(null); });
-  cancelBtn.addEventListener('click', function () { formSection.hidden = true; dashSection.hidden = false; });
+  cancelBtn.addEventListener('click', closeForm);
+
+  /* ---- photos ---- */
+  function addFiles (fileList) {
+    Array.prototype.forEach.call(fileList || [], function (file) {
+      if (!/^image\//.test(file.type)) return;
+      photos.push({ file: file, url: URL.createObjectURL(file) });
+    });
+    renderThumbs();
+    if (photos.length) showErr('photos', false);
+  }
+  function renderThumbs () {
+    pf.thumbs.innerHTML = photos.map(function (ph, i) {
+      var src = ph.url || img(ph.path, 240);
+      return '<li class="pf-thumb' + (i === 0 ? ' is-cover' : '') + '">' +
+        '<div class="pf-thumb-img" style="background-image:url(\'' + String(src).replace(/'/g, '%27') + '\')"></div>' +
+        (i === 0 ? '<span class="pf-cover-tag">Cover</span>' : '<button type="button" class="pf-make-cover" data-i="' + i + '">Make cover</button>') +
+        '<button type="button" class="pf-remove" data-i="' + i + '" aria-label="Remove photo ' + (i + 1) + '">&times;</button>' +
+      '</li>';
+    }).join('');
+  }
+  pf.thumbs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var i = Number(btn.getAttribute('data-i'));
+    if (btn.classList.contains('pf-remove')) {
+      var gone = photos.splice(i, 1)[0];
+      if (gone && gone.url) URL.revokeObjectURL(gone.url);
+    } else if (btn.classList.contains('pf-make-cover')) {
+      photos.unshift(photos.splice(i, 1)[0]);
+    }
+    renderThumbs();
+  });
+  pf.files.addEventListener('change', function () { addFiles(pf.files.files); pf.files.value = ''; });
+  ['dragenter', 'dragover'].forEach(function (evt) {
+    pf.drop.addEventListener(evt, function (e) { e.preventDefault(); pf.drop.classList.add('is-over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (evt) {
+    pf.drop.addEventListener(evt, function (e) { e.preventDefault(); pf.drop.classList.remove('is-over'); });
+  });
+  pf.drop.addEventListener('drop', function (e) { addFiles(e.dataTransfer && e.dataTransfer.files); });
+
   /* The post's web address comes from its title. An existing post keeps its
      address when edited, so links to it never break; a new post whose title
      matches another post's address gets -2, -3, ... added. */
@@ -194,6 +256,13 @@
     var slug = base, n = 2;
     while (taken.indexOf(slug) !== -1) slug = base + '-' + n++;
     return slug;
+  }
+
+  /* Card text: the description's first sentence, trimmed to fit a card. */
+  function cardText (text) {
+    var first = String(text).trim().split(/(?<=[.!?])\s+/)[0] || '';
+    if (first.length <= 200) return first;
+    return first.slice(0, 197).replace(/\s+\S*$/, '') + '…';
   }
 
   /* Phone photos arrive at 3–5 MB; shrink to 1600px on the long edge and
@@ -229,44 +298,64 @@
     });
   }
 
-  document.getElementById('adminProjectForm').addEventListener('submit', function (e) {
+  /* Uploads new photos one at a time so the status can count them. */
+  function uploadPending () {
+    var pending = photos.filter(function (ph) { return ph.file && !ph.path; });
+    var done = 0;
+    return pending.reduce(function (chain, ph) {
+      return chain.then(function () {
+        pf.status.textContent = 'Uploading photo ' + (done + 1) + ' of ' + pending.length + '…';
+        return uploadFile(ph.file).then(function (path) { ph.path = path; done++; });
+      });
+    }, Promise.resolve());
+  }
+
+  /* which button sent the form (e.submitter isn't available on older iPhones) */
+  var publishIntent = true;
+  pf.saveBtn.addEventListener('click', function () { publishIntent = true; });
+  pf.draftBtn.addEventListener('click', function () { publishIntent = false; });
+
+  function setBusy (busy) { pf.saveBtn.disabled = busy; pf.draftBtn.disabled = busy; }
+
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var coverFile = pf.cover.files[0];
-    var galleryFiles = Array.prototype.slice.call(pf.gallery.files);
+    var publish = publishIntent;
+    publishIntent = true; // Enter in a field means the main button
+    var title = pf.title.value.trim();
+    var body = pf.body.value.trim();
+    showErr('title', !title); showErr('body', !body); showErr('photos', !photos.length);
+    if (!title || !body || !photos.length) {
+      var firstBad = form.querySelector('.pf-err:not([hidden])');
+      if (firstBad) firstBad.parentNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
-    if (!coverFile && !editingCoverPath) { pf.status.textContent = 'A cover photo is required.'; return; }
-
-    pf.status.textContent = (coverFile || galleryFiles.length) ? 'Uploading photos…' : 'Saving…';
-    pf.saveBtn.disabled = true;
-
-    var coverUpload = coverFile ? uploadFile(coverFile) : Promise.resolve(editingCoverPath);
-    var galleryUpload = galleryFiles.length
-      ? Promise.all(galleryFiles.map(uploadFile)).then(function (paths) { return editingGalleryPaths.concat(paths); })
-      : Promise.resolve(editingGalleryPaths);
-
-    Promise.all([coverUpload, galleryUpload]).then(function (results) {
+    setBusy(true);
+    uploadPending().then(function () {
       pf.status.textContent = 'Saving…';
+      var original = editing ? (editing.body || editing.summary || '') : null;
       var row = {
-        title: pf.title.value.trim(),
-        slug: editingSlug || uniqueSlug(pf.title.value),
-        project_date: pf.date.value || new Date().toISOString().slice(0, 10),
-        discipline: pf.discipline.value,
-        summary: pf.summary.value.trim(),
-        body: pf.body.value.trim(),
-        cover_path: results[0],
-        gallery: results[1],
-        published: pf.published.checked
+        title: title,
+        slug: editing ? editing.slug : uniqueSlug(title),
+        project_date: pf.date.value || today(),
+        discipline: getDiscipline(),
+        // keep a hand-written card text on older posts unless the description changed
+        summary: editing && body === original.trim() && editing.summary ? editing.summary : cardText(body),
+        body: body,
+        cover_path: photos[0].path,
+        gallery: photos.slice(1).map(function (ph) { return ph.path; }),
+        published: publish
       };
-      return pf.id.value
-        ? api('PUT', '/api/admin/projects/' + encodeURIComponent(pf.id.value), row)
+      return editing
+        ? api('PUT', '/api/admin/projects/' + encodeURIComponent(editing.id), row)
         : api('POST', '/api/admin/projects', row);
     }).then(function () {
-      pf.saveBtn.disabled = false;
-      formSection.hidden = true; dashSection.hidden = false;
+      setBusy(false);
+      closeForm();
       loadList();
     }).catch(function (err) {
-      pf.status.textContent = 'Error: ' + err.message;
-      pf.saveBtn.disabled = false;
+      pf.status.textContent = 'Could not save: ' + err.message;
+      setBusy(false);
     });
   });
 })();

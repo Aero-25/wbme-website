@@ -1890,17 +1890,60 @@ body.admin-out .admin-main{max-width:none;padding:0}
 .admin-badge.is-draft{color:#9fb0c6;border-color:rgba(159,176,198,.28)}
 .admin-row-actions{display:flex;gap:8px;flex:none}
 
-/* form */
-.admin-form-panel{max-width:680px}
-.admin-form-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;gap:16px}
-.admin-form-head h2{font-family:'Anton';text-transform:uppercase;font-size:1.7rem;color:#fff;margin-top:6px}
-.admin-form-section{display:block;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);margin:26px 0 14px;padding-top:18px;border-top:1px solid rgba(227,195,114,.14)}
-.admin-form-section:first-of-type{margin-top:0;padding-top:0;border-top:0}
-.admin-check{display:flex;align-items:center;gap:10px;font-family:'Archivo';font-weight:600;font-size:.86rem;color:var(--mut);margin:6px 0 24px;cursor:pointer}
-.admin-file-hint{display:block;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--mut)}
-.admin-form-actions{display:flex;align-items:center;gap:18px}
-.admin-form-actions .btn-brass{width:auto;padding:.9rem 1.8rem}
-.admin-form-status{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--gold-lt)}
+/* form — one column, plain questions, boxed fields (same style as sign-in) */
+.admin-form-panel{max-width:680px;margin:0 auto}
+.pf-back{display:inline-flex;align-items:center;min-height:44px;padding:0;border:0;background:none;color:var(--mut);font-family:'Archivo';font-weight:600;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:color .2s var(--ease-out)}
+.pf-back:hover{color:var(--gold-lt)}
+.pf-heading{font-family:'Anton';text-transform:uppercase;font-size:clamp(2rem,4vw,2.6rem);line-height:1;color:#fff;margin:6px 0 28px}
+.pf-field{margin-bottom:26px}
+.pf-field > label:not(.pf-drop),.pf-label{display:block;font-family:'Archivo';font-weight:600;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#c9d4e3;margin-bottom:10px}
+.pf-field input[type=text],.pf-field input[type=date],.pf-field textarea{width:100%;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.045);color:#fff;font-family:'Barlow';font-size:1rem;line-height:1.55;transition:border-color .2s var(--ease-out),box-shadow .2s var(--ease-out),background .2s var(--ease-out)}
+.pf-field input[type=text],.pf-field input[type=date]{height:52px;padding-top:0;padding-bottom:0}
+.pf-field textarea{resize:vertical;min-height:150px}
+.pf-field input::placeholder,.pf-field textarea::placeholder{color:#7e8b9c}
+.pf-field input:hover,.pf-field textarea:hover{border-color:rgba(255,255,255,.28)}
+.pf-field input:focus,.pf-field textarea:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.07);box-shadow:0 0 0 3px rgba(199,154,62,.28)}
+.pf-field input[type=date]{max-width:240px;color-scheme:dark}
+.pf-err{margin-top:8px;font-size:.86rem;color:#f1b0b0}
+
+/* type of work: tap-to-choose chips */
+.pf-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pf-chips label{position:relative;cursor:pointer}
+.pf-chips input{position:absolute;opacity:0;pointer-events:none}
+.pf-chips span{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.04);font-family:'Archivo';font-weight:600;font-size:.86rem;color:#dbe2ec;transition:background .15s var(--ease-out),border-color .15s var(--ease-out),color .15s var(--ease-out)}
+.pf-chips label:hover span{border-color:rgba(227,195,114,.6)}
+.pf-chips input:checked + span{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.pf-chips input:focus-visible + span{outline:2px solid var(--gold-lt);outline-offset:2px}
+
+/* photos: one drop zone, thumbnails below, first is the cover */
+.pf-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:130px;padding:22px;border:1.5px dashed rgba(227,195,114,.45);border-radius:14px;background:rgba(199,154,62,.05);text-align:center;cursor:pointer;transition:background .2s var(--ease-out),border-color .2s var(--ease-out)}
+.pf-drop:hover,.pf-drop.is-over{background:rgba(199,154,62,.12);border-color:var(--gold-lt)}
+.pf-drop:focus-within{outline:2px solid var(--gold-lt);outline-offset:3px}
+.pf-drop input{position:absolute;width:1px;height:1px;opacity:0}
+.pf-drop b{font-family:'Archivo';font-weight:700;font-size:1rem;color:var(--gold-lt)}
+.pf-drop span{font-size:.9rem;color:var(--mut)}
+.pf-thumbs{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:14px}
+.pf-thumbs:empty{display:none}
+.pf-thumb{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:#0b1c33}
+.pf-thumb.is-cover{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.pf-thumb-img{aspect-ratio:4/3;background-size:cover;background-position:center}
+.pf-cover-tag,.pf-make-cover{position:absolute;left:8px;bottom:8px;padding:5px 10px;border-radius:999px;font-family:'Archivo';font-weight:700;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase}
+.pf-cover-tag{background:var(--gold);color:var(--ink)}
+.pf-make-cover{border:0;background:rgba(7,20,36,.85);color:#fff;cursor:pointer;min-height:30px}
+.pf-make-cover:hover{background:var(--gold);color:var(--ink)}
+.pf-remove{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(7,20,36,.85);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer}
+.pf-remove:hover{background:#b54a4a}
+.pf-make-cover:focus-visible,.pf-remove:focus-visible{outline:2px solid var(--gold-lt);outline-offset:2px}
+
+.pf-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:34px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1)}
+.pf-actions .btn-brass{width:auto;min-width:160px;padding:1rem 2rem}
+.pf-actions .pf-draft{min-height:50px;padding:0 22px}
+.pf-actions button:disabled{opacity:.6;cursor:progress}
+.admin-form-status{flex-basis:100%;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--gold-lt)}
+.admin-form-status:empty{display:none}
+@media(max-width:640px){
+  .pf-actions .btn-brass,.pf-actions .pf-draft{flex:1 1 100%}
+}
 @media(max-width:640px){
   .admin-hdr{padding:14px 20px}
   .admin-main{padding:36px 18px 80px}

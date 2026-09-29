@@ -10,7 +10,7 @@
 <link rel="preload" href="media/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/experience.css?v=120">
+<link rel="stylesheet" href="css/experience.css?v=121">
 </head>
 <body data-page="admin" class="admin-out admin-checking">
 
@@ -81,39 +81,55 @@
   </section>
 
   <section id="adminForm" class="admin-form-panel" hidden>
-    <div class="admin-form-head">
-      <div><span class="eyebrow">Project post</span><h2 id="adminFormTitle">New project</h2></div>
-      <button id="adminFormCancel" class="btn-ghost-sm" type="button">Cancel</button>
-    </div>
+    <button id="adminFormCancel" class="pf-back" type="button">&larr; All projects</button>
+    <h2 id="adminFormTitle" class="pf-heading">New project</h2>
     <form id="adminProjectForm" novalidate>
-      <input type="hidden" id="pf-id">
-      <b class="admin-form-section">Basics</b>
-      <div class="frow">
-        <div class="ticket-field"><label for="pf-title">Title</label><input id="pf-title" required></div>
-        <div class="ticket-field">
-          <label for="pf-discipline">Discipline</label>
-          <select id="pf-discipline">
-            <option>Ship Repair</option><option>Rigging</option><option>Fitting &amp; Turning</option>
-            <option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option>
-            <option>Welding</option><option>General</option>
-          </select>
+      <div class="pf-field">
+        <label for="pf-title">Project title</label>
+        <input id="pf-title" type="text" maxlength="160" placeholder="e.g. New propeller shaft for a trawler">
+        <p class="pf-err" data-err="title" hidden>Give the project a title.</p>
+      </div>
+
+      <div class="pf-field">
+        <span class="pf-label" id="pf-disc-label">Type of work</span>
+        <div class="pf-chips" role="radiogroup" aria-labelledby="pf-disc-label" id="pf-discipline">
+          <label><input type="radio" name="discipline" value="Ship Repair"><span>Ship Repair</span></label>
+          <label><input type="radio" name="discipline" value="Rigging"><span>Rigging</span></label>
+          <label><input type="radio" name="discipline" value="Fitting &amp; Turning"><span>Fitting &amp; Turning</span></label>
+          <label><input type="radio" name="discipline" value="Boiler Making"><span>Boiler Making</span></label>
+          <label><input type="radio" name="discipline" value="Fabrication"><span>Fabrication</span></label>
+          <label><input type="radio" name="discipline" value="Pipe Works"><span>Pipe Works</span></label>
+          <label><input type="radio" name="discipline" value="Welding"><span>Welding</span></label>
+          <label><input type="radio" name="discipline" value="General"><span>Other</span></label>
         </div>
       </div>
-      <div class="frow">
-        <div class="ticket-field"><label for="pf-date">Project date</label><input id="pf-date" type="date" required><span class="admin-file-hint">Controls sort order &mdash; newest date shows first, not upload order.</span></div>
+
+      <div class="pf-field">
+        <label for="pf-body">What was done</label>
+        <textarea id="pf-body" rows="6" placeholder="Describe the job in a few sentences. The first sentence is used as the short text on the project card."></textarea>
+        <p class="pf-err" data-err="body" hidden>Describe the job in at least one sentence.</p>
       </div>
-      <div class="ticket-field"><label for="pf-summary">Summary (card blurb)</label><textarea id="pf-summary" required rows="2"></textarea></div>
-      <div class="ticket-field"><label for="pf-body">Full write-up</label><textarea id="pf-body" rows="6"></textarea></div>
-      <b class="admin-form-section">Photos</b>
-      <div class="frow">
-        <div class="ticket-field"><label for="pf-cover">Cover photo</label><input id="pf-cover" type="file" accept="image/*"><span class="admin-file-hint" id="pf-cover-hint">No file chosen</span></div>
-        <div class="ticket-field"><label for="pf-gallery">Extra photos (optional, multiple)</label><input id="pf-gallery" type="file" accept="image/*" multiple><span class="admin-file-hint" id="pf-gallery-hint">No files chosen</span></div>
+
+      <div class="pf-field">
+        <span class="pf-label">Photos</span>
+        <label class="pf-drop" id="pf-drop" for="pf-files">
+          <input id="pf-files" type="file" accept="image/*" multiple>
+          <b>Add photos</b>
+          <span>Drag them here or tap to choose. The first photo is the cover.</span>
+        </label>
+        <ul class="pf-thumbs" id="pf-thumbs" aria-label="Chosen photos"></ul>
+        <p class="pf-err" data-err="photos" hidden>Add at least one photo.</p>
       </div>
-      <b class="admin-form-section">Publish</b>
-      <label class="admin-check"><input type="checkbox" id="pf-published" checked> Published (visible on the public Projects page)</label>
-      <div class="admin-form-actions">
-        <button type="submit" class="btn-brass" id="pf-save">Save project</button>
-        <span class="admin-form-status" id="pf-status"></span>
+
+      <div class="pf-field pf-field-date">
+        <label for="pf-date">Date of the job</label>
+        <input id="pf-date" type="date">
+      </div>
+
+      <div class="pf-actions">
+        <button type="submit" class="btn-brass" id="pf-save" data-publish="1">Publish</button>
+        <button type="submit" class="btn-ghost-sm pf-draft" id="pf-draft" data-publish="0">Save as draft</button>
+        <span class="admin-form-status" id="pf-status" role="status"></span>
       </div>
     </form>
   </section>
@@ -121,6 +137,6 @@
 </main>
 
 <script src="js/bucket-assets.js?v=47"></script>
-<script src="js/admin.js?v=6"></script>
+<script src="js/admin.js?v=7"></script>
 </body>
 </html>
