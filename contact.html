@@ -16,7 +16,7 @@
 <link rel="preload" href="media/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<script>/* Full loader on the first page of a visit only. Decided here, before first paint, so later pages never flash it. */try{if(sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
+<script>/* Full loader on the first page of a visit and on every refresh; skipped when moving between pages. Decided here, before first paint, so skipped pages never flash it. */try{var n=performance.getEntriesByType('navigation')[0],r=n&&n.type==='reload';if(!r&&sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
 <link rel="stylesheet" href="css/experience.css?v=119">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://wbme.pages.dev/#business","name":"Walvis Bay Marine Engineering","alternateName":"WBME","description":"Marine engineering, ship repair and maintenance, rigging, fitting and turning, boiler making, fabrication, pipe works and welding in Walvis Bay, Namibia.","url":"https://wbme.pages.dev/","logo":"https://wbme.pages.dev/media/brand/logo-768.webp","image":"https://wbme.pages.dev/media/og/propulsion-cpp-complete-refit-2.jpg","telephone":"+264 64 285 700","faxNumber":"+264 64 209 350","email":"info@wbme.com.na","foundingDate":"1999","founder":{"@type":"Person","name":"Uwe Crüys"},"slogan":"No job too big, no job too small.","address":{"@type":"PostalAddress","streetAddress":"8th Street East, Industrial Area","addressLocality":"Walvis Bay","addressRegion":"Erongo","addressCountry":"NA"},"geo":{"@type":"GeoCoordinates","latitude":-22.95,"longitude":14.5},"areaServed":{"@type":"Country","name":"Namibia"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"07:00","closes":"17:00"}],"knowsAbout":["Ship repair","Rigging","Fitting and turning","Boiler making","Steel fabrication","Pipe works","Welding"]}</script>
 </head>
@@ -153,7 +153,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=47"></script>
-<script src="js/experience.js?v=74"></script>
+<script src="js/experience.js?v=76"></script>
 <script src="js/glass-fx.js?v=11"></script>
 <script src="js/chatbot.js?v=3"></script>
 </body>

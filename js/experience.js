@@ -58,11 +58,16 @@
   }
 
   /* ===== ACTIVE NAV (current page, not scroll-spy — this is a multi-page site) ===== */
+  /* Cloudflare Pages serves /services.html as /services, so compare page names
+     without the .html ending (and treat / as index). */
+  function pageName (p) {
+    return (String(p).split(/[?#]/)[0].split('/').pop() || 'index').replace(/\.html$/, '');
+  }
   function markActiveNav () {
-    var path = (location.pathname.split('/').pop() || 'index.html');
+    var path = pageName(location.pathname);
     document.querySelectorAll('.site-nav a[href],.drawer a[href]').forEach(function (a) {
-      var href = a.getAttribute('href').split('/').pop();
-      if (href === path) a.classList.add('active');
+      var href = a.getAttribute('href');
+      if (href && href.charAt(0) !== '#' && pageName(href) === path) a.classList.add('active');
     });
   }
 
@@ -337,9 +342,10 @@
      A cutting torch travels a chalk line across a steel plate; loading
      progress is the cut. At 100% the plate parts and reveals the page
      (CSS handles the split, see .preloader.done in experience.css).
-     Plays on the first page of a visit only, with a 1.5s minimum. Later
-     pages skip it: an inline script in <head> sets .pl-seen before first
-     paint, so the loader is never rendered at all. (An earlier skip that
+     Plays on the first page of a visit and on every refresh, with a 3s
+     minimum (owner requirement). Moving between pages skips it: an inline
+     script in <head> sets .pl-seen before first paint, so the loader is
+     never rendered at all. (An earlier skip that
      decided after paint made the loader flash for ~150ms and read as
      broken; deciding before paint avoids that.) */
   (function preload () {
@@ -351,7 +357,7 @@
     var pct = document.getElementById('plPercent'), torch = document.getElementById('plTorch'),
         seam = document.getElementById('plSeam'), prop = document.getElementById('plProp'),
         canvas = document.getElementById('plSparks');
-    var MIN = 1500, CAP = 5000, start = Date.now();
+    var MIN = 3000, CAP = 6000, start = Date.now();
     var total = 1, loaded = 0, finished = false, finishedAt = 0;
     var shown = 0, angle = 0, lastTs = null, seamW = 0, seamY = 0;
     var sparks = (!reduce && canvas) ? makeSparks(canvas) : null;
