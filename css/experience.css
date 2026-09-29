@@ -1177,7 +1177,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
 .hours-list b{color:#fff;font-weight:600;letter-spacing:.02em}
 
 /* ---- mid-page break: full-bleed atmospheric hero (not a thin divider) ---- */
-.about-break-hero{height:100vh;min-height:600px;padding:0;margin:0 0 clamp(48px,6vw,68px)}
 
 @media(max-width:860px){
   .founder-panel-grid{grid-template-columns:1fr}
@@ -1185,7 +1184,6 @@ body.locked .chatbot{opacity:0;visibility:hidden;pointer-events:none}
   .founder-portrait-frame{min-height:260px}
   .standard-panel{grid-template-columns:1fr}
   .standard-divider{width:100%;height:1px}
-  .about-break-hero{height:auto;min-height:100dvh}
 }
 @media(prefers-reduced-motion:reduce){.founder-portrait-frame{transition:none}}
 
@@ -1451,33 +1449,23 @@ a.marquee-item:hover{opacity:1;color:var(--gold-lt)}
    disabled under prefers-reduced-motion — owner requires them on every
    machine, including those with the OS "reduce animations" setting on. */
 
-/* ===== OUR PROJECTS — pinned background, content scrolls over it.
-   Built with explicit JS-driven states (see initShowcasePin in
-   experience.js) rather than relying on position:sticky's native
-   "release at container end" behaviour or background-attachment:fixed —
-   the former produced an inconsistent blank gap before the next section,
-   the latter iOS Safari never honoured at all (it silently falls back to
-   plain scroll). The window (media+scrim+content together, so they move
-   as one) rests at the top of its 2x-viewport-tall wrapper until reached,
-   switches to position:fixed for exactly as long as there's runway left,
-   then rests at the wrapper's bottom edge and scrolls away normally as the
-   next section covers it — identical, deterministic result on desktop and
-   mobile. */
-.showcase-fixed{position:relative;height:200vh}
-.showcase-fixed-pin{position:absolute;top:0;left:0;width:100%;height:100vh;overflow:hidden}
-.showcase-fixed-pin.is-pinned{position:fixed;top:0;left:0;right:0;width:auto}
-.showcase-fixed-pin.is-past{position:absolute;top:auto;bottom:0}
-.showcase-fixed-media{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
-.showcase-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,10,18,.84) 0%,rgba(5,10,18,.5) 46%,rgba(5,10,18,.22) 100%),linear-gradient(0deg,rgba(5,10,18,.4),transparent 40%)}
+/* ===== OUR PROJECTS — fixed backdrop, the page scrolls over it.
+   The section is a window onto a photo that never moves: the media and
+   scrim are position:fixed to the viewport, and clip-path:inset(0) on the
+   section clips them to the section's box, so they only show through while
+   the section is on screen. Neighbouring sections scroll over it like
+   normal. Unlike background-attachment:fixed this works on iOS Safari.
+   Nothing here may sit under a transform/filter ancestor, or "fixed"
+   would become relative to that ancestor. */
+.showcase-fixed{position:relative;height:100vh;height:100lvh;clip-path:inset(0)}
+.showcase-fixed-pin{position:absolute;inset:0}
+.showcase-fixed-media{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;background-size:cover;background-position:center;z-index:0}
+.showcase-scrim{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(5,10,18,.84) 0%,rgba(5,10,18,.5) 46%,rgba(5,10,18,.22) 100%),linear-gradient(0deg,rgba(5,10,18,.4),transparent 40%)}
 .showcase-fixed .corner-marks{z-index:3}
 .showcase-content{position:absolute;top:50%;left:0;z-index:2;transform:translateY(-50%);padding:0 clamp(24px,6vw,80px);max-width:620px}
 .showcase-content .eyebrow{margin-bottom:18px}
 .showcase-content h2{font-family:'Anton';text-transform:uppercase;color:#fff;font-size:clamp(2.4rem,5vw,4rem);line-height:.98;margin-bottom:20px;text-wrap:balance}
 .showcase-content p{color:var(--mut);font-size:1.05rem;line-height:1.7;margin-bottom:30px;max-width:52ch}
-@media(max-width:960px){
-  .showcase-fixed{height:200dvh}
-  .showcase-fixed-pin{height:100dvh}
-}
 
 /* ===== VIDEO SHOWCASE — full-bleed autoplaying (muted) loop, viewport-gated ===== */
 .video-showcase{position:relative;min-height:86vh;display:flex;align-items:flex-end;overflow:hidden;background:#050a12}
