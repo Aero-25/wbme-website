@@ -23,6 +23,16 @@ Five real, normally-scrollable pages — **Home · About · Services · Projects
 └── docs/superpowers/specs/ # design specs
 ```
 
+## Hosting & backend (Cloudflare)
+Hosted on Cloudflare Pages (project `wbme`), deployed automatically from `main`.
+
+- **Site media** ships with the site in `/media` (pre-sized WebP, self-hosted fonts).
+- **Projects blog** lives in D1 (`wbme`, binding `DB`); schema in `migrations/`. Public API: `GET /api/projects` (`?slug=` for one post).
+- **Admin photos** go to R2 (`wbme-media`, binding `MEDIA`), resized to 1600px WebP in the browser, served at `/uploads/...`.
+- **Admin login** (`admin.html`) is checked by Pages Functions in `functions/`: passwords are PBKDF2 hashes in the `ADMIN_USERS` secret, sessions are HMAC-signed cookies (`SESSION_SECRET`). Add or change a login with `node scripts/hash-password.mjs <email> <password>` and update `ADMIN_USERS` in Pages → Settings → Variables and Secrets.
+- `js/projects-snapshot.js` is a fallback copy of the published posts, shown if the API is unreachable.
+- Supabase (`supabase/schema.sql`) is the previous backend, kept for reference only.
+
 ## Run locally
 Serve the folder (don't open via `file://` — the contact form's `fetch()` POST to Formspree can misbehave from a `file://` origin in some browsers):
 ```bash

@@ -141,29 +141,25 @@
     wireRetry();
   }
 
-  var sb = window.WBME_SUPABASE;
-  if (!sb) { fallback(); return; }
-
   show('loading');
 
-  var query = slug
-    ? sb.from('projects').select('*').eq('slug', slug).eq('published', true).limit(1)
-    : sb.from('projects').select('*').eq('published', true).order('project_date', { ascending: false }).order('created_at', { ascending: false });
-
-  /* A paused project can hang for a long time before failing. */
+  /* Posts come from the site's own API (Cloudflare D1). If it is slow or down,
+     the bundled snapshot is shown instead of an error. */
   var settled = false;
   var timer = setTimeout(function () { if (!settled) { settled = true; fallback(); } }, 6000);
 
-  query.then(function (res) {
-    if (settled) return;
-    settled = true;
-    clearTimeout(timer);
-    if (res.error) { fallback(); return; }
-    render(res.data || []);
-  }).catch(function () {
-    if (settled) return;
-    settled = true;
-    clearTimeout(timer);
-    fallback();
-  });
+  fetch('/api/projects' + (slug ? '?slug=' + encodeURIComponent(slug) : ''), { headers: { accept: 'application/json' } })
+    .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function (rows) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      render(Array.isArray(rows) ? rows : []);
+    })
+    .catch(function () {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fallback();
+    });
 })();

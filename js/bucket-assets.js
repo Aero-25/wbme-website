@@ -1,8 +1,8 @@
-/* WBME media — served from Cloudflare Pages, with Supabase Storage for new uploads.
+/* WBME media — served from Cloudflare: /media (shipped with the site) and /uploads (admin photos in R2).
 
    Every image the site ships with lives in /media as pre-sized WebP. Paths
    that are not mirrored locally (photos uploaded later through the admin
-   portal) are served straight from the public Supabase "WBME" bucket.
+   portal before the move to R2) fall back to the public Supabase "WBME" bucket.
    To mirror a new upload, add it to /media and to LOCAL_MEDIA below. */
 (function () {
   'use strict';
@@ -66,6 +66,7 @@
   function bucketAsset (path, options) {
     if (!path) return '';
     if (isExternal(path)) return path;
+    if (path.indexOf('uploads/') === 0) return path; // admin uploads, served from R2 by functions/uploads
     return localMedia(path, options) || bucketObject(path);
   }
 

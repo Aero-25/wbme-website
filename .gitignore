@@ -13,3 +13,8 @@ Desktop.ini
 # Logs / temp
 *.log
 node_modules/
+
+# Cloudflare local dev state and secrets
+.wrangler/
+.dev.vars
+wrangler.toml

@@ -1,10 +1,9 @@
-/* WBME Admin — Supabase Auth login + project post CRUD.
-   Only reachable pages need a valid, signed-in Supabase Auth user to write;
-   Row Level Security on the "projects" table and "WBME" storage bucket is
-   what actually enforces that (see supabase/schema.sql), not this page's URL. */
+/* WBME Admin — sign in + project post CRUD against the site's own API
+   (Cloudflare Pages Functions, D1 for posts, R2 for photos). The server
+   enforces the session on every /api/admin/* call; hiding sections here is
+   only presentation. */
 (function () {
   'use strict';
-  var sb = window.WBME_SUPABASE;
 
   var loginSection = document.getElementById('adminLogin');
   var dashSection = document.getElementById('adminDash');
@@ -12,53 +11,65 @@
   var whoEl = document.getElementById('adminWho');
   var signOutBtn = document.getElementById('adminSignOut');
 
-  if (!sb) {
-    loginSection.innerHTML = '<div class="admin-login-card"><span class="eyebrow">Admin</span><h1>Not connected</h1><p>Add your Supabase project details in <code>js/supabase-client.js</code> and run <code>supabase/schema.sql</code> to enable admin access.</p></div>';
-    return;
-  }
-
   function esc (s) {
     var d = document.createElement('div');
     d.textContent = s || '';
     return d.innerHTML;
   }
   function img (path, width) {
-    return window.WBME_BUCKET_IMAGE ? window.WBME_BUCKET_IMAGE(path, { width: width || 240, quality: 68, resize: 'cover' }) : '';
+    return window.WBME_BUCKET_IMAGE ? window.WBME_BUCKET_IMAGE(path, { width: width || 240 }) : '';
   }
   function slugify (s) {
     return String(s || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '');
+  }
+
+  /* JSON API call; rejects with the server's error message. A 401 anywhere
+     means the session ended, so drop back to the sign-in screen. */
+  function api (method, url, body) {
+    var opts = { method: method, headers: { accept: 'application/json' }, credentials: 'same-origin' };
+    if (body !== undefined) { opts.headers['content-type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    return fetch(url, opts).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (res.status === 401 && url !== '/api/admin/login') showLoggedOut();
+        if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+        return data;
+      });
+    });
   }
 
   function showLoggedOut () {
     loginSection.hidden = false; dashSection.hidden = true; formSection.hidden = true;
     whoEl.hidden = true; signOutBtn.hidden = true;
   }
-  function showLoggedIn (session) {
+  function showLoggedIn (email) {
     loginSection.hidden = true; formSection.hidden = true; dashSection.hidden = false;
-    whoEl.hidden = false; whoEl.textContent = session.user.email;
+    whoEl.hidden = false; whoEl.textContent = email;
     signOutBtn.hidden = false;
     loadList();
   }
 
-  sb.auth.getSession().then(function (res) {
-    if (res.data && res.data.session) showLoggedIn(res.data.session); else showLoggedOut();
-  });
-  sb.auth.onAuthStateChange(function (_event, session) {
-    if (session) showLoggedIn(session); else showLoggedOut();
-  });
+  api('GET', '/api/admin/me').then(function (me) { showLoggedIn(me.email); }, showLoggedOut);
 
   var loginForm = document.getElementById('adminLoginForm');
   var loginError = document.getElementById('adminLoginError');
   loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
     loginError.hidden = true;
-    var email = document.getElementById('al-email').value.trim();
-    var pass = document.getElementById('al-pass').value;
-    sb.auth.signInWithPassword({ email: email, password: pass }).then(function (res) {
-      if (res.error) { loginError.textContent = res.error.message; loginError.hidden = false; }
-    });
+    var btn = loginForm.querySelector('button[type=submit]');
+    btn.disabled = true;
+    api('POST', '/api/admin/login', {
+      email: document.getElementById('al-email').value.trim(),
+      password: document.getElementById('al-pass').value
+    }).then(function (me) {
+      document.getElementById('al-pass').value = '';
+      showLoggedIn(me.email);
+    }, function (err) {
+      loginError.textContent = err.message; loginError.hidden = false;
+    }).then(function () { btn.disabled = false; });
   });
-  signOutBtn.addEventListener('click', function () { sb.auth.signOut(); });
+  signOutBtn.addEventListener('click', function () {
+    api('POST', '/api/admin/logout').then(showLoggedOut, showLoggedOut);
+  });
 
   /* ===== LIST ===== */
   var listEl = document.getElementById('adminList');
@@ -67,11 +78,12 @@
 
   function loadList () {
     listEl.innerHTML = '<p class="admin-empty">Loading&hellip;</p>';
-    sb.from('projects').select('*').order('project_date', { ascending: false }).order('created_at', { ascending: false }).then(function (res) {
-      if (res.error) { listEl.innerHTML = '<p class="admin-empty">Could not load projects: ' + esc(res.error.message) + '</p>'; return; }
-      currentRows = res.data || [];
+    api('GET', '/api/admin/projects').then(function (rows) {
+      currentRows = rows || [];
       renderStats(currentRows);
       renderList(currentRows);
+    }, function (err) {
+      listEl.innerHTML = '<p class="admin-empty">Could not load projects: ' + esc(err.message) + '</p>';
     });
   }
 
@@ -90,7 +102,7 @@
       var badge = p.published
         ? '<span class="admin-badge is-published">Published</span>'
         : '<span class="admin-badge is-draft">Draft</span>';
-      return '<div class="admin-row" data-id="' + p.id + '">' +
+      return '<div class="admin-row" data-id="' + esc(p.id) + '">' +
         '<div class="admin-row-thumb" style="background-image:url(\'' + img(p.cover_path) + '\')"></div>' +
         '<div class="admin-row-body"><b>' + esc(p.title) + '</b><div class="admin-row-meta"><span>' + esc(p.discipline) + '</span>' + badge + '</div></div>' +
         '<div class="admin-row-actions"><button type="button" class="btn-ghost-sm admin-edit">Edit</button><button type="button" class="btn-ghost-sm admin-del">Delete</button></div>' +
@@ -102,9 +114,8 @@
       row.querySelector('.admin-edit').addEventListener('click', function () { openForm(p); });
       row.querySelector('.admin-del').addEventListener('click', function () {
         if (!window.confirm('Delete "' + p.title + '"? This cannot be undone.')) return;
-        sb.from('projects').delete().eq('id', id).then(function (res) {
-          if (res.error) { window.alert('Delete failed: ' + res.error.message); return; }
-          loadList();
+        api('DELETE', '/api/admin/projects/' + encodeURIComponent(id)).then(loadList, function (err) {
+          window.alert('Delete failed: ' + err.message);
         });
       });
     });
@@ -155,28 +166,48 @@
   cancelBtn.addEventListener('click', function () { formSection.hidden = true; dashSection.hidden = false; });
   pf.title.addEventListener('input', function () { if (!pf.id.value) pf.slug.value = slugify(pf.title.value); });
 
+  /* Phone photos arrive at 3–5 MB; shrink to 1600px on the long edge and
+     re-encode (WebP where the browser can, JPEG otherwise) before upload. */
+  var MAX_EDGE = 1600;
+  function shrink (file) {
+    if (!window.createImageBitmap || !/^image\/(jpeg|png|webp)$/i.test(file.type)) return Promise.resolve(file);
+    return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function (bmp) {
+      var scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(bmp.width * scale);
+      canvas.height = Math.round(bmp.height * scale);
+      canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      if (bmp.close) bmp.close();
+      return new Promise(function (resolve) {
+        canvas.toBlob(function (webp) {
+          if (webp && webp.type === 'image/webp') { resolve(webp); return; }
+          canvas.toBlob(function (jpeg) { resolve(jpeg || file); }, 'image/jpeg', 0.82);
+        }, 'image/webp', 0.8);
+      });
+    }).catch(function () { return file; });
+  }
+
   function uploadFile (file) {
-    var ext = (file.name.match(/\.[a-z0-9]+$/i) || [''])[0];
-    var path = 'admin-uploads/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + ext;
-    return sb.storage.from('WBME').upload(path, file, { upsert: false }).then(function (res) {
-      if (res.error) throw res.error;
-      return path;
+    return shrink(file).then(function (blob) {
+      return fetch('/api/admin/upload', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': blob.type || file.type }, body: blob });
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (res.status === 401) showLoggedOut();
+        if (!res.ok) throw new Error(data.error || ('Upload failed (' + res.status + ')'));
+        return data.path;
+      });
     });
   }
 
   document.getElementById('adminProjectForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    pf.status.textContent = 'Saving…';
-    pf.saveBtn.disabled = true;
-
     var coverFile = pf.cover.files[0];
     var galleryFiles = Array.prototype.slice.call(pf.gallery.files);
 
-    if (!coverFile && !editingCoverPath) {
-      pf.status.textContent = 'A cover photo is required.';
-      pf.saveBtn.disabled = false;
-      return;
-    }
+    if (!coverFile && !editingCoverPath) { pf.status.textContent = 'A cover photo is required.'; return; }
+
+    pf.status.textContent = (coverFile || galleryFiles.length) ? 'Uploading photos…' : 'Saving…';
+    pf.saveBtn.disabled = true;
 
     var coverUpload = coverFile ? uploadFile(coverFile) : Promise.resolve(editingCoverPath);
     var galleryUpload = galleryFiles.length
@@ -184,6 +215,7 @@
       : Promise.resolve(editingGalleryPaths);
 
     Promise.all([coverUpload, galleryUpload]).then(function (results) {
+      pf.status.textContent = 'Saving…';
       var row = {
         title: pf.title.value.trim(),
         slug: slugify(pf.slug.value || pf.title.value),
@@ -196,15 +228,14 @@
         published: pf.published.checked
       };
       return pf.id.value
-        ? sb.from('projects').update(row).eq('id', pf.id.value)
-        : sb.from('projects').insert(row);
-    }).then(function (res) {
-      if (res.error) { pf.status.textContent = 'Error: ' + res.error.message; pf.saveBtn.disabled = false; return; }
+        ? api('PUT', '/api/admin/projects/' + encodeURIComponent(pf.id.value), row)
+        : api('POST', '/api/admin/projects', row);
+    }).then(function () {
       pf.saveBtn.disabled = false;
       formSection.hidden = true; dashSection.hidden = false;
       loadList();
     }).catch(function (err) {
-      pf.status.textContent = 'Upload failed: ' + (err && err.message ? err.message : err);
+      pf.status.textContent = 'Error: ' + err.message;
       pf.saveBtn.disabled = false;
     });
   });
