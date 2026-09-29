@@ -121,23 +121,49 @@
   }
   wireRetry();
 
-  var sb = window.WBME_SUPABASE;
-  if (!sb) { show('error', 'Projects aren’t connected yet. Add your Supabase details in js/supabase-client.js and run supabase/schema.sql.'); return; }
-
   var slug = new URLSearchParams(location.search).get('post');
+  var snapshot = Array.isArray(window.WBME_PROJECTS_SNAPSHOT) ? window.WBME_PROJECTS_SNAPSHOT : null;
+
+  function render (rows) {
+    if (slug) {
+      var match = rows.filter(function (p) { return p.slug === slug; });
+      if (!match.length) { show('empty', 'Project not found.'); return; }
+      renderPost(match[0]);
+    } else {
+      renderList(rows);
+    }
+  }
+
+  /* Supabase down or paused: show the bundled snapshot instead of an error. */
+  function fallback () {
+    if (snapshot) { render(snapshot); return; }
+    show('error', 'Couldn’t load projects right now.');
+    wireRetry();
+  }
+
+  var sb = window.WBME_SUPABASE;
+  if (!sb) { fallback(); return; }
+
   show('loading');
 
   var query = slug
     ? sb.from('projects').select('*').eq('slug', slug).eq('published', true).limit(1)
     : sb.from('projects').select('*').eq('published', true).order('project_date', { ascending: false }).order('created_at', { ascending: false });
 
+  /* A paused project can hang for a long time before failing. */
+  var settled = false;
+  var timer = setTimeout(function () { if (!settled) { settled = true; fallback(); } }, 6000);
+
   query.then(function (res) {
-    if (res.error) { show('error', 'Couldn’t load projects right now.'); wireRetry(); return; }
-    if (slug) {
-      if (!res.data || !res.data.length) { show('empty', 'Project not found.'); return; }
-      renderPost(res.data[0]);
-    } else {
-      renderList(res.data || []);
-    }
-  }).catch(function () { show('error', 'Couldn’t load projects right now.'); wireRetry(); });
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    if (res.error) { fallback(); return; }
+    render(res.data || []);
+  }).catch(function () {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    fallback();
+  });
 })();

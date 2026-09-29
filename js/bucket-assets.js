@@ -1,49 +1,60 @@
-/* WBME public Supabase Storage assets */
+/* WBME media — served from Cloudflare Pages, with Supabase Storage for new uploads.
+
+   Every image the site ships with lives in /media as pre-sized WebP. Paths
+   that are not mirrored locally (photos uploaded later through the admin
+   portal) are served straight from the public Supabase "WBME" bucket.
+   To mirror a new upload, add it to /media and to LOCAL_MEDIA below. */
 (function () {
   'use strict';
 
   var BUCKET_OBJECT_BASE = 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/object/public/WBME/';
-  var BUCKET_RENDER_BASE = 'https://kbmgpqwmgthswjkfmqfe.supabase.co/storage/v1/render/image/public/WBME/';
-  var IMAGE_RE = /\.(avif|gif|jpe?g|png|webp)$/i;
 
-  /* The render endpoint is Supabase's image-transformation service, which is not
-     available on every plan. When it is off it answers every request with an
-     error, which takes every bucket image on the page down with it. Treat it as
-     an optimisation we can lose: probe it once, and fall back to plain object
-     URLs (which are always served) the moment it misbehaves. */
-  var TRANSFORM_FLAG_KEY = 'wbme:bucket-transforms';
-  var TRANSFORM_PROBE_PATH = 'propeller.png';
-  var transformsEnabled = readTransformFlag();
+  /* Bucket path -> local file. A value without an extension is a photo stem
+     with -800.webp and -1600.webp variants. */
+  var LOCAL_MEDIA = {
+   "44487799-6892-4b24-8c55-bc27cac35ce6.png": "media/brand/roundel-768.webp",
+   "ChatGPT Image Jul 23, 2026, 06_25_06 AM.png": "media/hero/projects-showcase-1672.webp",
+   "Hero Boat.png": "media/hero/hero-boat-1672.webp",
+   "New Logo Big.png": "media/brand/logo-768.webp",
+   "propeller.png": "media/brand/propeller-320.webp",
+   "wbme photos for web 2026/New Complete Ships Rudder/1.jpg": "media/photos/new-complete-ships-rudder/1",
+   "wbme photos for web 2026/New Complete Ships Rudder/11.jpg": "media/photos/new-complete-ships-rudder/11",
+   "wbme photos for web 2026/New Complete Ships Rudder/21.jpg": "media/photos/new-complete-ships-rudder/21",
+   "wbme photos for web 2026/New Complete Ships Rudder/6.jpg": "media/photos/new-complete-ships-rudder/6",
+   "wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 1.jpg": "media/photos/pics-for-t/boilermaking/bottom-hull-plate-replacement-1",
+   "wbme photos for web 2026/Pics for T/Boilermaking/bottom hull plate replacement 2.jpg": "media/photos/pics-for-t/boilermaking/bottom-hull-plate-replacement-2",
+   "wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 1.jpg": "media/photos/pics-for-t/fabrication/stainless-steel-tank-1",
+   "wbme photos for web 2026/Pics for T/Fabrication/Stainless Steel tank 2.jpg": "media/photos/pics-for-t/fabrication/stainless-steel-tank-2",
+   "wbme photos for web 2026/Pics for T/Machining/Machining of new seal liners.jpg": "media/photos/pics-for-t/machining/machining-of-new-seal-liners",
+   "wbme photos for web 2026/Pics for T/Machining/new thordon bushes.jpg": "media/photos/pics-for-t/machining/new-thordon-bushes",
+   "wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 1.jpg": "media/photos/pics-for-t/pipe-works/sea-water-inlet-strainer-1",
+   "wbme photos for web 2026/Pics for T/Pipe Works/sea water inlet strainer 2.jpg": "media/photos/pics-for-t/pipe-works/sea-water-inlet-strainer-2",
+   "wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 1.jpg": "media/photos/pics-for-t/propulsion/cpp-complete-refit-1",
+   "wbme photos for web 2026/Pics for T/Propulsion/CPP complete refit 2.jpg": "media/photos/pics-for-t/propulsion/cpp-complete-refit-2",
+   "wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/1.jpg": "media/photos/remove-and-fit-new-vessel-kort-nozzel-change-shaft-from-cpp-to-fixed/1",
+   "wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/12.jpg": "media/photos/remove-and-fit-new-vessel-kort-nozzel-change-shaft-from-cpp-to-fixed/12",
+   "wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/4.jpg": "media/photos/remove-and-fit-new-vessel-kort-nozzel-change-shaft-from-cpp-to-fixed/4",
+   "wbme photos for web 2026/Remove and fit new vessel kort nozzel change shaft from cpp to fixed/8.jpg": "media/photos/remove-and-fit-new-vessel-kort-nozzel-change-shaft-from-cpp-to-fixed/8"
+  };
 
-  function readTransformFlag () {
-    try {
-      return window.sessionStorage.getItem(TRANSFORM_FLAG_KEY) !== 'off';
-    } catch (err) {
-      return true;
-    }
-  }
-
-  function writeTransformFlag (value) {
-    try {
-      window.sessionStorage.setItem(TRANSFORM_FLAG_KEY, value);
-    } catch (err) { /* private mode — the in-memory flag still holds for this page */ }
+  function isExternal (path) {
+    return /^(https?:|data:|blob:|\/|media\/|images\/)/i.test(path);
   }
 
   function encodePath (path) {
     return String(path).split('/').map(encodeURIComponent).join('/');
   }
 
-  function normaliseOptions (options) {
-    if (typeof options === 'number') return { width: options };
-    return options || {};
+  function wantedWidth (options) {
+    if (typeof options === 'number') return options;
+    return (options && options.width) || 1280;
   }
 
-  function isImagePath (path) {
-    return IMAGE_RE.test(String(path).split('?')[0]);
-  }
-
-  function isExternal (path) {
-    return /^(https?:|data:|blob:)/i.test(path);
+  function localMedia (path, options) {
+    var hit = LOCAL_MEDIA[path];
+    if (!hit) return '';
+    if (/\.[a-z0-9]+$/i.test(hit)) return hit;
+    return hit + (wantedWidth(options) <= 900 ? '-800.webp' : '-1600.webp');
   }
 
   function bucketObject (path) {
@@ -52,129 +63,47 @@
     return BUCKET_OBJECT_BASE + encodePath(path);
   }
 
-  function renderUrl (path, options) {
-    var params = new URLSearchParams();
-    params.set('width', options.width || 1280);
-    if (options.height) params.set('height', options.height);
-    params.set('quality', options.quality || 70);
-    params.set('resize', options.resize || 'contain');
-    return BUCKET_RENDER_BASE + encodePath(path) + '?' + params.toString();
-  }
-
-  function bucketImage (path, options) {
-    if (!path) return '';
-    if (isExternal(path)) return path;
-    if (!transformsEnabled) return bucketObject(path);
-    return renderUrl(path, normaliseOptions(options));
-  }
-
   function bucketAsset (path, options) {
     if (!path) return '';
     if (isExternal(path)) return path;
-    options = normaliseOptions(options);
-    if (options.raw || !isImagePath(path)) return bucketObject(path);
-    return bucketImage(path, options);
-  }
-
-  /* Rewrite an already-built render URL into its plain object equivalent.
-     Returns '' for anything that is not a render URL, so callers can tell
-     "nothing to do" from "here is your fallback". */
-  function toObjectUrl (url) {
-    url = String(url || '');
-    if (url.indexOf(BUCKET_RENDER_BASE) !== 0) return '';
-    return BUCKET_OBJECT_BASE + url.slice(BUCKET_RENDER_BASE.length).split('?')[0];
+    return localMedia(path, options) || bucketObject(path);
   }
 
   function setBackground (el, url) {
     el.style.backgroundImage = 'url("' + String(url).replace(/"/g, '%22') + '")';
   }
 
-  function backgroundUrl (el) {
-    var raw = el.style.backgroundImage || '';
-    var match = raw.match(/url\(\s*["']?([^"')]+)["']?\s*\)/);
-    return match ? match[1] : '';
-  }
-
-  /* Swap every render URL already committed to the DOM over to object URLs. */
-  function repairDocument (root) {
-    root = root || document;
-
-    root.querySelectorAll('img[src]').forEach(function (el) {
-      var fallback = toObjectUrl(el.getAttribute('src'));
-      if (fallback) el.setAttribute('src', fallback);
-    });
-
-    root.querySelectorAll('[style*="render/image"]').forEach(function (el) {
-      var fallback = toObjectUrl(backgroundUrl(el));
-      if (fallback) setBackground(el, fallback);
-    });
-
-    root.querySelectorAll('[data-lb]').forEach(function (el) {
-      var fallback = toObjectUrl(el.getAttribute('data-lb'));
-      if (fallback) el.setAttribute('data-lb', fallback);
-    });
-  }
-
-  function disableTransforms () {
-    if (!transformsEnabled) return;
-    transformsEnabled = false;
-    writeTransformFlag('off');
-    repairDocument(document);
-  }
-
-  function probeTransforms () {
-    if (!transformsEnabled) {
-      repairDocument(document);
-      return;
-    }
-    var probe = new Image();
-    probe.onerror = disableTransforms;
-    probe.src = renderUrl(TRANSFORM_PROBE_PATH, { width: 16, quality: 20, resize: 'contain' });
-  }
-
   function hydrateBucketAssets (root) {
     root = root || document;
+    var wide = window.matchMedia('(max-width:860px)').matches ? 900 : 1600;
 
     root.querySelectorAll('[data-bucket-bg]').forEach(function (el) {
-      setBackground(el, bucketAsset(el.getAttribute('data-bucket-bg'), {
-        width: window.matchMedia('(max-width:860px)').matches ? 900 : 1400,
-        quality: 70,
-        resize: 'contain'
-      }));
+      setBackground(el, bucketAsset(el.getAttribute('data-bucket-bg'), wide));
     });
 
     root.querySelectorAll('[data-bucket-src]').forEach(function (el) {
       el.setAttribute('loading', 'lazy');
       el.setAttribute('decoding', 'async');
-      el.setAttribute('src', bucketAsset(el.getAttribute('data-bucket-src'), {
-        width: 640,
-        quality: 68,
-        resize: 'contain'
-      }));
+      el.setAttribute('src', bucketAsset(el.getAttribute('data-bucket-src'), 640));
     });
 
     root.querySelectorAll('[data-bucket-lb]').forEach(function (el) {
-      el.setAttribute('data-lb', bucketAsset(el.getAttribute('data-bucket-lb'), {
-        width: 1600,
-        quality: 82,
-        resize: 'contain'
-      }));
+      el.setAttribute('data-lb', bucketAsset(el.getAttribute('data-bucket-lb'), 1600));
     });
   }
 
-  /* Per-image safety net: catches a single asset the probe cannot speak for.
-     Capture phase, because image errors do not bubble. */
+  /* A bucket image that fails (project paused, file removed) is hidden rather
+     than left as a broken-image icon. Capture phase: image errors don't bubble. */
   document.addEventListener('error', function (ev) {
     var el = ev.target;
-    if (!el || el.tagName !== 'IMG') return;
-    var fallback = toObjectUrl(el.getAttribute('src'));
-    if (fallback) el.setAttribute('src', fallback);
+    if (el && el.tagName === 'IMG' && String(el.getAttribute('src') || '').indexOf(BUCKET_OBJECT_BASE) === 0) {
+      el.style.visibility = 'hidden';
+    }
   }, true);
 
   window.WBME_BUCKET_ASSET = bucketAsset;
-  window.WBME_BUCKET_IMAGE = bucketImage;
+  window.WBME_BUCKET_IMAGE = bucketAsset;
   window.WBME_BUCKET_OBJECT = bucketObject;
   window.WBME_HYDRATE_BUCKET_ASSETS = hydrateBucketAssets;
   hydrateBucketAssets(document);
-  probeTransforms();
 })();

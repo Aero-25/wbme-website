@@ -1,7 +1,6 @@
 /* WBME — Cinematic Experience engine */
 (function () {
   'use strict';
-  (function () { var l = document.createElement('link'); l.rel = 'preconnect'; l.href = 'https://kbmgpqwmgthswjkfmqfe.supabase.co'; l.crossOrigin = ''; document.head.appendChild(l); })();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ===== SCROLL REVEAL (IntersectionObserver-driven .p-rv) ===== */

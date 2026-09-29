@@ -1,0 +1,19 @@
+# Cloudflare Pages response headers
+
+# Media files never change in place: a new photo gets a new filename.
+/media/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=604800
+
+# CSS/JS: bump ?v= in the HTML on every change so visitors get it immediately.
+/css/*
+  Cache-Control: public, max-age=86400
+
+/js/*
+  Cache-Control: public, max-age=86400
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
