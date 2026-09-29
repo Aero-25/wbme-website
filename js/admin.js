@@ -151,7 +151,6 @@
     id: document.getElementById('pf-id'),
     title: document.getElementById('pf-title'),
     discipline: document.getElementById('pf-discipline'),
-    slug: document.getElementById('pf-slug'),
     date: document.getElementById('pf-date'),
     summary: document.getElementById('pf-summary'),
     body: document.getElementById('pf-body'),
@@ -163,7 +162,7 @@
     status: document.getElementById('pf-status'),
     saveBtn: document.getElementById('pf-save')
   };
-  var editingCoverPath = '', editingGalleryPaths = [];
+  var editingCoverPath = '', editingGalleryPaths = [], editingSlug = '';
 
   function openForm (p) {
     dashSection.hidden = true; formSection.hidden = false;
@@ -171,7 +170,7 @@
     pf.id.value = p ? p.id : '';
     pf.title.value = p ? p.title : '';
     pf.discipline.value = p ? p.discipline : 'General';
-    pf.slug.value = p ? p.slug : '';
+    editingSlug = p ? p.slug : '';
     pf.date.value = p && p.project_date ? p.project_date : new Date().toISOString().slice(0, 10);
     pf.summary.value = p ? p.summary : '';
     pf.body.value = p ? p.body : '';
@@ -186,7 +185,16 @@
   }
   newBtn.addEventListener('click', function () { openForm(null); });
   cancelBtn.addEventListener('click', function () { formSection.hidden = true; dashSection.hidden = false; });
-  pf.title.addEventListener('input', function () { if (!pf.id.value) pf.slug.value = slugify(pf.title.value); });
+  /* The post's web address comes from its title. An existing post keeps its
+     address when edited, so links to it never break; a new post whose title
+     matches another post's address gets -2, -3, ... added. */
+  function uniqueSlug (title) {
+    var base = slugify(title) || 'project';
+    var taken = currentRows.map(function (r) { return r.slug; });
+    var slug = base, n = 2;
+    while (taken.indexOf(slug) !== -1) slug = base + '-' + n++;
+    return slug;
+  }
 
   /* Phone photos arrive at 3–5 MB; shrink to 1600px on the long edge and
      re-encode (WebP where the browser can, JPEG otherwise) before upload. */
@@ -240,7 +248,7 @@
       pf.status.textContent = 'Saving…';
       var row = {
         title: pf.title.value.trim(),
-        slug: slugify(pf.slug.value || pf.title.value),
+        slug: editingSlug || uniqueSlug(pf.title.value),
         project_date: pf.date.value || new Date().toISOString().slice(0, 10),
         discipline: pf.discipline.value,
         summary: pf.summary.value.trim(),
