@@ -14,31 +14,32 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/experience.css?v=115">
+<link rel="stylesheet" href="css/experience.css?v=116">
 </head>
 <body data-page="contact">
 
-<div class="preloader" id="preloader" aria-label="Loading Walvis Bay Marine Engineering">
-  <div class="pl-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <div class="pl-glow" aria-hidden="true"></div>
-  <div class="pl-exit-flash" aria-hidden="true"></div>
-  <div class="pl-inner">
-    <div class="pl-emblem">
-      <div class="pl-rings" aria-hidden="true"></div>
-      <div class="pl-sweep" aria-hidden="true"></div>
-      <svg class="pl-ring" viewBox="0 0 240 240" aria-hidden="true">
-        <defs><path id="plRingPath" d="M120,120 m-96,0 a96,96 0 1,1 192,0 a96,96 0 1,1 -192,0"></path></defs>
-        <text><textPath href="#plRingPath" startOffset="0%">WALVIS BAY MARINE ENGINEERING &#8226; EST. 1999 &#8226; </textPath></text>
-      </svg>
-      <div class="pl-prop" aria-hidden="true">
-        <img src="media/brand/propeller-320.webp" alt="">
+<div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Loading Walvis Bay Marine Engineering">
+  <div class="pl-plate pl-plate-top">
+    <div class="pl-frame" aria-hidden="true"><i></i><i></i></div>
+    <div class="pl-corner pl-corner-tl" aria-hidden="true">Walvis Bay Marine Engineering</div>
+    <div class="pl-corner pl-corner-tr" aria-hidden="true">Est. 1999</div>
+    <div class="pl-scene">
+      <div class="pl-emblem" aria-hidden="true">
+        <div class="pl-glow"></div>
+        <div class="pl-dial"></div>
+        <div class="pl-prop"><img id="plProp" src="media/brand/propeller-640.webp" alt="" width="640" height="640"></div>
       </div>
+      <div class="pl-word" aria-hidden="true"><span class="pl-letter">W</span><span class="pl-letter">B</span><span class="pl-letter pl-letter-gold">M</span><span class="pl-letter pl-letter-gold">E</span></div>
+      <div class="pl-tagline">Marine &amp; Metal Engineering</div>
     </div>
-    <div class="pl-word" aria-hidden="true"><span class="pl-letter">W</span><span class="pl-letter">B</span><span class="pl-letter pl-letter-gold">M</span><span class="pl-letter pl-letter-gold">E</span></div>
-    <div class="pl-tagline">Marine &amp; Metal Engineering</div>
-    <div class="pl-status"><span>Loading</span><span class="pl-percent" id="plPercent">0%</span></div>
-    <div class="pl-rail"><i class="pl-rail-fill" id="plRail"></i></div>
   </div>
+  <div class="pl-plate pl-plate-bottom">
+    <div class="pl-frame pl-frame-bottom" aria-hidden="true"><i></i><i></i></div>
+    <div class="pl-corner pl-corner-bl" aria-hidden="true">22&deg;57&prime;S &middot; 14&deg;30&prime;E</div>
+    <div class="pl-corner pl-corner-br"><span>Loading</span><b class="pl-percent" id="plPercent">0%</b></div>
+  </div>
+  <div class="pl-seam" id="plSeam" aria-hidden="true"><i class="pl-cut"></i><i class="pl-torch" id="plTorch"></i></div>
+  <canvas class="pl-sparks" id="plSparks" aria-hidden="true"></canvas>
 </div>
 <div class="grain"></div>
 <div class="scroll-progress" id="scrollProgress"><i></i></div>
@@ -148,7 +149,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=46"></script>
-<script src="js/experience.js?v=71"></script>
+<script src="js/experience.js?v=72"></script>
 <script src="js/glass-fx.js?v=11"></script>
 <script src="js/chatbot.js?v=3"></script>
 </body>

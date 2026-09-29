@@ -322,30 +322,121 @@
 
   /* ===== ENHANCEMENTS (optional; never block the core) ===== */
   try {
-  /* ===== PRELOADER ===== */
+  /* ===== PRELOADER =====
+     A cutting torch travels a chalk line across a steel plate; loading
+     progress is the cut. At 100% the plate parts and reveals the page
+     (CSS handles the split, see .preloader.done in experience.css).
+     Always plays the full minimum-3s sequence on every page load — this is
+     a deliberate owner requirement (a per-session "seen before" skip was
+     tried earlier and made the loader flash for ~150ms after the first
+     page view, which read as broken). */
   (function preload () {
-    var pre = document.getElementById('preloader'), rail = document.getElementById('plRail'), pct = document.getElementById('plPercent');
+    var pre = document.getElementById('preloader');
     if (!pre) { ready = true; document.body.classList.add('ready'); return; }
-    /* Always plays the full minimum-3s sequence on every page load — this is
-       a deliberate owner requirement (a per-session "seen before" skip was
-       tried earlier and made the loader flash for ~150ms after the first
-       page view, which read as broken). */
+    var pct = document.getElementById('plPercent'), torch = document.getElementById('plTorch'),
+        seam = document.getElementById('plSeam'), prop = document.getElementById('plProp'),
+        canvas = document.getElementById('plSparks');
     var MIN = 3000, CAP = 6000, start = Date.now();
-    var total = 1, loaded = 0, finished = false;
-    function setBar (p) {
-      p = Math.max(0, Math.min(1, p));
-      if (rail) rail.style.transform = 'scaleX(' + p + ')';
+    var total = 1, loaded = 0, finished = false, finishedAt = 0;
+    var shown = 0, angle = 0, lastTs = null, seamW = 0, seamY = 0;
+    var sparks = (!reduce && canvas) ? makeSparks(canvas) : null;
+
+    /* Sparks fly off the cut: mostly down and back along the line, cooling
+       from white through brass to ember orange. Capped so it stays cheap on
+       phones; drawn additively as short streaks along their velocity. */
+    function makeSparks (cv) {
+      var ctx = cv.getContext('2d');
+      if (!ctx) return null;
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var MAX = window.matchMedia('(max-width:860px)').matches ? 70 : 150;
+      var parts = [], acc = 0, w = 0, h = 0;
+      function resize () {
+        w = cv.clientWidth; h = cv.clientHeight;
+        cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      function emit (x, y, n, burst) {
+        acc += n;
+        while (acc >= 1 && parts.length < MAX) {
+          acc--;
+          var a, s;
+          if (burst) { a = Math.random() * 6.283; s = 120 + Math.random() * 420; }
+          else { a = 1.75 + (Math.random() - 0.5) * 2.2; s = 60 + Math.random() * 300; }
+          parts.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0, max: 0.3 + Math.random() * 0.6, r: 0.7 + Math.random() * 1.5 });
+        }
+        if (burst) acc = 0;
+      }
+      function step (dt) {
+        ctx.clearRect(0, 0, w, h);
+        if (!parts.length) return;
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+        for (var i = parts.length - 1; i >= 0; i--) {
+          var p = parts[i];
+          p.life += dt;
+          if (p.life >= p.max) { parts.splice(i, 1); continue; }
+          p.vy += 560 * dt; p.vx *= 0.985;
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          var t = p.life / p.max, alpha = (1 - t) * (1 - t);
+          ctx.strokeStyle = t < 0.25 ? 'rgba(255,245,220,' + alpha + ')' : t < 0.6 ? 'rgba(255,196,96,' + alpha + ')' : 'rgba(255,110,40,' + alpha + ')';
+          ctx.lineWidth = p.r * (1 - t * 0.5);
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+      }
+      return { emit: emit, step: step };
+    }
+
+    function measure () {
+      if (!seam) return;
+      var r = seam.getBoundingClientRect();
+      seamW = r.width; seamY = r.top;
+    }
+    measure();
+    window.addEventListener('resize', measure);
+
+    function bump () { loaded++; }
+    function setProgress (p) {
+      pre.style.setProperty('--p', p.toFixed(4));
+      if (torch) torch.style.setProperty('--x', (p * seamW).toFixed(1) + 'px');
       if (pct) pct.textContent = Math.round(p * 100) + '%';
     }
-    function bump () { loaded++; }
-    function finish () { if (finished) return; finished = true; setBar(1); setTimeout(function () { pre.classList.add('done'); document.body.classList.add('ready'); ready = true; }, 150); }
+    function finish () {
+      if (finished) return;
+      finished = true; finishedAt = performance.now();
+      shown = 1; setProgress(1);
+      if (sparks) sparks.emit(seamW, seamY, 110, true);
+      pre.classList.add('done');
+      setTimeout(function () { document.body.classList.add('ready'); ready = true; }, 320);
+    }
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(bump, bump); } else { bump(); }
-    (function tick () {
-      var el = Date.now() - start, assetsDone = loaded >= total, timeP = Math.min(1, el / MIN);
-      setBar(assetsDone ? timeP : Math.min(0.92, timeP));
-      if ((el >= MIN && assetsDone) || el >= CAP) { finish(); return; }
-      requestAnimationFrame(tick);
-    })();
+
+    (function tick (ts) {
+      var dt = lastTs === null ? 16 : Math.min(48, ts - lastTs);
+      lastTs = ts;
+      if (!finished) {
+        var el = Date.now() - start, assetsDone = loaded >= total, timeP = Math.min(1, el / MIN);
+        var target = assetsDone ? timeP : Math.min(0.92, timeP);
+        shown += (target - shown) * Math.min(1, dt / 90); // eased readout instead of a stepping one
+        if ((el >= MIN && assetsDone) || el >= CAP) {
+          finish();
+        } else {
+          setProgress(shown);
+          if (sparks) sparks.emit(shown * seamW, seamY, (target - shown > 0.002 ? 1.6 : 0.5) * dt / 16, false);
+        }
+      }
+      /* propeller spins up with the cut and keeps going through the exit;
+         reduced motion gets a slow steady turn rather than none */
+      if (prop) {
+        var speed = reduce ? 60 : 50 + 620 * shown * shown;
+        angle = (angle + speed * dt / 1000) % 360;
+        prop.style.transform = 'rotate(' + angle.toFixed(1) + 'deg)';
+      }
+      if (sparks) sparks.step(dt / 1000);
+      if (!finished || performance.now() - finishedAt < 1200) requestAnimationFrame(tick);
+    })(performance.now());
   })();
 
   /* ===== EMBERS ===== */

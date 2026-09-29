@@ -311,82 +311,115 @@ img{display:block;max-width:100%}
 /* ===========================================================
    MAGNIFICENT LAYER
    =========================================================== */
-/* preloader — a sonar-scan medallion: a rotating radar sweep and rotating
-   brand-ring text around a spinning propeller, a breathing brass glow, a
-   letter-by-letter WBME reveal, and a live percentage readout. Minimum 3s
-   display (see js/experience.js), so the sequence is built to read as an
-   intentional moment, not a flash of content. */
-.preloader{position:fixed;inset:0;z-index:var(--z-preloader);display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at center,#0e2038 0%,#050b14 78%);transition:opacity .4s var(--ease-out),visibility 0s linear .4s}
-.preloader.done{opacity:0;visibility:hidden;pointer-events:none}
+/* preloader — a cutting-torch sequence. The screen is a dark steel plate
+   with a chalk guide line scribed across it (the yellow chalk marks on a
+   hull in dry dock). Loading progress is a torch travelling that line:
+   white-hot at the tip, cooling to brass behind it, sparks streaming off
+   the cut (canvas, js/experience.js). At 100% the plate parts along the
+   cut and the site is revealed underneath. The propeller is JS-driven so it
+   always spins (owner requirement) and spins up as the cut progresses.
+   Minimum 3s display (see js/experience.js), so the sequence is built to
+   read as an intentional moment, not a flash of content. */
+.preloader{position:fixed;inset:0;z-index:var(--z-preloader);overflow:hidden;--p:0;--pl-seam:66%;animation:pl-safety .4s 9s forwards}
+.preloader.done{pointer-events:none;visibility:hidden;transition:visibility 0s linear 1.1s}
+/* if the script never runs, the loader must not hold the page hostage */
+@keyframes pl-safety{to{opacity:0;visibility:hidden;pointer-events:none}}
 
-.pl-frame{position:absolute;inset:26px;pointer-events:none;z-index:2}
-.pl-frame i{position:absolute;width:22px;height:22px;border:1.5px solid rgba(227,195,114,.5)}
+/* the two halves of the plate — brushed steel in the brand navy, split at the seam */
+.pl-plate{position:absolute;left:0;width:100%;overflow:hidden;background:#071424;background-image:radial-gradient(120% 80% at 50% 45%,rgba(22,58,102,.5),rgba(7,20,36,0) 62%);transition:transform .85s cubic-bezier(.76,0,.24,1) .14s;will-change:transform}
+.pl-plate:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px)}
+.pl-plate:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.pl-plate-top{top:0;height:var(--pl-seam);display:flex;align-items:center;justify-content:center;padding:58px 20px 30px}
+.pl-plate-bottom{top:var(--pl-seam);bottom:0}
+.preloader.done .pl-plate-top{transform:translateY(-102%)}
+.preloader.done .pl-plate-bottom{transform:translateY(102%)}
+
+/* registration marks in the outer corners; each pair rides its own plate */
+.pl-frame{position:absolute;inset:22px;pointer-events:none;z-index:2}
+.pl-frame i{position:absolute;width:20px;height:20px;border:1.5px solid rgba(227,195,114,.5)}
 .pl-frame i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}
 .pl-frame i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
-.pl-frame i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}
-.pl-frame i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+.pl-frame-bottom i:nth-child(1){top:auto;bottom:0;border-top:0;border-bottom:1.5px solid rgba(227,195,114,.5)}
+.pl-frame-bottom i:nth-child(2){top:auto;bottom:0;border-top:0;border-bottom:1.5px solid rgba(227,195,114,.5)}
 
-.pl-glow{position:absolute;width:min(820px,150vw);aspect-ratio:1;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(227,195,114,.24),transparent 68%);filter:blur(46px);animation:pl-glow-pulse 3.2s ease-in-out infinite}
-@keyframes pl-glow-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+/* title block — the four corner readouts of an engineering drawing */
+.pl-corner{position:absolute;z-index:2;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.62rem;line-height:1;letter-spacing:.2em;text-transform:uppercase;color:rgba(227,195,114,.6);white-space:nowrap;animation:pl-fade-in .6s var(--ease-out) both .25s}
+.pl-corner-tl{top:28px;left:52px}
+.pl-corner-tr{top:28px;right:52px}
+.pl-corner-bl{bottom:28px;left:52px}
+.pl-corner-br{bottom:28px;right:52px;color:rgba(227,195,114,.75)}
+.pl-percent{font-variant-numeric:tabular-nums;color:var(--gold-lt);font-weight:600;margin-left:.7em}
+@keyframes pl-fade-in{from{opacity:0}to{opacity:1}}
 
-/* brass streak that sweeps across the whole screen the instant the
-   preloader is dismissed — plays out during the parent's own .4s fade. */
-.pl-exit-flash{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.55) 49%,rgba(227,195,114,.5) 53%,transparent 62%)}
-.preloader.done .pl-exit-flash{animation:pl-exit-sweep .55s ease-out forwards}
-@keyframes pl-exit-sweep{0%{opacity:0;transform:translateX(-38%)}35%{opacity:1}100%{opacity:0;transform:translateX(38%)}}
+.pl-scene{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;animation:pl-fade-up .6s var(--ease-out) both}
+@keyframes pl-fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-.pl-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;animation:pl-fade-up .5s var(--ease-out) both}
-
-.pl-emblem{position:relative;width:min(230px,58vw);aspect-ratio:1;margin-bottom:clamp(22px,4.5vw,32px)}
-
-/* static sonar rings + a rotating radar-style sweep wedge behind the ring/propeller */
-.pl-rings{position:absolute;inset:0;border-radius:50%;pointer-events:none}
-.pl-rings:before,.pl-rings:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(227,195,114,.16)}
-.pl-rings:before{inset:13%}
-.pl-rings:after{inset:27%}
-.pl-sweep{position:absolute;inset:6%;border-radius:50%;overflow:hidden;pointer-events:none;animation:pl-sweep-spin 2.6s linear infinite}
-.pl-sweep:before{content:"";position:absolute;inset:-4%;background:conic-gradient(from 0deg,rgba(227,195,114,.5) 0deg,rgba(227,195,114,.08) 34deg,transparent 60deg,transparent 360deg)}
-@keyframes pl-sweep-spin{to{transform:rotate(360deg)}}
-
-.pl-ring{position:absolute;inset:0;width:100%;height:100%;animation:pl-ring-spin 16s linear infinite}
-.pl-ring text{font-family:'Archivo',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.16em;fill:var(--gold-lt)}
-@keyframes pl-ring-spin{to{transform:rotate(360deg)}}
-
-.pl-prop{position:absolute;top:50%;left:50%;width:42%;height:42%;transform:translate(-50%,-50%)}
-.pl-prop img{
-  width:100%;height:100%;object-fit:contain;
-  animation:propeller-spin .8s linear infinite;transform-origin:50% 50%;will-change:transform;
-  filter:drop-shadow(0 8px 16px rgba(0,0,0,.55));
-}
-@keyframes propeller-spin{to{transform:rotate(360deg)}}
+/* emblem: breathing brass glow, a slow lathe-dial tick ring, the propeller */
+.pl-emblem{position:relative;width:min(250px,52vw);aspect-ratio:1;margin-bottom:clamp(16px,3.5vw,26px)}
+.pl-glow{position:absolute;inset:-70%;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(227,195,114,.28) 0%,rgba(227,195,114,.08) 32%,transparent 60%);animation:pl-glow-pulse 3.2s ease-in-out infinite}
+@keyframes pl-glow-pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.pl-dial{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:repeating-conic-gradient(rgba(227,195,114,.6) 0 .7deg,transparent .7deg 6deg);-webkit-mask:radial-gradient(circle,transparent 0 46%,#000 46.5% 49.5%,transparent 50%);mask:radial-gradient(circle,transparent 0 46%,#000 46.5% 49.5%,transparent 50%);animation:pl-dial-spin 48s linear infinite reverse}
+@keyframes pl-dial-spin{to{transform:rotate(360deg)}}
+.pl-prop{position:absolute;inset:14%}
+.pl-prop:before{content:"";position:absolute;inset:8% -4% -12%;border-radius:50%;background:radial-gradient(circle,rgba(0,0,0,.55),transparent 62%)}
+.pl-prop img{position:relative;display:block;width:100%;height:100%;object-fit:contain;transform-origin:50% 50%;will-change:transform}
 
 /* WBME wordmark — letters assemble in one at a time instead of arriving as a block */
-.pl-word{display:flex;justify-content:center;font-family:'Anton';text-transform:uppercase;font-size:clamp(2.1rem,7vw,3.1rem);line-height:1;color:#fff;letter-spacing:.02em;margin-bottom:8px}
+.pl-word{display:flex;justify-content:center;font-family:'Anton';text-transform:uppercase;font-size:clamp(2.3rem,8vw,3.4rem);line-height:1;color:#fff;letter-spacing:.02em;margin-bottom:10px}
 .pl-letter{display:inline-block;opacity:0;transform:translateY(16px);animation:pl-letter-in .5s var(--ease-out) forwards}
-.pl-letter:nth-child(1){animation-delay:.1s}
-.pl-letter:nth-child(2){animation-delay:.18s}
-.pl-letter:nth-child(3){animation-delay:.26s}
-.pl-letter:nth-child(4){animation-delay:.34s}
+.pl-letter:nth-child(1){animation-delay:.15s}
+.pl-letter:nth-child(2){animation-delay:.23s}
+.pl-letter:nth-child(3){animation-delay:.31s}
+.pl-letter:nth-child(4){animation-delay:.39s}
 .pl-letter-gold{color:var(--gold-lt)}
 @keyframes pl-letter-in{to{opacity:1;transform:none}}
-.pl-tagline{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(227,195,114,.72);margin-bottom:clamp(20px,4vw,28px)}
+.pl-tagline{font-family:'Archivo',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.55)}
 
-.pl-status{display:flex;align-items:center;justify-content:space-between;width:min(230px,58vw);margin-bottom:9px;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(227,195,114,.55)}
-.pl-percent{font-variant-numeric:tabular-nums;color:var(--gold-lt);font-weight:600}
-.pl-rail{position:relative;width:min(230px,58vw);height:3px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
-.pl-rail-fill{position:absolute;inset:0;width:100%;background:var(--gold-lt);border-radius:999px;transform-origin:0 50%;transform:scaleX(0);transition:transform .15s linear;box-shadow:0 0 10px rgba(227,195,114,.5)}
+/* the seam: chalk guide line ahead of the torch, glowing cut behind it */
+.pl-seam{position:absolute;left:0;right:0;top:var(--pl-seam);height:0;z-index:3;pointer-events:none}
+.pl-seam:before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:repeating-linear-gradient(90deg,rgba(232,214,120,.55) 0 8px,transparent 8px 18px)}
+.pl-cut{position:absolute;left:0;top:-1.5px;height:3px;width:calc(var(--p)*100%);background:linear-gradient(to left,#fff 0,#ffe7b0 8px,#ffa03a 40px,rgba(255,130,50,.75) 110px,rgba(214,168,80,.6) 260px,rgba(199,154,62,.38) 100%);box-shadow:0 0 10px rgba(255,160,70,.5)}
+.pl-torch{position:absolute;left:0;top:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;transform:translateX(var(--x,0px));background:radial-gradient(circle,#fff 0 24%,rgba(255,226,160,.95) 42%,rgba(255,150,50,.55) 62%,transparent 72%);box-shadow:0 0 16px 5px rgba(255,180,80,.55),0 0 44px 14px rgba(255,120,30,.28)}
+.pl-torch:after{content:"";position:absolute;inset:-7px;border-radius:50%;background:radial-gradient(circle,rgba(255,230,180,.55),transparent 60%);animation:pl-flicker .13s steps(2) infinite}
+@keyframes pl-flicker{50%{transform:scale(1.35);opacity:.6}}
+.pl-sparks{position:absolute;inset:0;z-index:4;width:100%;height:100%;pointer-events:none}
 
-@keyframes pl-fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* exit: the cut flashes white, the torch and sparks die, the plate parts */
+.preloader.done .pl-cut{background:#fff;box-shadow:0 0 28px 8px rgba(255,225,170,.85);transition:box-shadow .18s}
+.preloader.done .pl-torch{opacity:0;transition:opacity .2s}
+.preloader.done .pl-seam{opacity:0;transition:opacity .4s ease .16s}
+.preloader.done .pl-sparks{opacity:0;transition:opacity .5s ease .3s}
+
+@media(max-width:600px){
+  .pl-frame{inset:16px}
+  .pl-corner{font-size:.54rem;letter-spacing:.14em}
+  .pl-corner-tl,.pl-corner-bl{left:42px}
+  .pl-corner-tr,.pl-corner-br{right:42px}
+  .pl-corner-tl,.pl-corner-tr{top:21px}
+  .pl-corner-bl,.pl-corner-br{bottom:21px}
+  .pl-plate-top{padding-top:48px}
+}
+/* narrowest phones: the name and the year no longer fit side by side */
+@media(max-width:360px){
+  .pl-corner-tr{display:none}
+}
+/* landscape phones: less height, so the seam drops and the emblem shrinks */
+@media(max-height:520px){
+  .preloader{--pl-seam:72%}
+  .pl-plate-top{padding-top:40px}
+  .pl-emblem{width:min(150px,30vh);margin-bottom:10px}
+  .pl-word{font-size:1.9rem;margin-bottom:6px}
+}
 
 /* NOTE: the propeller spin is deliberately excluded below — owner requires
-   it to always spin, on every machine, including reduced-motion setups. */
+   it to always spin, on every machine, including reduced-motion setups
+   (it is driven from JS, which slows it right down instead). */
 @media(prefers-reduced-motion:reduce){
-  .pl-inner{animation:none;opacity:1;transform:none}
-  .pl-glow{animation:none;opacity:.7}
-  .pl-ring{animation:none}
-  .pl-sweep{animation:none}
-  .pl-letter{animation:none;opacity:1;transform:none}
-  .pl-rail-fill{transition:none}
+  .pl-scene,.pl-corner,.pl-letter{animation:none;opacity:1;transform:none}
+  .pl-glow,.pl-dial,.pl-torch:after{animation:none}
+  .pl-plate{transition:none}
+  .preloader.done .pl-plate-top,.preloader.done .pl-plate-bottom{transform:none}
+  .preloader.done{opacity:0;transition:opacity .4s,visibility 0s linear .4s}
 }
 
 /* grain */
