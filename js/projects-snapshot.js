@@ -23,10 +23,10 @@ window.WBME_PROJECTS_SNAPSHOT = [
   "discipline": "Boiler Making",
   "summary": "Structural steel rudder built, fitted and finished from raw plate to installed component.",
   "body": "A complete rudder built in-house from raw steel plate: cutting, forming, welding and finishing, through to fitting on the vessel. Full boiler-making discipline work from first cut to installed, class-ready component.",
-  "cover_path": "wbme photos for web 2026/New Complete Ships Rudder/1.jpg",
+  "cover_path": "wbme photos for web 2026/New Complete Ships Rudder/11.jpg",
   "gallery": [
    "wbme photos for web 2026/New Complete Ships Rudder/6.jpg",
-   "wbme photos for web 2026/New Complete Ships Rudder/11.jpg",
+   "wbme photos for web 2026/New Complete Ships Rudder/1.jpg",
    "wbme photos for web 2026/New Complete Ships Rudder/21.jpg"
   ],
   "project_date": "2026-07-13",

@@ -107,6 +107,17 @@
   }
   hydrateEmailLinks();
 
+  /* the floating chat button sits over form fields on phones: hide it while one is in use */
+  document.addEventListener('focusin', function (e) {
+    if (e.target.closest && e.target.closest('form input, form textarea, form select')) document.body.classList.add('form-active');
+  });
+  document.addEventListener('focusout', function () {
+    setTimeout(function () {
+      var a = document.activeElement;
+      if (!(a && a.closest && a.closest('form input, form textarea, form select'))) document.body.classList.remove('form-active');
+    }, 0);
+  });
+
   function lock () { document.body.classList.add('locked'); }
   function unlock () { document.body.classList.remove('locked'); }
   function keyActivate (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }
