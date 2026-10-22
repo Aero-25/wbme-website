@@ -25,6 +25,9 @@ Five real, normally-scrollable pages — **Home · About · Services · Projects
 
 ## Hosting & backend (Cloudflare)
 Hosted on Cloudflare Pages (project `wbme`), deployed automatically from `main`.
+Live at **https://www.wbme.com.na** (custom domain on the Pages project; `wbme.pages.dev` stays as the preview address).
+
+- **DNS** for `wbme.com.na` is managed by Synapse in their own Cloudflare account, not ours: `www` is a CNAME to `wbme.pages.dev`, the root domain redirects to `www`, and the Microsoft 365 mail records (MX, SPF, autodiscover) live there too. Any DNS change goes through Synapse support.
 
 - **Site media** ships with the site in `/media` (pre-sized WebP, self-hosted fonts).
 - **Projects blog** lives in D1 (`wbme`, binding `DB`); schema in `migrations/`. Public API: `GET /api/projects` (`?slug=` for one post).
