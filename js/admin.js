@@ -49,6 +49,7 @@
     whoEl.hidden = false; whoEl.textContent = email;
     signOutBtn.hidden = false;
     loadList();
+    loadEnquiries();
   }
 
   api('GET', '/api/admin/me').then(function (me) { showLoggedIn(me.email); }, showLoggedOut);
@@ -139,6 +140,76 @@
         api('DELETE', '/api/admin/projects/' + encodeURIComponent(id)).then(loadList, function (err) {
           window.alert('Delete failed: ' + err.message);
         });
+      });
+    });
+  }
+
+  /* ===== ENQUIRIES from the website assistant =====
+     Newest first; each opens to show the details, the chat it came from,
+     and quick reply / call / mark handled / delete. */
+  var enqList = document.getElementById('adminEnqList');
+  var enqCount = document.getElementById('adminEnqCount');
+  var enqRows = [];
+  var URG = { urgent: 'Urgent', 'this week': 'This week', planned: 'Planned', 'just asking': 'Just asking' };
+
+  function when (iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    return d.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+  function loadEnquiries () {
+    if (!enqList) return;
+    enqList.innerHTML = '<p class="admin-empty">Loading&hellip;</p>';
+    api('GET', '/api/admin/enquiries').then(function (rows) {
+      enqRows = rows || [];
+      renderEnquiries();
+    }, function (err) {
+      enqList.innerHTML = '<p class="admin-empty">Could not load enquiries: ' + esc(err.message) + '</p>';
+    });
+  }
+  function renderEnquiries () {
+    var fresh = enqRows.filter(function (r) { return r.status !== 'handled'; }).length;
+    if (enqCount) enqCount.textContent = enqRows.length ? (fresh ? fresh + ' new' : 'All handled') : '';
+    if (!enqRows.length) { enqList.innerHTML = '<p class="admin-empty">No enquiries yet. When the assistant takes down a job, it shows up here.</p>'; return; }
+    enqList.innerHTML = enqRows.map(function (r) {
+      var isNew = r.status !== 'handled';
+      var reply = 'mailto:' + encodeURIComponent(r.email || '') + '?subject=' + encodeURIComponent('Your enquiry ' + r.ref + ' - Walvis Bay Marine Engineering');
+      var rows = [
+        ['Job', r.job], ['Vessel / site', r.vessel], ['Work', r.service !== 'General' ? r.service : ''],
+        ['Phone', r.phone], ['Email', r.email], ['Company', r.company], ['Asked from', r.page ? r.page + ' page' : '']
+      ].filter(function (x) { return x[1]; }).map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('');
+      var chat = (r.transcript || []).map(function (m) {
+        return '<p class="' + (m.r === 'a' ? 'is-bot' : 'is-visitor') + '"><span>' + (m.r === 'a' ? 'Assistant' : 'Visitor') + '</span>' + esc(String(m.t).replace(/\[\[[^\]]*\]\]/g, '').replace(/\*\*/g, '').trim()) + '</p>';
+      }).join('');
+      return '<details class="admin-enq-row' + (isNew ? ' is-new' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<summary><span class="admin-enq-ref">' + esc(r.ref) + '</span>' +
+          '<span class="admin-enq-who"><b>' + esc(r.name) + '</b><span>' + esc(String(r.job).slice(0, 90)) + '</span></span>' +
+          '<span class="admin-enq-tags">' + (r.urgency === 'urgent' ? '<span class="admin-badge is-urgent">Urgent</span>' : '') +
+          '<span class="admin-badge ' + (isNew ? 'is-new' : 'is-draft') + '">' + (isNew ? 'New' : 'Handled') + '</span>' +
+          '<time datetime="' + esc(r.created_at) + '">' + esc(when(r.created_at)) + '</time></span></summary>' +
+        '<div class="admin-enq-body"><dl>' + rows + '<dt>Urgency</dt><dd>' + esc(URG[r.urgency] || r.urgency) + '</dd></dl>' +
+          (chat ? '<div class="admin-enq-chat"><span class="admin-enq-chat-label">The conversation</span>' + chat + '</div>' : '') +
+          '<div class="admin-row-actions">' +
+            (r.email ? '<a class="btn-ghost-sm" href="' + reply + '">Reply by email</a>' : '') +
+            (r.phone ? '<a class="btn-ghost-sm" href="tel:' + esc(String(r.phone).replace(/[^\d+]/g, '')) + '">Call ' + esc(r.phone) + '</a>' : '') +
+            '<button type="button" class="btn-ghost-sm admin-enq-toggle">' + (isNew ? 'Mark handled' : 'Mark as new') + '</button>' +
+            '<button type="button" class="btn-ghost-sm admin-enq-del">Delete</button>' +
+          '</div></div></details>';
+    }).join('');
+    Array.prototype.forEach.call(enqList.querySelectorAll('.admin-enq-row'), function (row) {
+      var id = row.getAttribute('data-id');
+      var r = enqRows.filter(function (x) { return String(x.id) === id; })[0];
+      row.querySelector('.admin-enq-toggle').addEventListener('click', function () {
+        var status = r.status === 'handled' ? 'new' : 'handled';
+        api('PATCH', '/api/admin/enquiries/' + encodeURIComponent(id), { status: status }).then(function () {
+          r.status = status; renderEnquiries();
+        }, function (err) { window.alert('Could not update: ' + err.message); });
+      });
+      row.querySelector('.admin-enq-del').addEventListener('click', function () {
+        if (!window.confirm('Delete enquiry ' + r.ref + ' from ' + r.name + '? This cannot be undone.')) return;
+        api('DELETE', '/api/admin/enquiries/' + encodeURIComponent(id)).then(function () {
+          enqRows = enqRows.filter(function (x) { return x !== r; }); renderEnquiries();
+        }, function (err) { window.alert('Delete failed: ' + err.message); });
       });
     });
   }

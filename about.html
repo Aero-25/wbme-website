@@ -17,7 +17,7 @@
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* Full loader on the first page of a visit and on every refresh; skipped when moving between pages. Decided here, before first paint, so skipped pages never flash it. */try{var n=performance.getEntriesByType('navigation')[0],r=n&&n.type==='reload';if(!r&&sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
-<link rel="stylesheet" href="css/experience.css?v=119">
+<link rel="stylesheet" href="css/experience.css?v=122">
 </head>
 <body data-page="about">
 
@@ -216,23 +216,30 @@
 <button class="chatbot-fab" id="chatbotFab" type="button" aria-label="Chat with the WBME assistant" aria-expanded="false">
   <span class="chatbot-ring" aria-hidden="true"><img src="media/brand/propeller-320.webp" alt=""></span>
 </button>
+<div class="cb-teaser" id="cbTeaser" hidden>
+  <button class="cb-teaser-body" id="cbTeaserOpen" type="button"><span class="cb-teaser-text">Need a hand with a job? Ask me.</span></button>
+  <button class="cb-teaser-x" id="cbTeaserX" type="button" aria-label="Dismiss">&times;</button>
+</div>
 <div class="chatbot" id="chatbot" role="dialog" aria-label="WBME assistant" aria-hidden="true">
   <div class="cb-head">
     <span class="cb-prop" aria-hidden="true"><img src="media/brand/propeller-320.webp" alt=""></span>
-    <div class="cb-id"><b>WBME Assistant</b><span>Walvis Bay Marine Engineering</span></div>
+    <div class="cb-id"><b>WBME Assistant</b><span class="cb-status" id="cbStatus"><i class="cb-dot" aria-hidden="true"></i><span id="cbStatusText">Walvis Bay Marine Engineering</span></span></div>
+    <button class="cb-new" id="cbNew" type="button" aria-label="Start a new conversation" title="New conversation"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button class="cb-x" id="chatbotClose" type="button" aria-label="Close assistant">&times;</button>
   </div>
-  <div class="cb-log" id="cbLog" aria-live="polite"></div>
-  <div class="cb-chips" id="cbChips" aria-label="Suggested questions"></div>
+  <div class="cb-log" id="cbLog" role="log" aria-live="off" aria-label="Conversation"></div>
+  <div class="cb-sr-only" id="cbAnnounce" aria-live="polite" aria-atomic="true"></div>
+  <div class="cb-chips" id="cbChips" aria-label="Suggested replies" hidden></div>
   <form class="cb-bar" id="cbForm" novalidate>
-    <input id="cbInput" type="text" placeholder="Ask about services, quotes, hours&hellip;" autocomplete="off" maxlength="300" aria-label="Message the WBME assistant">
-    <button type="submit" aria-label="Send message">&#10148;</button>
+    <textarea id="cbInput" rows="1" placeholder="Type a message&hellip;" maxlength="1500" aria-label="Message the WBME assistant" enterkeyhint="send"></textarea>
+    <button type="submit" id="cbSend" aria-label="Send message">&#10148;</button>
   </form>
+  <p class="cb-foot">Automated assistant &middot; the team confirms every job</p>
 </div>
 
 <script src="js/bucket-assets.js?v=47"></script>
 <script src="js/experience.js?v=76"></script>
 <script src="js/glass-fx.js?v=11"></script>
-<script src="js/chatbot.js?v=3"></script>
+<script src="js/chatbot.js?v=4"></script>
 </body>
 </html>

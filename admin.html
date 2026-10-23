@@ -10,7 +10,7 @@
 <link rel="preload" href="media/fonts/anton-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/experience.css?v=121">
+<link rel="stylesheet" href="css/experience.css?v=122">
 </head>
 <body data-page="admin" class="admin-out admin-checking">
 
@@ -72,6 +72,10 @@
   </section>
 
   <section id="adminDash" class="admin-dash" hidden>
+    <section class="admin-enq" aria-labelledby="adminEnqTitle">
+      <div class="admin-enq-head"><h2 id="adminEnqTitle">Enquiries <span>from the website assistant</span></h2><span class="admin-enq-count" id="adminEnqCount"></span></div>
+      <div id="adminEnqList" class="admin-enq-list"></div>
+    </section>
     <div class="admin-dash-head">
       <div><span class="eyebrow">Admin</span><h1>Project posts</h1></div>
       <button id="adminNew" class="btn-brass admin-new-btn" type="button">+ New project</button>
@@ -137,6 +141,6 @@
 </main>
 
 <script src="js/bucket-assets.js?v=47"></script>
-<script src="js/admin.js?v=7"></script>
+<script src="js/admin.js?v=8"></script>
 </body>
 </html>
