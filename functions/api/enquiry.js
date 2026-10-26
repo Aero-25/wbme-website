@@ -1,9 +1,7 @@
-/* POST /api/enquiry: saves an enquiry taken down by the assistant's offline
-   mode (used when the AI is unavailable). Same storage and validation as the
-   AI's save_enquiry tool; same-origin and rate limited. */
+/* POST /api/enquiry: saves an enquiry the website assistant (js/chatbot.js)
+   took down, for the team to see in admin. Same-origin and rate limited. */
 import { json } from '../_shared/util.js';
-import { checkRate, cleanEnquiry, saveEnquiry, cleanSid, sameOrigin } from '../_shared/assistant-store.js';
-import { PAGE_LABEL } from '../_shared/assistant-knowledge.js';
+import { checkRate, cleanEnquiry, saveEnquiry, cleanSid, sameOrigin, PAGES } from '../_shared/assistant-store.js';
 
 export async function onRequestPost ({ request, env }) {
   if (!sameOrigin(request)) return json({ error: 'Not allowed.' }, 403);
@@ -16,8 +14,8 @@ export async function onRequestPost ({ request, env }) {
     if (!limit.ok) return json({ error: 'Too many enquiries from this connection today. Please call or email the workshop.' }, 429);
     const saved = await saveEnquiry(env, value, {
       sid: cleanSid(body.sid),
-      page: PAGE_LABEL[body.page] ? body.page : '',
-      source: 'assistant-offline',
+      page: PAGES.includes(body.page) ? body.page : '',
+      source: 'assistant',
       transcript: Array.isArray(body.transcript) ? body.transcript : []
     });
     return json({ ref: saved.ref, updated: !!saved.updated }, 201);

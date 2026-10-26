@@ -1,4 +1,4 @@
--- Website assistant: enquiries it takes down, and a usage log for rate limits.
+-- Website assistant: enquiries it takes down, and a usage log for rate limiting /api/enquiry.
 -- The Pages Functions create these tables on first use (functions/_shared/assistant-store.js),
 -- so applying this by hand is optional:
 --   wrangler d1 execute wbme --remote --file=migrations/0002_assistant.sql

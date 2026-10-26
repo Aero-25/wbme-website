@@ -1,8 +1,0 @@
-{
-  "name": "wbme-website",
-  "private": true,
-  "description": "Walvis Bay Marine Engineering website. Static pages, no build step; this file only supplies npm packages to the Cloudflare Pages Functions in functions/.",
-  "dependencies": {
-    "@anthropic-ai/sdk": "0.137.0"
-  }
-}

@@ -1,13 +1,14 @@
-/* WBME Assistant v4: a conversational assistant for the workshop.
+/* WBME Assistant v5: a self-contained conversational assistant for the
+   workshop. No AI service, no outside calls: everything it knows and every
+   reply it can give lives in this file.
 
-   Two brains, one voice:
-   - AI replies stream from /api/chat (Pages Function -> Claude) when the
-     site has an API key set.
-   - An offline brain in this file answers when the AI is unavailable: fuzzy
-     matching, follow-up context, the visitor's name, live open/closed status
-     and a guided enquiry flow.
-   Both speak the same reply format: text with **bold**, "- " lists and
-   [[markers]] at the end that become buttons and suggested replies.
+   The brain (see "the brain" below) reads each message with typo-tolerant
+   matching, keeps track of the topic, the visitor's name and where the
+   conversation is, knows whether the workshop is open right now, and walks
+   visitors through an enquiry that is saved for the team (/api/enquiry,
+   shown in admin) with a one-tap pre-filled email as well.
+   Replies are written as text with **bold**, "- " lists and [[markers]] at
+   the end that become buttons and suggested replies.
 
    The conversation lives in sessionStorage, so it carries across pages, and
    the assistant can take the visitor to a page and pick up again there. */
@@ -101,6 +102,7 @@
       if (kind === 'chips') chips = arg.split('|').map(function (c) { return c.trim(); }).filter(Boolean).slice(0, 3);
       else if (kind === 'go' && PAGE_URL[arg.toLowerCase()]) go = arg.toLowerCase();
       else if (kind === 'page' && PAGE_URL[arg.toLowerCase()]) acts.push(['page', arg.toLowerCase()]);
+      else if (kind === 'post' && /^[a-z0-9-]{3,80}$/.test(arg)) acts.push(['post', arg]);
       else if (kind === 'call' || kind === 'email' || kind === 'map') acts.push([kind]);
       return '';
     });
@@ -152,7 +154,7 @@
      state (sessionStorage, so the chat follows the visitor across pages)
      =================================================================== */
   var state = load();
-  function fresh () { return { sid: uid(), msgs: [], name: '', topic: '', lastJob: '', flow: null, used: {}, aiOffUntil: 0, teased: false, arrive: '', reopen: false }; }
+  function fresh () { return { sid: uid(), msgs: [], name: '', topic: '', lastJob: '', flow: null, used: {}, teased: false, arrive: '', reopen: false }; }
   function load () {
     try {
       var s = JSON.parse(sessionStorage.getItem(STORE_KEY) || 'null');
@@ -192,7 +194,8 @@
     call: function () { return 'Call ' + PHONE_DISPLAY; },
     email: function () { return 'Email the workshop'; },
     map: function () { return 'Get directions'; },
-    page: function (a) { return 'Open ' + PAGE_NAME[a]; }
+    page: function (a) { return 'Open ' + PAGE_NAME[a]; },
+    post: function () { return 'See the photos'; }
   };
   function actsHtml (acts) {
     if (!acts || !acts.length) return '';
@@ -268,8 +271,8 @@
   }
   function hideTyping () { if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl); typingEl = null; }
 
-  /* A bot message being written: text arrives in pieces (AI stream) or all at
-     once (offline brain) and is revealed at a natural reading pace. */
+  /* A bot message being written: revealed at a natural reading pace, a few
+     words at a time, the way a person's reply appears. */
   function Writer () {
     this.raw = ''; this.shown = 0; this.node = null; this.done = false; this.frame = 0; this.onIdle = null; this.started = 0;
   }
@@ -280,7 +283,6 @@
     this.frame = requestAnimationFrame(function () { self.frame = 0; self.tick(); });
   };
   Writer.prototype.tick = function () {
-    if (this.paused) return;
     var target = visiblePart(this.raw);
     if (!target && !this.done) return;
     if (!this.node) {
@@ -329,120 +331,21 @@
 
   function respond (q) {
     setBusy(true);
-    var aiOn = Date.now() > (state.aiOffUntil || 0) && location.protocol !== 'file:';
-    setTimeout(function () {
-      showTyping();
-      if (aiOn) askAI(q); else replyOffline(q);
-    }, readDelay(q));
+    setTimeout(function () { reply(q); }, readDelay(q));
   }
 
-  /* history for the AI: plain text both ways, markers kept on bot turns */
-  function historyForAI () {
+  /* the chat so far, for the enquiry record the team sees in admin */
+  function transcript () {
     var out = [];
     state.msgs.forEach(function (m) {
       if (m.role === 'user') out.push({ role: 'user', content: m.text });
-      else if (m.role === 'bot' && !m.greeting) out.push({ role: 'assistant', content: m.raw });
-      else if (m.role === 'card') out.push({ role: 'assistant', content: '(Enquiry card shown' + (m.card.ref ? ', reference ' + m.card.ref : '') + ')' });
+      else if (m.role === 'bot' && !m.greeting) out.push({ role: 'assistant', content: parseReply(m.raw).text });
     });
-    return out.slice(-30);
+    return out.slice(-16);
   }
 
-  function askAI (q) {
-    var writer = new Writer(), gotText = false, failed = false, finished = false, cards = [];
-    var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 70e3);
-
-    /* seal a finished bubble: final formatting, buttons, saved to the chat */
-    function seal (w, raw) {
-      var p = parseReply(raw);
-      if (w.node) {
-        if (p.text || p.acts.length) { w.node.classList.remove('is-writing'); stick(function () { w.node.innerHTML = fmt(p.text) + actsHtml(p.acts); }); }
-        else w.node.parentNode.removeChild(w.node);
-      }
-      hideTyping();
-      if (p.text || p.acts.length) {
-        state.msgs.push({ role: 'bot', raw: raw, t: Date.now(), via: 'ai' });
-        say(p.text);
-      }
-      save(); scrollEnd();
-      return p;
-    }
-    function finishMessage (next) {
-      var w = writer;
-      w.finish(function () { next(seal(w, w.raw)); });
-    }
-    function wrapUp () {
-      if (finished) return; finished = true;
-      clearTimeout(timer);
-      if (failed && !gotText) {
-        /* the AI is having trouble: answer offline and give it a few minutes */
-        if (!state.aiOffUntil || state.aiOffUntil < Date.now()) { state.aiOffUntil = Date.now() + 3 * 60e3; save(); }
-        hideTyping(); replyOffline(q); return;
-      }
-      finishMessage(function (p) {
-        cards.forEach(function (c) { addCard(c); });
-        setChips(p.chips);
-        setBusy(false);
-        if (p.go) goTo(p.go, 700);
-      });
-    }
-
-    fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ messages: historyForAI(), page: PAGE, sid: state.sid }),
-      signal: ctrl ? ctrl.signal : undefined
-    }).then(function (res) {
-      var type = res.headers.get('content-type') || '';
-      if (!res.ok || type.indexOf('text/event-stream') === -1 || !res.body) {
-        /* no key yet, busy, or an old deploy: use the offline brain for a while */
-        return res.json().catch(function () { return {}; }).then(function (j) {
-          state.aiOffUntil = Date.now() + (j && j.reason === 'offline' ? 30 * 60e3 : 5 * 60e3); save();
-          failed = true; wrapUp();
-        });
-      }
-      var reader = res.body.getReader(), dec = new TextDecoder(), buf = '';
-      function handle (event, data) {
-        if (event === 'delta' && data.t) { gotText = true; writer.add(data.t); }
-        else if (event === 'reset') { writer.raw = ''; writer.shown = 0; if (writer.node) writer.node.innerHTML = ''; }
-        else if (event === 'enquiry') cards.push(data);
-        else if (event === 'break') {
-          /* the assistant sends a second message: finish this one (and any
-             enquiry card) before the next one starts appearing */
-          var prev = writer, next = new Writer();
-          writer = next;
-          if (prev.raw) {
-            next.paused = true;
-            prev.finish(function () {
-              seal(prev, prev.raw);
-              cards.splice(0).forEach(function (c) { addCard(c); });
-              showTyping();
-              next.paused = false; next.kick();
-            });
-          }
-        } else if (event === 'error') { failed = true; }
-      }
-      function pump () {
-        return reader.read().then(function (r) {
-          if (r.done) { wrapUp(); return; }
-          buf += dec.decode(r.value, { stream: true });
-          var parts = buf.split('\n\n'); buf = parts.pop();
-          parts.forEach(function (chunk) {
-            var ev = 'message', data = '';
-            chunk.split('\n').forEach(function (line) {
-              if (line.indexOf('event:') === 0) ev = line.slice(6).trim();
-              else if (line.indexOf('data:') === 0) data += line.slice(5).trim();
-            });
-            try { handle(ev, data ? JSON.parse(data) : {}); } catch (err) {}
-          });
-          return pump();
-        });
-      }
-      return pump();
-    }).catch(function () { failed = true; wrapUp(); });
-  }
-
-  function replyOffline (q) {
+  /* think, "type" for a moment in proportion to the answer, then write it out */
+  function reply (q) {
     var r;
     try { r = brain(q); } catch (err) { r = { raw: FALLBACK_TEXT() }; }
     var raw = r.raw;
@@ -454,7 +357,7 @@
       w.finish(function () {
         var p = parseReply(raw);
         if (w.node) { w.node.classList.remove('is-writing'); stick(function () { w.node.innerHTML = fmt(p.text) + actsHtml(p.acts); }); }
-        state.msgs.push({ role: 'bot', raw: raw, t: Date.now(), via: 'offline' });
+        state.msgs.push({ role: 'bot', raw: raw, t: Date.now() });
         save(); say(p.text);
         setChips(p.chips);
         if (r.after) r.after();
@@ -488,56 +391,155 @@
   }
 
   /* ===================================================================
-     the offline brain
+     the brain
      =================================================================== */
   var SERVICES = {
     rigging: {
-      name: 'Rigging', kw: ['rigging', 'rig', 'lift', 'lifting', 'crane', 'alternator', 'generator', 'compressor', 'motor', 'motors', 'engine', 'engines', 'install', 'installation', 'position', 'remove'],
+      name: 'Rigging', short: 'lifting, aligning and positioning shafts, engines, pumps and motors so they can come out and go back in safely',
+      kw: ['rigging', 'rig', 'lift', 'lifting', 'crane', 'alternator', 'generator', 'compressor', 'motor', 'motors', 'engine', 'engines', 'install', 'installation', 'position', 'remove'],
       say: ['**Rigging** is usually the first job on any propulsion or plant repair: lifting, aligning and positioning propeller shafts, rudder shafts, engines, alternators, generators, compressors, pumps and motors. The team plans the lift around tight engine rooms and awkward access, because bad rigging throws off everything after it.',
         'WBME does the **rigging** for shafts, engines, generators, compressors, pumps and motors: getting them out, lined up and back in safely, even in a cramped engine room. It is treated as precision work, not a warm-up.']
     },
     fitting: {
-      name: 'Fitting & Turning', kw: ['fitting', 'turning', 'machining', 'machine', 'machined', 'lathe', 'overhaul', 'overhauls', 'bush', 'bushes', 'bushing', 'thordon', 'liner', 'liners', 'seal', 'seals', 'bearing', 'bearings', 'sleeve', 'coupling', 'strip', 'tolerance'],
+      name: 'Fitting & Turning', short: 'stripping, machining and rebuilding parts to tolerance, from Thordon bushes to seal liners and shaft components',
+      kw: ['fitting', 'turning', 'machining', 'machine', 'machined', 'lathe', 'overhaul', 'overhauls', 'bush', 'bushes', 'bushing', 'thordon', 'liner', 'liners', 'seal', 'seals', 'bearing', 'bearings', 'sleeve', 'coupling', 'strip', 'tolerance'],
       say: ['**Fitting & turning** covers the full cycle: strip it down, machine new parts or repair the old ones to tolerance, then re-assemble and install. The machine shop turns things like new Thordon bushes, seal liners and shaft components to the exact size your vessel or plant needs.',
         'That sounds like **fitting & turning**. WBME strips, overhauls and machines parts in-house (bushes, seal liners, shaft components) and puts them back in to fit like the day they were built.']
     },
     boiler: {
-      name: 'Boiler Making', kw: ['boiler', 'boilermaking', 'structural', 'structure', 'hull', 'deck', 'bridge', 'walkway', 'walkways', 'ladder', 'ladders', 'mast', 'masts', 'trawl', 'door', 'doors', 'gantry', 'gantries', 'frame', 'ducting', 'plate', 'plating', 'rudder'],
+      name: 'Boiler Making', short: 'structural steelwork on the vessel or plant itself: hull plate, decks, masts, trawl doors, gantries and A-frames',
+      kw: ['boiler', 'boilermaking', 'structural', 'structure', 'hull', 'deck', 'bridge', 'walkway', 'walkways', 'ladder', 'ladders', 'mast', 'masts', 'trawl', 'door', 'doors', 'gantry', 'gantries', 'frame', 'ducting', 'plate', 'plating', 'rudder'],
       say: ['**Boiler making** is the structural steel side: hull plate, deck, bridge, walkways, ladders, masts, trawl doors, gantries, A-frames and ducting. Renewals, modifications or complete new builds, in mild steel, stainless or aluminium.',
-        'Structural steel like that is **boiler making**. WBME renews, modifies and builds new: hull plate, decks, masts, trawl doors, gantries and A-frames. A recent one was a complete ship\'s rudder built from raw plate.']
+        'Structural steel like that is **boiler making**. WBME renews, modifies and builds new: hull plate, decks, masts, trawl doors, gantries and A-frames.']
     },
     fabrication: {
-      name: 'Fabrication', kw: ['fabrication', 'fabricate', 'fabricated', 'tank', 'tanks', 'dome', 'domes', 'burner', 'burners', 'dropper', 'skip', 'skips', 'base', 'rolling', 'roll', 'bending', 'bend', 'cutting', 'cut', 'profile', 'vessel', 'pressure', 'custom', 'build', 'make', 'manufacture'],
+      name: 'Fabrication', short: 'making new pieces from raw steel: tanks, domes, burners, skips, base plates and custom structures',
+      kw: ['fabrication', 'fabricate', 'fabricated', 'tank', 'tanks', 'dome', 'domes', 'burner', 'burners', 'dropper', 'skip', 'skips', 'base', 'rolling', 'roll', 'bending', 'bend', 'cutting', 'cut', 'profile', 'pressure', 'custom', 'build', 'make', 'manufacture'],
       say: ['**Fabrication** turns raw steel into what the job needs: domes, tanks, burners, condensers, skips, base plates and custom structures. Profile cutting, rolling and bending to spec, then installed in the workshop or on site.',
-        'WBME can **fabricate** that. Cut, rolled, bent and built to spec, from stainless tanks to skips and base plates, then installed on site if you need it.']
+        'WBME can **fabricate** that: cut, rolled, bent and built to spec, from stainless tanks to skips and base plates, then installed on site if you need it.']
     },
     pipe: {
-      name: 'Pipe Works', kw: ['pipe', 'pipes', 'piping', 'pipework', 'pipeworks', 'manifold', 'manifolds', 'valve', 'valves', 'condenser', 'condensers', 'strainer', 'strainers', 'inlet', 'leak', 'leaking', 'copper', 'galvanized', 'galvanised', 'pump', 'pumps'],
+      name: 'Pipe Works', short: 'designing, renewing and fitting pipe runs in steel, copper and galvanized pipe, with the valves, manifolds and strainers',
+      kw: ['pipe', 'pipes', 'piping', 'pipework', 'pipeworks', 'manifold', 'manifolds', 'valve', 'valves', 'condenser', 'condensers', 'strainer', 'strainers', 'inlet', 'leak', 'leaking', 'copper', 'galvanized', 'pump', 'pumps'],
       say: ['**Pipe works**: renewal, modification or completely new pipe runs, including the design, jigs and material prep. Pumps, manifolds, main engines, tanks, condensers, valves and sea water inlet strainers, in steel, copper or galvanized.',
         'Pipe work is a WBME trade. The team designs the run, builds the jigs and preps the steel, copper or galvanized pipe so it goes back in without a leak or a misaligned joint.']
     },
     welding: {
-      name: 'Welding', kw: ['weld', 'welding', 'welder', 'welded', 'mig', 'tig', 'arc', 'brazing', 'braze', 'solder', 'soldering', 'cast', 'crack', 'cracked', 'cracks', 'strengthen', 'aluminium', 'aluminum'],
+      name: 'Welding', short: 'joining and repair in mild steel, stainless, aluminium and cast iron: MIG, TIG, arc, gas, brazing and silver soldering',
+      kw: ['weld', 'welding', 'welder', 'welded', 'mig', 'tig', 'arc', 'brazing', 'braze', 'solder', 'soldering', 'cast', 'crack', 'cracked', 'cracks', 'strengthen', 'aluminium'],
       say: ['**Welding** runs through almost every job: gas welding, brazing, silver soldering, MIG, TIG and arc, in mild steel, stainless, aluminium and cast iron. That includes strengthening and repairing existing structures and hulls.',
-        'Yes, WBME welds mild steel, stainless, aluminium and even cast iron: MIG, TIG, arc, gas, brazing and silver soldering. Cracks and repairs to existing structures are everyday work.']
+        'WBME welds mild steel, stainless, aluminium and even cast iron: MIG, TIG, arc, gas, brazing and silver soldering. Cracks and repairs to existing structures are everyday work.']
+    },
+    /* not a trade on its own, but the job people most often describe */
+    propulsion: {
+      name: 'Ship repair', short: 'propeller and shaft work: rigging them out, machining and renewing worn parts, aligning and refitting',
+      kw: ['propeller', 'prop', 'props', 'shaft', 'shafts', 'tailshaft', 'cpp', 'kort', 'nozzle', 'stern tube', 'sterntube', 'propulsion', 'alignment', 'align'],
+      say: ['Propeller and shaft work is a big part of WBME\'s ship repair: rigging the propeller and shaft out, machining and renewing what\'s worn, aligning everything and refitting it. A recent job converted a vessel from a controllable-pitch propeller to a fixed shaft with a new kort nozzle.'],
+      caveat: [/\bnew (propeller|prop)\b/, 'Whether the team supplies a new propeller or refits one you\'ve sourced is one for them to confirm.']
     }
   };
-  var SHIP_KW = ['ship', 'vessel', 'boat', 'trawler', 'tug', 'propeller', 'prop', 'shaft', 'shafts', 'cpp', 'kort', 'nozzle', 'rudder', 'dock', 'drydock', 'repair', 'repairs', 'broken', 'broke', 'damaged', 'failed', 'worn'];
+  var SHIP_KW = ['ship', 'vessel', 'boat', 'trawler', 'tug', 'propeller', 'prop', 'shaft', 'shafts', 'cpp', 'kort', 'nozzle', 'rudder', 'dock', 'drydock', 'repair', 'broken', 'broke', 'damaged', 'failed', 'worn', 'winch', 'crane', 'engine room'];
+
+  /* jobs WBME doesn't list: say so honestly instead of agreeing to anything */
+  var OUTSIDE = [
+    [/\b(car|cars|bakkie|bakkies|vehicle|vehicles|truck|trucks|motorbike|motorcycle|scooter)\b/, "Cars and other vehicles aren't WBME's line: it's a marine and industrial engineering workshop. Welding or fabrication on something like a trailer, a frame or a bracket is a different story, though."],
+    [/\b(electrical|electrician|wiring|electronics?|rewire|rewiring)\b/, "Electrical work isn't one of WBME's listed trades, so for wiring and electronics you'd want a marine electrician. If it's part of a bigger mechanical or steel job, the team can tell you what they'd cover."],
+    [/\b(sand ?blast\w*|grit ?blast\w*|blasting|paint\w*|coating\w*|antifoul\w*)\b/, "Blasting and painting aren't among WBME's listed trades. If they're part of a bigger repair, the team can tell you how they'd handle it."],
+    [/\b(outboard\w*|jet ?skis?)\b/, "Servicing outboard motors isn't one of WBME's listed trades; it's a marine and metal engineering workshop: shafts, propellers, steelwork, pipe work and welding. If a part needs machining or welding, that's right up its street."],
+    [/\b(sell|sells|selling|for sale)\b/, "WBME is a workshop rather than a supplier, so I don't have anything about selling steel or parts on their own. The team can tell you whether they'd source material as part of a job."],
+    [/\b(hire|rent|rental|renting)\b/, "Equipment hire isn't something WBME lists. Rigging and lifting as part of a repair job is, though: shafts, engines, pumps and motors."],
+    [/\b(plumb\w*|geyser|roof\w*|aircon|air con|air conditioning|my house)\b/, "Household jobs like that aren't WBME's line; it's an industrial and marine workshop. Steelwork, fabrication or welding for a building or plant is another matter."]
+  ];
+  function outsideOf (text) {
+    for (var i = 0; i < OUTSIDE.length; i++) if (OUTSIDE[i][0].test(text)) return OUTSIDE[i][1];
+    return '';
+  }
 
   var PROJECTS = [
-    { title: 'Kort Nozzle & Shaft Conversion', slug: 'kort-nozzle-shaft-conversion', kind: 'ship repair', blurb: 'a vessel converted from a controllable-pitch propeller to a fixed shaft: removal, shaft alignment, kort nozzle fitting and reassembly to class-approved tolerances' },
-    { title: 'New Complete Ship\'s Rudder', slug: 'new-complete-ships-rudder', kind: 'boiler making', blurb: 'a complete rudder built in-house from raw steel plate, cut, formed, welded and fitted to the vessel' },
-    { title: 'Stainless Steel Tank', slug: 'stainless-steel-tank', kind: 'fabrication', blurb: 'a custom stainless tank for marine and industrial use, finished for corrosion resistance' },
-    { title: 'Hull Plate Replacement', slug: 'hull-plate-replacement', kind: 'boiler making', blurb: 'corroded bottom hull plate cut out in dry dock and replaced with new class-approved plate, finished to survey standard' }
+    { title: 'Kort Nozzle & Shaft Conversion', slug: 'kort-nozzle-shaft-conversion', kind: 'ship repair', when: 'August 2026',
+      kw: ['kort', 'nozzle', 'cpp', 'conversion', 'controllable', 'fixed shaft'],
+      blurb: 'a vessel converted from a controllable-pitch propeller to a fixed shaft: removal, shaft alignment, kort nozzle fitting and reassembly to class-approved tolerances',
+      body: 'Full removal and refit of a controllable-pitch propeller (CPP) system, converting the vessel to a fixed shaft: shaft alignment, kort nozzle fitting and full reassembly to class-approved tolerances.' },
+    { title: 'New Complete Ship\'s Rudder', slug: 'new-complete-ships-rudder', kind: 'boiler making', when: 'July 2026',
+      kw: ['rudder', 'rudders'],
+      blurb: 'a complete rudder built in-house from raw steel plate, cut, formed, welded and fitted to the vessel',
+      body: 'A complete rudder built in-house from raw steel plate: cutting, forming, welding and finishing, through to fitting on the vessel. Boiler making from the first cut to an installed, class-ready component.' },
+    { title: 'Stainless Steel Tank', slug: 'stainless-steel-tank', kind: 'fabrication', when: 'June 2026',
+      kw: ['stainless', 'tank', 'tanks'],
+      blurb: 'a custom stainless tank for marine and industrial use, finished for corrosion resistance',
+      body: 'A custom stainless steel tank for marine and industrial use, cut, welded and finished in-house to spec, with surface preparation for corrosion resistance in a marine environment.' },
+    { title: 'Hull Plate Replacement', slug: 'hull-plate-replacement', kind: 'boiler making', when: 'May 2026',
+      kw: ['hull', 'plate', 'plating', 'corroded', 'corrosion'],
+      blurb: 'corroded bottom hull plate cut out in dry dock and replaced with new class-approved plate, finished to survey standard',
+      body: 'Bottom hull plate replacement in dry dock: corroded steel cut out, new class-approved plate fitted and welded, and finished to survey standard.' }
   ];
   /* the Projects page loads a fresher snapshot after this script; read it when asked */
+  function fixText (s) { return String(s || '').replace(/â€”/g, '—').replace(/â€“/g, '–').replace(/â€™/g, '’'); }
   function projectList () {
     var snap = window.WBME_PROJECTS_SNAPSHOT;
     if (!snap || !snap.length) return PROJECTS;
-    return snap.slice(0, 6).map(function (p) {
-      return { title: p.title, slug: p.slug, kind: String(p.discipline || '').toLowerCase(), blurb: String(p.summary || '').replace(/\.$/, '').replace(/^./, function (c) { return c.toLowerCase(); }) };
+    return snap.slice(0, 8).map(function (p) {
+      var known = PROJECTS.filter(function (k) { return k.slug === p.slug; })[0] || {};
+      return {
+        title: fixText(p.title), slug: p.slug, kind: String(p.discipline || '').toLowerCase(), when: known.when || '',
+        kw: known.kw || norm(p.title).split(' ').filter(function (w) { return w.length > 3; }),
+        blurb: known.blurb || fixText(p.summary).replace(/\.$/, '').replace(/^./, function (c) { return c.toLowerCase(); }),
+        body: known.body || fixText(p.body || p.summary)
+      };
     });
   }
+  function projectMatch (toks, text) {
+    var best = null, bestN = 0;
+    projectList().forEach(function (p) { var n = count(toks, text, p.kw); if (n > bestN) { bestN = n; best = p; } });
+    return best;
+  }
+  function projectReply (p, past) {
+    return (past ? 'Yes. A recent one: ' : '') + '**' + p.title + '**' + (p.when ? ' (' + p.when + ')' : '') + '. ' + p.body +
+      '\nGot something similar? Tell me about it and I\'ll pass it to the team.\n[[post:' + p.slug + ']]\n[[chips:I need a quote | Other jobs you\'ve done]]';
+  }
+
+  /* opening hours, answered for the day the visitor actually asks about */
+  var DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  function dayAsked (text) {
+    var s = workshopNow(), today = DAYS.indexOf(s.day.toLowerCase());
+    if (/\btomorrow\b/.test(text)) return { name: DAYS[(today + 1) % 7], rel: 'Tomorrow' };
+    if (/\b(today|tonight|now)\b/.test(text)) return { name: DAYS[today], rel: 'Today' };
+    if (/\bweekends?\b/.test(text)) return { name: 'saturday', rel: 'weekend' };
+    for (var i = 0; i < 7; i++) if (new RegExp('\\b' + DAYS[i] + 's?\\b').test(text)) return { name: DAYS[i], rel: '' };
+    return null;
+  }
+  function timeAsked (text) {
+    var m = text.match(/\b(?:at|around|by|about)\s+(\d{1,2})(?:[:h.](\d{2}))?\s*(am|pm)?\b/) || text.match(/\b(\d{1,2})(?:[:h.](\d{2}))?\s*(am|pm)\b/);
+    if (!m) return null;
+    var h = +m[1];
+    if (m[3] === 'pm' && h < 12) h += 12;
+    if (m[3] === 'am' && h === 12) h = 0;
+    if (h > 23) return null;
+    return { h: h, label: ('0' + h).slice(-2) + ':' + (m[2] || '00') };
+  }
+  function dayLine (text) {
+    var d = dayAsked(text), t = timeAsked(text);
+    if (!d) return '';
+    var Day = cap(d.name);
+    if (d.rel === 'weekend' || d.name === 'saturday') return (d.rel === 'Tomorrow' ? "Tomorrow's Saturday, and " : '') + 'Saturdays the workshop is closed: WBME keeps the Sabbath. Sundays it\'s on call for urgent work by phone, and Monday to Friday it\'s open 07:00 to 17:00.';
+    if (d.name === 'sunday') return (d.rel === 'Tomorrow' ? "Tomorrow's Sunday, so " : 'On Sundays ') + 'the workshop is on call for urgent work only: call **' + PHONE_DISPLAY + '**. Monday to Friday it\'s open 07:00 to 17:00.';
+    if (d.rel === 'Today') {
+      var s = workshopNow();
+      return s.line + (t ? (t.h >= 7 && t.h < 17 ? ' ' + t.label + ' is within working hours.' : ' ' + t.label + ' is outside working hours (07:00 to 17:00).') : '');
+    }
+    var at = t ? (t.h >= 7 && t.h < 17 ? ' ' + t.label + ' works.' : ' ' + t.label + ' is outside working hours, though, so aim for between 07:00 and 17:00.') : '';
+    return (d.rel === 'Tomorrow' ? "Tomorrow's " + Day + ', so the workshop is open 07:00 to 17:00.' : Day + 's the workshop is open 07:00 to 17:00.') + at;
+  }
+  function hoursReply (text) {
+    if (/\b(public holiday|holidays?|christmas|easter|new year)\b/.test(text)) return "I don't have the public holiday hours, so it's worth calling ahead on **" + PHONE_DISPLAY + '**. Normally it\'s Monday to Friday, 07:00 to 17:00.\n[[call]]';
+    if (/\b(night|evening|after hours|afterhours|late)\b/.test(text)) return 'The workshop works Monday to Friday, 07:00 to 17:00, and Sundays it\'s on call for urgent work. I can\'t promise anything after hours, but calling **' + PHONE_DISPLAY + '** is your best bet.\n[[call]]';
+    var line = dayLine(text);
+    if (line) return line + '\n[[call]]';
+    var s = workshopNow();
+    return s.line + ' Normal hours are **Monday to Friday, 07:00 to 17:00**. Saturday is closed (WBME keeps the Sabbath) and Sunday is on call for urgent work.\n[[call]]';
+  }
+  var PLACE_RE = /\b(swakopmund|arandis|henties|luderitz|lüderitz|windhoek|oranjemund|rosh pinah|usakos|karibib|omaruru|tsumeb|otjiwarongo|keetmanshoop|rundu|oshakati|ondangwa|rossing|rössing|husab|langer heinrich|mine site|on site|onsite)\b/;
+  var SIZE_RE = /\b\d+(?:[.,]\d+)?\s*(?:m|mm|cm|metres?|meters?|tons?|tonnes?|t|kg|kgs|litres?|liters?|l|inch(?:es)?|ft|foot|feet)\b|\b\d+\s*x\s*\d+/;
 
   var SYN = { boat: 'vessel', boats: 'vessel', ship: 'vessel', ships: 'vessel', vessels: 'vessel', fix: 'repair', fixing: 'repair', fixed: 'repair', repairs: 'repair', repaired: 'repair', costs: 'cost', prices: 'price', pricing: 'price', quotes: 'quote', quotation: 'quote', quotations: 'quote', located: 'location', directions: 'direction', 'e-mail': 'email', numbers: 'number', propellor: 'propeller', propellers: 'propeller', aluminum: 'aluminium', galvanised: 'galvanized', u: 'you', ur: 'your', r: 'are', pls: 'please', plz: 'please', thx: 'thanks', ty: 'thanks' };
   var COMMON = {};
@@ -555,19 +557,28 @@
     }
     return prev[b.length];
   }
-  /* does the message contain this keyword (exact, as a word prefix, or a small typo)? */
-  function has (toks, text, word) {
-    if (word.indexOf(' ') !== -1) return text.indexOf(word) !== -1;
-    for (var i = 0; i < toks.length; i++) {
-      var t = toks[i];
-      if (t === word) return true;
-      if (word.length >= 5 && t.length > word.length && t.indexOf(word) === 0) return true;
+  /* which word of the message matches this keyword (exact, as a word prefix,
+     or a small typo)? -1 for none, -2 for a matched phrase */
+  function hit (toks, text, word, used) {
+    if (word.indexOf(' ') !== -1) return text.indexOf(word) !== -1 ? -2 : -1;
+    var i, t;
+    for (i = 0; i < toks.length; i++) if (!(used && used[i]) && toks[i] === word) return i;
+    for (i = 0; i < toks.length; i++) {
+      if (used && used[i]) continue;
+      t = toks[i];
+      if (word.length >= 5 && t.length > word.length && t.indexOf(word) === 0) return i;
       /* typos only on longer words, so "quite" never reads as "quote" */
-      if (word.length >= 6 && t.length >= 5 && !COMMON[t] && lev(t, word) <= (word.length >= 9 ? 2 : 1)) return true;
+      if (word.length >= 6 && t.length >= 5 && !COMMON[t] && lev(t, word) <= (word.length >= 9 ? 2 : 1)) return i;
     }
-    return false;
+    return -1;
   }
-  function count (toks, text, list) { var n = 0; list.forEach(function (w) { if (has(toks, text, w)) n++; }); return n; }
+  function has (toks, text, word) { return hit(toks, text, word) !== -1; }
+  /* how many keywords the message contains; each word of the message counts once */
+  function count (toks, text, list) {
+    var n = 0, used = {};
+    list.forEach(function (w) { var i = hit(toks, text, w, used); if (i !== -1) { n++; if (i >= 0) used[i] = 1; } });
+    return n;
+  }
 
   function serviceOf (toks, text) {
     var best = '', bestN = 0;
@@ -614,65 +625,109 @@
   function first (n) { return String(n || '').split(/\s+/)[0]; }
   function hi () { return state.name ? ', ' + first(state.name) : ''; }
 
-  function intents (toks, text, q) {
+  /* Questions that deserve a straight answer before anything else, and the
+     ones that can be answered together ("what are your hours and where are you?") */
+  var Q_FIRST = {};
+  'human person wbme who hours where phone email timing payment onsite safety jobs price industries about faith projects video'.split(' ').forEach(function (k) { Q_FIRST[k] = 1; });
+  var COMBO = { hours: 1, where: 1, phone: 1, email: 1 };
+
+  function intents (toks, text, q, svc) {
     var c = function (list) { return count(toks, text, list); };
+    var photoish = /\b(send|share|upload|attach|email|mail)\b.*\b(photo|photos|picture|pictures|pic|pics|image|images|drawing|drawings|video)\b/.test(text);
+    var asks = /^(do|can|could|would|does|are|is) (you|wbme|u|they|your|the team)\b/.test(text);
+    var svcName = svc && SERVICES[svc] ? (svc === 'propulsion' ? 'propeller and shaft work' : SERVICES[svc].name.toLowerCase()) : '';
     return [
       { id: 'human', s: /\b(are you|r you|is this|am i talking to|talking to)\b.*\b(human|real|person|bot|robot|ai|machine|computer|automated)\b/.test(text) || /^(human|bot|robot)\??$/.test(text) ? 9 : 0,
         r: function () { return "I'm WBME's automated assistant, not a person. I can answer questions and take down your job details, and the team handles the rest. If you'd rather speak to someone now, call **" + PHONE_DISPLAY + '**.\n[[call]]'; } },
+      { id: 'person', s: /\b(speak|talk|chat)\s+(to|with)\s+(a |an |the )?(person|human|someone|somebody|real person|team|manager|owner|boss|engineer)\b|\b(real person|someone real|call me back|phone me back|ring me back)\b/.test(text) ? 8 : 0,
+        r: function () {
+          var s = workshopNow();
+          return 'Of course. Call the workshop on **' + PHONE_DISPLAY + '**' + (s.open ? '; it\'s open right now, so you should get someone.' : '. ' + s.line) + ' Or leave your details here and the team will get back to you.\n[[call]]\n[[chips:Take my details | Email instead]]';
+        } },
+      { id: 'wbme', s: /\b(what does|what's|whats|what is) wbme (stand for|mean)|\bwbme stands? for\b|\bmeaning of wbme\b|\bwhat is wbme\b/.test(text) ? 8 : 0,
+        r: function () { return 'WBME stands for **Walvis Bay Marine Engineering**: a marine and metal engineering workshop in Walvis Bay, Namibia, going since 1999.\n[[page:about]]'; } },
+      { id: 'who', s: /\b(who|what) (are|r) (you|u)\b/.test(text) && toks.length <= 6 ? 7 : 0,
+        r: function () { return "I'm the WBME assistant, the automated helper on this site. I can tell you about the workshop and its trades, and take down a job for the team. WBME itself is Walvis Bay Marine Engineering, in Walvis Bay since 1999.\n[[chips:What do you do? | I need a quote]]"; } },
       { id: 'howareyou', s: /\b(how are you|how're you|how r you|how is it going|hows it going|how's it going|how are things|howzit)\b/.test(text) ? 6 : 0,
         r: function () { return pick(['Doing well, thanks for asking' + hi() + '. Busy day in the yard. What can I help you with?', 'All good here, thanks. What brings you to WBME today?']); } },
-      { id: 'greet', s: /^(hi|hello|hey|hallo|howzit|good (morning|afternoon|evening|day)|morning|afternoon|evening|greetings|goeie(more| môre| more| middag| naand)|guten (tag|morgen|abend)|moro|yo)\b/.test(text) && toks.length <= 5 ? 5 : 0,
+      { id: 'greet', s: /^(hi|hello|hey|hallo|howzit|good (morning|afternoon|evening|day)|morning|afternoon|evening|greetings|goeie\s*(more|môre|middag|naand|dag)|môre|guten (tag|morgen|abend)|moro|yo)\b/.test(text) && toks.length <= 6 ? 5 : 0,
         r: function () {
-          var lead = /^(hallo|goeie)/.test(text) ? 'Hallo' + hi() + '!' : /^guten/.test(text) ? 'Guten Tag' + hi() + '!' : workshopNow().greet + hi() + '!';
-          return lead + ' ' + pick(['What can I help you with today?', 'Got a job on, or just having a look around?', 'What brings you to WBME?']) + '\n[[chips:What do you do? | I need a quote | Where are you?]]';
+          if (/^(goeie|môre)/.test(text)) return (/naand/.test(text) ? 'Goeienaand' : /middag/.test(text) ? 'Goeiemiddag' : 'Goeie môre') + hi() + "! I'm happiest in English, but ask away. What can I help with?\n[[chips:What do you do? | I need a quote | Where are you?]]";
+          if (/^guten/.test(text)) return 'Guten Tag' + hi() + "! I'm afraid I only speak English, but ask away. What can I help with?\n[[chips:What do you do? | I need a quote | Where are you?]]";
+          return workshopNow().greet + hi() + '! ' + pick(['What can I help you with today?', 'Got a job on, or just having a look around?', 'What brings you to WBME?']) + '\n[[chips:What do you do? | I need a quote | Where are you?]]';
         } },
       { id: 'thanks', s: c(['thank', 'thanks', 'cheers', 'dankie', 'danke', 'appreciate', 'appreciated', 'legend']) ? 5 : 0,
         r: function () { return pick(['Anytime' + hi() + '. No job too big, no job too small.', 'Pleasure' + hi() + '. Shout if anything else comes up.', 'Glad to help. The team is on **' + PHONE_DISPLAY + '** whenever you need them.']); } },
+      { id: 'ack', s: /^(cool|great|nice|awesome|perfect|brilliant|noted|got it|gotcha|lekker|sharp|fine|alright|all right)\b/.test(text) && toks.length <= 4 ? 4 : 0,
+        r: function () { return pick(['Great. Anything else I can help with?', 'Good stuff. Shout if anything else comes up.']); } },
+      { id: 'laugh', s: /^(lol|haha\w*|hehe\w*|lmao|rofl)\b/.test(text) ? 5 : 0,
+        r: function () { return 'Ha. What can I help you with?\n[[chips:What do you do? | I need a quote]]'; } },
+      { id: 'weather', s: /\b(weather|raining|rain|fog|foggy|windy|sunny)\b/.test(text) && !svc ? 5 : 0,
+        r: function () { return "I'm stuck inside the website, so I'll take your word for it. Anything I can help with on the workshop side?"; } },
       { id: 'bye', s: /\b(bye|goodbye|cheers then|see you|later|ciao|totsiens|tschüss|tschuss)\b/.test(text) && toks.length <= 5 ? 5 : 0,
         r: function () { return pick(['Cheers' + hi() + '! The propeller button is here whenever you need us.', 'Take care' + hi() + '. Good luck with the job.']); } },
-      { id: 'urgent', s: (urgencyFrom(text) === 'urgent' ? 4 : 0) + c(['emergency', 'breakdown', 'urgent', 'asap']) * 2,
+      { id: 'urgent', s: (urgencyFrom(text) === 'urgent' ? 4 : 0) + c(['emergency', 'breakdown', 'urgent', 'asap', 'callout', 'call out', 'call-out']) * 2,
         r: function () {
           var s = workshopNow();
+          if (/\b(night|evening|after hours|afterhours|late|weekend)\b/.test(text)) return 'I can\'t promise after-hours callouts; that one\'s for the team. Calling **' + PHONE_DISPLAY + '** is your best bet, and on Sundays WBME is on call for urgent work. I can also take the details down now so they\'re ready.\n[[call]]\n[[chips:Take my details | Where are you?]]';
           var now = s.open ? "The workshop's open right now, so call **" + PHONE_DISPLAY + '** and you\'ll get the team.' : (s.onCall ? "It's Sunday, but WBME is on call for urgent work: call **" + PHONE_DISPLAY + '**.' : s.line + ' For anything urgent, call **' + PHONE_DISPLAY + '** first thing.');
           return 'Sounds like it can\'t wait. ' + now + ' I can also take the details down now so they\'re ready.\n[[call]]\n[[chips:Take my details | Where are you?]]';
         } },
-      { id: 'quote', s: c(['quote', 'price', 'cost', 'estimate', 'budget', 'charge', 'rates', 'rate', 'how much', 'enquiry', 'inquiry', 'enquire', 'inquire', 'take my details', 'help me write']) * 3,
+      { id: 'quote', s: c(['quote', 'estimate', 'enquiry', 'inquiry', 'enquire', 'inquire', 'take my details', 'help me write', 'write it up', 'need a quote', 'get a quote']) * 3,
         r: null, flow: true },
-      { id: 'hours', s: c(['hours', 'open', 'opening', 'closed', 'close', 'weekend', 'saturday', 'sunday', 'times', 'today', 'tomorrow', 'working hours', 'when are you']) * 2,
+      { id: 'price', s: c(['price', 'cost', 'how much', 'expensive', 'cheap', 'affordable', 'rates', 'charge', 'charges', 'price list', 'pricelist', 'fee', 'fees', 'hourly']) * 3,
         r: function () {
-          var s = workshopNow();
-          return s.line + ' Normal hours are **Monday to Friday, 07:00 to 17:00**. Saturday is closed (WBME keeps the Sabbath) and Sunday is on call for urgent work.\n[[call]]';
+          return (/price ?list/.test(text) ? "There's no price list, I'm afraid: " : (svcName ? 'For ' + svcName + ', ' : '')) + 'every job is priced on its scope once the team has seen it, so I can\'t give you a figure here. Tell me about the job and I\'ll pass it on for a proper quote; photos or drawings help.\n[[chips:Yes, take my details | Call instead]]';
         } },
-      { id: 'where', s: c(['where', 'address', 'location', 'map', 'direction', 'visit', 'find you', 'premises', 'situated', 'come in', 'drop off', 'bring']) * 2,
-        r: function () { return 'The workshop is at **' + ADDRESS + '**, Namibia. ' + pick(['Pop in during working hours, Monday to Friday, 07:00 to 17:00.', 'Monday to Friday, 07:00 to 17:00, if you want to bring something in.']) + '\n[[map]]'; } },
-      { id: 'phone', s: c(['phone', 'call', 'number', 'tel', 'telephone', 'ring', 'cell', 'whatsapp', 'fax']) * 2,
+      { id: 'hours', s: c(['hours', 'open', 'opening', 'closed', 'close', 'closing', 'weekend', 'weekends', 'saturday', 'saturdays', 'sunday', 'sundays', 'monday', 'mondays', 'tuesday', 'wednesday', 'thursday', 'friday', 'fridays', 'times', 'working hours', 'when are you', 'what time', 'public holiday', 'holiday', 'night', 'after hours']) * 3 + c(['today', 'tomorrow', 'tonight']),
+        r: function () { return hoursReply(text); } },
+      { id: 'where', s: c(['where', 'address', 'location', 'map', 'direction', 'visit', 'find you', 'premises', 'situated', 'come in', 'drop off', 'drop in', 'pop in', 'bring', 'based']) * 3,
+        r: function () {
+          var when = dayLine(text);
+          return (when ? when + ' ' : '') + 'The workshop is at **' + ADDRESS + '**, Namibia.' + (when ? '' : ' ' + pick(['Pop in during working hours, Monday to Friday, 07:00 to 17:00.', 'Monday to Friday, 07:00 to 17:00, if you want to bring something in.'])) + '\n[[map]]';
+        } },
+      { id: 'phone', s: c(['phone', 'call', 'number', 'tel', 'telephone', 'ring', 'cell', 'whatsapp', 'fax', 'contact number']) * 3,
         r: function () {
           var wa = /whatsapp/.test(text) ? "I don't have a WhatsApp number for the workshop, but " : '';
           return cap(wa + 'you can reach the workshop on **' + PHONE_DISPLAY + '**') + ' (fax +264 (0)64 209 350). ' + workshopNow().line + '\n[[call]]';
         } },
-      { id: 'email', s: c(['email', 'mail', 'write to', 'send photos', 'send pictures', 'attach', 'drawings']) * 2,
-        r: function () { return 'Email **' + email() + '**. Attach photos, drawings or dimensions if you have them; it helps the team quote faster.\n[[email]]'; } },
-      { id: 'about', s: c(['about you', 'about wbme', 'about the company', 'history', 'founder', 'founded', 'established', 'started', 'story', 'cruys', 'crüys', 'who are you', 'the company', 'owner', 'owns', 'been around', 'in business', 'how many years', 'how old', 'family']) * 2,
-        r: function () { return 'WBME was started in **1999** by the late Mr. Uwe Crüys and registered in October 2000, so over 25 years of serving vessels, mines and industry around Walvis Bay. His ethic still runs the place: value the customer, value the person, take pride in the small things. The motto says it best: **"No job too big, no job too small."**\n[[page:about]]'; } },
+      { id: 'email', s: c(['email', 'mail', 'write to', 'attach', 'upload', 'drawings']) * 3 + (photoish ? 4 : 0),
+        r: function () {
+          if (photoish) return 'Yes please, photos help a lot. Email them to **' + email() + '** with a line about the job. Or tell me about it here first, and I\'ll give you an email with everything filled in that you can attach them to.\n[[email]]\n[[chips:Take my details]]';
+          return 'Email **' + email() + '**. Attach photos, drawings or dimensions if you have them; it helps the team quote faster.\n[[email]]';
+        } },
+      { id: 'about', s: c(['about you', 'about wbme', 'about the company', 'history', 'founder', 'founded', 'established', 'started', 'story', 'cruys', 'crüys', 'the company', 'owner', 'owns', 'who runs', 'been around', 'in business', 'how many years', 'how old', 'family']) * 3,
+        r: function () {
+          var who = /\b(own|owns|owner|owners|runs|run by|ceo|director|manager|boss|in charge|management)\b/.test(text) ? " I don't have details on who runs it day to day, but the team will happily tell you." : '';
+          return 'WBME was started in **1999** by the late Mr. Uwe Crüys and registered in October 2000, so over 25 years of serving vessels, mines and industry around Walvis Bay. His ethic still runs the place: value the customer, value the person, take pride in the small things. The motto says it best: **"No job too big, no job too small."**' + who + '\n[[page:about]]';
+        } },
       { id: 'faith', s: c(['faith', 'christian', 'god', 'church', 'sabbath', 'religious', 'philippians', 'bible']) * 3,
         r: function () { return "WBME is a faith-based company. Its verse is Philippians 4:13: \"I can do all things through Christ Jesus who strengthens me.\" It keeps the Sabbath, so it's closed on Saturdays, and it's on call on Sundays for urgent work."; } },
-      { id: 'why', s: c(['why', 'choose', 'different', 'better', 'trust', 'reputation', 'apart', 'good are you', 'experience', 'reliable']) * 2,
+      { id: 'why', s: c(['why', 'choose', 'different', 'better', 'trust', 'reputation', 'apart', 'good are you', 'reliable']) * 2,
         r: function () { return 'A few reasons people stick with WBME:\n- workmanship held to a high standard at competitive prices\n- work planned around your time frame and budget\n- practical repairs that keep the total job cost down\n- 25+ years of real experience in Walvis Bay\'s marine industry\nAnd you get treated as a long-term partner, not a once-off ticket.\n[[page:about]]'; } },
-      { id: 'industries', s: c(['industries', 'industry', 'sector', 'sectors', 'fishing', 'seafood', 'mining', 'mine', 'mines', 'offshore', 'energy', 'port', 'ports', 'harbour', 'harbor', 'cargo', 'shipping', 'clients', 'customers', 'who do you work']) * 2,
-        r: function () { return 'Mostly the local marine industry: **fishing and seafood**, **shipping and cargo**. WBME also works for **mining**, **offshore and energy**, **ports and harbour** and general industry, anywhere expensive equipment has to keep working.'; } },
-      { id: 'safety', s: c(['safety', 'quality', 'compliance', 'standards', 'safe', 'certified', 'certification', 'certificate', 'iso', 'class', 'approved', 'insurance', 'insured', 'accredited', 'bbbee']) * 2,
-        r: function () { return "Every job is planned safety-first and finished to a consistent standard, and project write-ups mention work to class-approved tolerances and survey standard. For specific certificates or paperwork, I don't have the details, so it's best to ask the team directly.\n[[call]]\n[[email]]"; } },
-      { id: 'timing', s: c(['how long', 'lead time', 'turnaround', 'when can', 'how soon', 'how quickly', 'available', 'availability', 'capacity', 'schedule']) * 2,
-        r: function () { return "Honestly, it depends on the job and what's already in the workshop, so I can't promise a time. The team works around your deadline where they can: tell me what it is and when you need it, and I'll pass it on.\n[[chips:Take my details | Call instead]]"; } },
-      { id: 'onsite', s: c(['on site', 'onsite', 'come to', 'come out', 'travel', 'swakopmund', 'luderitz', 'lüderitz', 'windhoek', 'mobile', 'site visit', 'at the harbour', 'alongside']) * 2,
-        r: function () { return 'WBME works in its Walvis Bay workshop and on site, including installing fabricated work where it\'s needed. Whether the team can come out to your location depends on the job, so tell me where it is and I\'ll get them to confirm.\n[[chips:Take my details | Call instead]]'; } },
-      { id: 'payment', s: c(['payment', 'pay', 'account', 'credit', 'invoice', 'deposit', 'terms', 'card', 'eft']) * 2,
-        r: function () { return "I don't have payment or account details, sorry. The office can sort that out with you on **" + PHONE_DISPLAY + '** or by email.\n[[call]]\n[[email]]'; } },
-      { id: 'jobs', s: c(['career', 'careers', 'vacancy', 'vacancies', 'hiring', 'apprentice', 'apprenticeship', 'cv', 'employment', 'job opening', 'work for you', 'internship']) * 3,
-        r: function () { return "I don't have any vacancy information. If you'd like to work at WBME, the best route is to email your CV to **" + email() + '** or ask the workshop on ' + PHONE_DISPLAY + '.\n[[email]]'; } },
-      { id: 'projects', s: c(['projects', 'project', 'portfolio', 'gallery', 'photos', 'pictures', 'examples', 'past work', 'your work', 'done before', 'previous', 'recent', 'similar', 'case']) * 2,
+      { id: 'industries', s: c(['industries', 'industry', 'sector', 'sectors', 'fishing', 'seafood', 'mining', 'mine', 'mines', 'offshore', 'energy', 'port', 'ports', 'harbour', 'harbor', 'cargo', 'shipping', 'clients', 'customers', 'who do you work']) * 3,
         r: function () {
-          var list = projectList().slice(0, 4).map(function (p) { return '- **' + p.title + '**: ' + p.blurb; }).join('\n');
+          if (asks) return 'Yes. Alongside the local marine industry (fishing and seafood, shipping and cargo), WBME works for **mining**, **offshore and energy**, **ports and harbour** and general industry: anywhere expensive equipment has to keep working.';
+          return 'Mostly the local marine industry: **fishing and seafood**, **shipping and cargo**. WBME also works for **mining**, **offshore and energy**, **ports and harbour** and general industry, anywhere expensive equipment has to keep working.';
+        } },
+      { id: 'safety', s: c(['safety', 'quality', 'compliance', 'standards', 'safe', 'certified', 'certification', 'certificate', 'certificates', 'iso', 'class', 'approved', 'insurance', 'insured', 'accredited', 'bbbee', 'registered']) * 3,
+        r: function () { return "Every job is planned safety-first and finished to a consistent standard, and project write-ups mention work to class-approved tolerances and survey standard. For specific certificates or paperwork, I don't have the details, so it's best to ask the team directly.\n[[call]]\n[[email]]"; } },
+      { id: 'timing', s: /\b(in business|been around|been going|been operating|have you been|has wbme been|years)\b/.test(text) ? 0 : c(['how long', 'lead time', 'turnaround', 'when can you', 'when could you', 'how soon', 'how quickly', 'how fast', 'available', 'availability', 'eta', 'take long']) * 4,
+        r: function () { return "Honestly, it depends on the job and what's already in the workshop, so I can't promise a time. The team works around your deadline where they can: tell me what it is and when you need it, and I'll pass it on.\n[[chips:Take my details | Call instead]]"; } },
+      { id: 'onsite', s: c(['on site', 'onsite', 'come to', 'come out', 'travel', 'swakopmund', 'luderitz', 'lüderitz', 'windhoek', 'henties', 'oranjemund', 'mobile', 'site visit', 'at the harbour', 'alongside']) * 3,
+        r: function () {
+          var place = text.match(PLACE_RE), to = place && !/site/.test(place[1]) ? cap(place[1]) : 'your location';
+          return 'WBME works in its Walvis Bay workshop and on site, including installing fabricated work where it\'s needed. Whether the team can come out to ' + to + ' depends on the job, so tell me what it is and I\'ll get them to confirm.\n[[chips:Take my details | Call instead]]';
+        } },
+      { id: 'payment', s: c(['payment', 'pay', 'account', 'credit', 'invoice', 'deposit', 'terms', 'card', 'eft', 'cash']) * 3,
+        r: function () { return "I don't have payment or account details, sorry. The office can sort that out with you on **" + PHONE_DISPLAY + '** or by email.\n[[call]]\n[[email]]'; } },
+      { id: 'jobs', s: c(['career', 'careers', 'vacancy', 'vacancies', 'hiring', 'apprentice', 'apprenticeship', 'cv', 'employment', 'job opening', 'work for you', 'internship', 'looking for work']) * 3,
+        r: function () { return "I don't have any vacancy information. If you'd like to work at WBME, the best route is to email your CV to **" + email() + '** or ask the workshop on ' + PHONE_DISPLAY + '.\n[[email]]'; } },
+      { id: 'projects', s: c(['projects', 'project', 'portfolio', 'gallery', 'examples', 'example', 'past work', 'your work', 'see your work', 'done before', 'previous', 'previously', 'recent jobs', 'other jobs', 'past jobs', 'similar', 'case study', 'track record', 'jobs you', 'work you']) * 3 + (photoish ? 0 : c(['photos', 'pictures'])),
+        r: function () {
+          var p = projectMatch(toks, text);
+          if (p && !/\b(other|all|more) (jobs|projects)\b/.test(text)) return projectReply(p, /\b(done|did|before|previous\w*|past|experience|examples?|ever)\b/.test(text));
+          var list = projectList().slice(0, 4).map(function (x) { return '- **' + x.title + '**: ' + x.blurb; }).join('\n');
           return 'A few recent jobs from the yard:\n' + list + '\nEach one has photos on the Projects page.\n[[page:projects]]\n[[chips:Can you do similar? | I need a quote]]';
         } },
       { id: 'video', s: c(['video', 'watch', 'clip', 'footage', 'film']) * 3,
@@ -828,7 +883,7 @@
   function flowSubmit () {
     var f = state.flow, d = f.data;
     state.flow = null;
-    var payload = { name: d.name, phone: d.phone || '', email: d.email || '', vessel: d.vessel || '', service: d.service || 'General', urgency: d.urgency || 'planned', job: d.job, sid: state.sid, page: PAGE, transcript: historyForAI().slice(-16) };
+    var payload = { name: d.name, phone: d.phone || '', email: d.email || '', vessel: d.vessel || '', service: d.service || 'General', urgency: d.urgency || 'planned', job: d.job, sid: state.sid, page: PAGE, transcript: transcript() };
     return {
       raw: 'Sending it through now...',
       after: function () {
@@ -856,12 +911,18 @@
     return best;
   }
 
-  /* the offline brain: message in, reply (raw format) out */
+  /* the brain: message in, reply (raw format) out. Order matters:
+     1. page requests and an enquiry in progress
+     2. straight questions (hours, where, price...), two at once if asked
+     3. jobs WBME doesn't list, said honestly
+     4. "difference between X and Y", past jobs, a described job, a trade
+     5. everything else, then a graceful "tell me more" */
   function brain (q) {
     var text = norm(q), toks = tokens(q);
     var nm = nameFrom(q);
     var learnedName = nm && nm !== state.name ? nm : '';
     if (nm) state.name = nm;
+    var lead = learnedName ? 'Thanks, ' + first(learnedName) + '. ' : '';
 
     /* "take me to services" works even halfway through an enquiry; it resumes on arrival */
     var nav = text.match(/\b(?:open|show(?: me)?|go to|take me to|bring up|navigate to)\s+(?:the\s+|your\s+)?(home|about|services?|projects?|contact|gallery)\b/);
@@ -873,39 +934,89 @@
 
     if (state.flow) { var fr = flowStep(q, text, toks); save(); return fr; }
 
+    if (/^call instead$/.test(text)) return { raw: 'The workshop is on **' + PHONE_DISPLAY + '**. ' + workshopNow().line + '\n[[call]]' };
+    if (/^(can|could) you do (something )?similar\??$/.test(text)) return { raw: 'Very likely. Tell me about your job: what it is, the vessel or site, and sizes if you have them, and I\'ll get it to the team.\n[[chips:Take my details | Call instead]]' };
+    if (/^email instead$/.test(text)) return { raw: 'Email **' + email() + '** with a line about the job, and attach any photos.\n[[email]]' };
+
     var svc = serviceOf(toks, text);
-    var best = bestIntent(toks, text, q);
+    var all = intents(toks, text, q, svc);
+    var best = null;
+    all.forEach(function (it) { if (it.s > 0 && (!best || it.s > best.s)) best = it; });
     var shipish = count(toks, text, SHIP_KW);
+    var outside = outsideOf(text);
+    var asksCan = /^(do|can|could|would|does|are) (you|wbme|u|they)\b|^are you able|^is it possible/.test(text);
     var needs = /\b(need|needs|want|looking for|can you|could you|do you|have a|have an|got a|we have|i have|problem|issue|help with|repair|replace|make|build|broken|damaged|cracked|leaking|leaks|worn|failed|vibrat\w*|noise|noisy|knocking|overheat\w*|seized|stuck|corroded|corrosion|rust\w*|bent|snapped)\b/.test(text);
 
-    /* a described job ("our trawler's shaft seal is leaking") -> show the trade, offer to take details */
-    if ((svc || shipish) && needs && (!best || best.s < 6 || best.id === 'quote')) {
-      if (best && best.id === 'quote') return { raw: startFlow(toks, text, q, svc ? SERVICES[svc].name : '') };
+    /* 2. straight questions first */
+    var tradeFirst = svc && (best && (best.id === 'industries' || best.id === 'onsite'));
+    if (best && Q_FIRST[best.id] && best.s >= 3 && !(outside && best.id === 'services') && !tradeFirst) {
+      if (COMBO[best.id]) {
+        var also = all.filter(function (it) { return it !== best && COMBO[it.id] && it.s >= 3; })[0];
+        /* "can I bring it in on Saturday?": the visit answer already covers the day */
+        if (also && ((best.id === 'where' && also.id === 'hours') || (best.id === 'hours' && also.id === 'where')) && dayAsked(text)) {
+          var wh = best.id === 'where' ? best : also;
+          return { raw: lead + wh.r() + '\n[[call]]' };
+        }
+        if (also) {
+          var a = best.r(), b = also.r();
+          var marks = (a.match(MARK_RE) || []).concat(b.match(MARK_RE) || []).filter(function (m, i, arr) { return !/chips/.test(m) && arr.indexOf(m) === i; });
+          return { raw: lead + a.replace(MARK_RE, '').trim() + '\n' + b.replace(MARK_RE, '').trim() + '\n' + marks.slice(0, 2).join('\n') };
+        }
+      }
+      if (svc && best.id !== 'price' && best.id !== 'projects') state.topic = svc;
+      return { raw: lead + best.r() };
+    }
+
+    /* 3. honest about what WBME doesn't do */
+    if (outside) return { raw: lead + outside + '\n[[chips:What do you do? | I need a quote]]' };
+
+    if (best && best.flow && best.s >= 3) return { raw: lead + startFlow(toks, text, q, svc ? SERVICES[svc].name : (state.topic && SERVICES[state.topic] ? SERVICES[state.topic].name : '')) };
+
+    /* 4a. "what's the difference between boiler making and fabrication?" */
+    var named = Object.keys(SERVICES).filter(function (k) { return k !== 'propulsion' && has(toks, text, k === 'boiler' ? 'boiler' : SERVICES[k].name.toLowerCase().split(' ')[0]); });
+    var differ = /\b(difference|differ|vs|versus|compare|compared|between)\b/.test(text);
+    if (named.length >= 2 && (differ || asksCan || /\b(and|or)\b/.test(text))) {
+      var opener = differ ? 'Good question. In short:' : (named.length === 2 ? 'Yes, both are in-house trades:' : 'Yes, all of those are in-house trades:');
+      return { raw: lead + opener + '\n' + named.slice(0, 4).map(function (k) { return '- **' + SERVICES[k].name + '** is ' + SERVICES[k].short; }).join('\n') + '\nPlenty of jobs use more than one. Tell me what you\'re working on and I\'ll say which.\n[[page:services]]\n[[chips:I need a quote | Show me past jobs]]' };
+    }
+
+    /* 4b. "have you done hull repairs before?" -> the actual job */
+    var proj = projectMatch(toks, text);
+    var past = /\b(done|did|before|previous\w*|past|experience|examples?|track record|ever)\b/.test(text);
+    if (proj && (past || /\b(project|job|tell me about|more about|how did)\b/.test(text))) return { raw: lead + projectReply(proj, past) };
+
+    /* 4c. a described job ("our trawler's shaft seal is leaking") -> the trade, then offer to take details */
+    if ((svc || shipish) && needs && (!best || best.s < 6)) {
       state.topic = svc || 'ship';
       state.lastJob = jobText(q);
-      var react = /leak|crack|broken|damaged|failed|worn|seized|stuck/.test(text) ? pick(['That\'s a pain, but it\'s exactly the kind of job WBME handles. ', 'Not what anyone wants to hear, but you\'re in the right place. '])
-        : /^(do|can|could|would) (you|wbme|u)\b|^are you able/.test(text) ? pick(['Yes, that\'s everyday work for WBME. ', 'Yes, definitely. ']) : '';
-      var body = svc ? SERVICES[svc].say[0] : 'That\'s ship repair work, and WBME covers it in-house: rigging, fitting & turning, boiler making, fabrication, pipe works and welding, often several on one job.';
+      var react = /leak|crack|broken|damaged|failed|worn|seized|stuck|snapped|bent|vibrat|noise|noisy|knock|overheat/.test(text) ? pick(['That\'s a pain, but it\'s exactly the kind of job WBME handles. ', 'Not what anyone wants to hear, but you\'re in the right place. '])
+        : (svc && asksCan && SIZE_RE.test(text)) ? 'That\'s the kind of work WBME does. '
+        : (svc && asksCan) ? pick(['Yes, that\'s everyday work for WBME. ', 'Yes, definitely. ']) : '';
+      var body = svc ? SERVICES[svc].say[0] : 'The team covers repairs like that in-house, across rigging, fitting & turning, boiler making, fabrication, pipe works and welding, often several trades on one job.';
+      var extra = '';
+      if (svc && SERVICES[svc].caveat && SERVICES[svc].caveat[0].test(text)) extra += ' ' + SERVICES[svc].caveat[1];
+      if (SIZE_RE.test(text)) extra += ' Sizes and machine capacity are one for the team to confirm, so I\'d pass the dimensions on.';
+      var place = text.match(PLACE_RE);
+      if (place) extra += ' WBME does work on site as well as in the workshop; whether the team can come out ' + (/site/.test(place[1]) ? 'to your site' : 'to ' + cap(place[1])) + ' is one for them to confirm.';
+      if (proj && svc && proj.kind === SERVICES[svc].name.toLowerCase()) extra += ' A recent one like it: **' + proj.title + '**.';
       var urg = urgencyFrom(text) === 'urgent' ? '\nIf the vessel is waiting, call **' + PHONE_DISPLAY + '** now.\n[[call]]' : '';
-      return { raw: (learnedName ? 'Thanks, ' + first(learnedName) + '. ' : '') + react + body + '\nWant me to take down the details so the team can quote?' + urg + '\n[[chips:Yes, take my details | Call instead]]' };
+      var post = proj && extra.indexOf(proj.title) !== -1 ? '\n[[post:' + proj.slug + ']]' : '';
+      return { raw: lead + react + body + extra + '\nWant me to take down the details so the team can quote?' + urg + post + '\n[[chips:Yes, take my details | Call instead]]' };
     }
 
-    if (best && best.flow && best.s >= 3) return { raw: startFlow(toks, text, q, svc ? SERVICES[svc].name : (state.topic && SERVICES[state.topic] ? SERVICES[state.topic].name : '')) };
-    if (/^(yes,? )?take my details|^call instead$/.test(text)) {
-      if (/call/.test(text)) return { raw: 'The workshop is on **' + PHONE_DISPLAY + '**. ' + workshopNow().line + '\n[[call]]' };
-      return { raw: startFlow(toks, text, q, state.topic && SERVICES[state.topic] ? SERVICES[state.topic].name : '') };
-    }
-
+    /* 4d. a question about a trade */
     if (svc && (!best || best.s < 4 || best.id === 'services' || best.id === 'materials')) {
       state.topic = svc;
-      var used = state.used[svc];
-      var line = pick(SERVICES[svc].say, used); state.used[svc] = line;
-      return { raw: line + '\n[[page:services]]\n[[chips:I need a quote | Show me past jobs]]' };
+      var line = pick(SERVICES[svc].say, state.used[svc]); state.used[svc] = line;
+      var same = proj && proj.kind === SERVICES[svc].name.toLowerCase() ? '\nA recent one: **' + proj.title + '**, ' + proj.blurb + '.\n[[post:' + proj.slug + ']]' : '';
+      return { raw: lead + (asksCan ? 'Yes. ' : '') + line + same + '\n[[page:services]]\n[[chips:I need a quote | Show me past jobs]]' };
     }
     if (shipish >= 1 && (!best || best.s < 4)) {
       state.topic = 'ship';
-      return { raw: 'Ship repair and maintenance is the core of WBME: propulsion and shaft work, rudders, hull plate, pipe work and welding, in the workshop or in dry dock. What\'s the vessel and what\'s going on with it?\n[[chips:I need a quote | Show me past jobs]]' };
+      return { raw: lead + 'Ship repair and maintenance is the core of WBME: propulsion and shaft work, rudders, hull plate, pipe work and welding, in the workshop or in dry dock. What\'s the vessel and what\'s going on with it?\n[[chips:I need a quote | Show me past jobs]]' };
     }
+
+    /* 5. everything else */
     if (best && best.s >= 2 && best.r) {
       var raw = best.r();
       if (best.id === 'greet' && learnedName) raw = raw.replace(/^[^!]*!/, 'Nice to meet you, ' + first(learnedName) + '!');
@@ -981,6 +1092,7 @@
     else if (act === 'email') window.location.href = window.WBME_MAIL ? window.WBME_MAIL('Enquiry - WBME website') : 'mailto:' + email();
     else if (act === 'map') window.open(MAPS_URL, '_blank', 'noopener');
     else if (act === 'page' && PAGE_URL[arg]) { if (arg === PAGE) { close(); fab.focus(); } else goTo(arg, 0); }
+    else if (act === 'post' && /^[a-z0-9-]+$/.test(arg)) { close(); window.location.href = 'projects.html?post=' + arg; }
     else if (act === 'mailcard') {
       var id = b.getAttribute('data-id');
       var m = state.msgs.filter(function (x) { return x.id === id; })[0];
@@ -1046,8 +1158,7 @@
       return;
     }
     newBtn.classList.remove('is-armed'); newBtn.setAttribute('aria-label', 'Start a new conversation');
-    var keep = { aiOffUntil: state.aiOffUntil, teased: true };
-    state = fresh(); state.aiOffUntil = keep.aiOffUntil; state.teased = true;
+    state = fresh(); state.teased = true;
     saveNow(); renderAll(); greet(); input.focus();
   });
 

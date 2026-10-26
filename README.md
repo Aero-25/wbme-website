@@ -17,7 +17,7 @@ Five real, normally-scrollable pages — **Home · About · Services · Projects
 ├── css/experience.css      # shared design system + scroll-effects engine
 ├── js/experience.js        # header/nav state, reveals, parallax, progress, lightbox, form
 ├── js/glass-fx.js          # cursor spotlight + magnetic buttons
-├── js/chatbot.js           # website assistant: chat UI + offline brain (see below)
+├── js/chatbot.js           # website assistant: chat UI + its built-in brain (see below)
 ├── js/bucket-assets.js     # Supabase Storage image hydration
 ├── images/                 # logo, photography, service icons
 └── docs/superpowers/specs/ # design specs
@@ -37,24 +37,14 @@ Live at **https://www.wbme.com.na** (custom domain on the Pages project; `wbme.p
 - Supabase (`supabase/schema.sql`) is the previous backend, kept for reference only.
 
 ## Website assistant
-The propeller button opens the WBME assistant. It talks like someone at the front of the workshop: it answers questions, understands a described job ("our trawler's stern seal is leaking"), takes down an enquiry and hands the visitor a one-tap email and call.
+The propeller button opens the WBME assistant. It runs entirely on its own, in the visitor's browser: no AI service, no outside calls, nothing to pay for. Everything it knows and every reply it can give is in `js/chatbot.js`, so keep that file in step with the pages when the phone number, hours, services or project posts change.
 
-- **AI replies** come from `functions/api/chat.js`, which streams answers from Claude (Opus 5.5, low effort, with Anthropic's default refusal fallback). What it knows and how it talks is in `functions/_shared/assistant-knowledge.js`; keep that file in step with the pages when the phone number, hours or services change. It also sees the live Projects posts and the current Namibian time, so it knows whether the workshop is open.
-- **Offline brain**: if the AI is unavailable (no key yet, limits hit, API trouble), `js/chatbot.js` answers on its own: fuzzy matching, follow-ups, the visitor's name, open/closed status, and the same guided enquiry flow. Visitors never see an error.
-- **Memory**: the conversation is kept for the browser tab (sessionStorage), so it follows the visitor across pages; the assistant can open a page and pick up again there.
-- **Enquiries** the assistant takes down are saved to D1 (`enquiries` table, created automatically; schema in `migrations/0002_assistant.sql`) and listed at the top of `admin.html` with the chat they came from, reply/call buttons and *Mark handled*. The visitor also gets an "Email this to WBME" button that opens their email app with everything filled in, so photos can be attached.
+- **Talks like a person**: typo-tolerant reading, reacts to the problem ("that's a pain"), asks one thing at a time, uses the visitor's first name, answers two questions at once ("hours and where are you?"), and says honestly when a job isn't one of WBME's trades (cars, electrical, painting, equipment hire...) or when it doesn't know something (prices, lead times, certificates).
+- **Knows the workshop**: the six trades and propeller/shaft work, past project posts (with a link to the photos), industries, the founder's story, and whether the workshop is open right now or on the day asked about (Namibian time, Saturday Sabbath, Sunday on call).
+- **Memory**: the conversation is kept for the browser tab (sessionStorage), so it follows the visitor across pages; the assistant can open a page and pick up again there, even halfway through an enquiry.
+- **Enquiries**: it takes down the job, vessel or site, urgency, name and contact one question at a time, reads them back, and saves the enquiry through `functions/api/enquiry.js` to D1 (`enquiries` table, created automatically; schema in `migrations/0002_assistant.sql`). The visitor gets a reference number and an "Email this to WBME" button that opens their email app with everything filled in, so photos can be attached. The team sees each enquiry at the top of `admin.html`, with the chat it came from, reply and call buttons, and *Mark handled*.
 
-Settings (Pages → Settings → Variables and Secrets, Production):
-
-| Name | Needed | What it does |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | for AI replies | Secret. Without it the offline brain answers. |
-| `CHAT_MODEL` | optional | Defaults to `claude-opus-5-5`. |
-| `CHAT_DAILY_LIMIT` | optional | AI calls per day across the site, default 800. Caps the bill; past it, the offline brain answers. |
-
-Limits per visitor connection: 40 messages per 10 minutes and 300 per day; 8 enquiries per 10 minutes and 30 per day. A typical message costs roughly one US cent with the knowledge prompt cached. Each call's token use is logged in the Pages Functions logs (`assistant: turn`).
-
-The only npm package is the Anthropic SDK (`package.json`, pinned); Pages installs it when it builds the Functions. There is still no build step for the site itself.
+Enquiries are rate limited per connection (8 per 10 minutes, 30 per day). There are no email alerts for new enquiries; check the admin page.
 
 ## Run locally
 Serve the folder (don't open via `file://` — the contact form's `fetch()` POST to Formspree can misbehave from a `file://` origin in some browsers):

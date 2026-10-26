@@ -1,8 +1,12 @@
 /* D1 storage for the website assistant: enquiries it takes down, and a small
    usage log for rate limiting. Tables are created on first use (same SQL as
-   migrations/0002_assistant.sql), so no manual migration step is needed. */
+   migrations/0002_assistant.sql), so no manual migration step is needed.
+   The assistant itself runs entirely in the browser (js/chatbot.js); this is
+   the only server side it has. */
 
-import { SERVICE_NAMES, URGENCY } from './assistant-knowledge.js';
+export const SERVICE_NAMES = ['Ship repair', 'Rigging', 'Fitting & Turning', 'Boiler Making', 'Fabrication', 'Pipe Works', 'Welding', 'General'];
+export const URGENCY = ['urgent', 'this week', 'planned', 'just asking'];
+export const PAGES = ['home', 'about', 'services', 'projects', 'contact'];
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS enquiries (
@@ -50,9 +54,9 @@ async function visitorKey (request, env) {
   return [...new Uint8Array(digest)].slice(0, 12).map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-/* Per visitor: `burst` requests per 10 minutes and `daily` per day. Across the
-   whole site: CHAT_DAILY_LIMIT (default 800) model calls per day, which caps
-   the API bill. Without a database (local dev) everything is allowed. */
+/* Per visitor connection: `burst` requests per 10 minutes and `daily` per
+   day; optional `siteDaily` across the whole site. Without a database (local
+   dev) everything is allowed. */
 export async function checkRate (request, env, { bucket, burst, daily, siteDaily }) {
   if (!env.DB) return { ok: true };
   await ensureTables(env);
@@ -75,9 +79,8 @@ export async function checkRate (request, env, { bucket, burst, daily, siteDaily
 const str = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, max);
 const EMAIL_RE = /^[^\s@<>()]+@[^\s@<>()]+\.[^\s@<>()]{2,}$/;
 
-/* Validates an enquiry from the assistant (model tool call) or the offline
-   chat flow. Returns { value } or { error } with a message the model or the
-   visitor can act on. */
+/* Validates an enquiry from the assistant's enquiry flow.
+   Returns { value } or { error } with a message the visitor can act on. */
 export function cleanEnquiry (input) {
   const p = input && typeof input === 'object' ? input : {};
   const out = {
@@ -117,7 +120,7 @@ function cleanTranscript (transcript) {
 /* Saves an enquiry. A correction names the reference it replaces (`updateRef`,
    only honoured for the same chat session), so a second, different job in the
    same chat gets its own record. The identical job sent twice within ten
-   minutes (a double tap, a repeated tool call) returns the first record. */
+   minutes (a double tap) returns the first record. */
 export async function saveEnquiry (env, e, { sid, page, source, transcript, updateRef }) {
   if (!env.DB) return { ref: newRef(), stored: false };
   await ensureTables(env);
@@ -146,7 +149,7 @@ export function cleanSid (v) {
   return /^[A-Za-z0-9_-]{8,64}$/.test(s) ? s : '';
 }
 
-/* Same-origin only: the chat and enquiry endpoints are for this site's pages. */
+/* Same-origin only: the enquiry endpoint is for this site's pages. */
 export function sameOrigin (request) {
   const origin = request.headers.get('origin');
   return !!origin && origin === new URL(request.url).origin;
