@@ -11,6 +11,16 @@ Five real, normally-scrollable pages — **Home · About · Services · Projects
 - `prefers-reduced-motion` aware — every effect (reveal, parallax, magnetic pull) disables cleanly.
 - Blue + brass/gold, dark cinematic, ANTON display titles.
 
+## Phones and tablets
+Most visitors are on a phone, often on mobile data, so a few rules keep the site light and easy to use (CSS: the "MOBILE COMFORT" section at the end of `css/experience.css`):
+
+- **Photos come in two sizes.** Inline background photos use `class="... rbg"` with `--bg-sm` (800px) and `--bg-lg` (1600px). Use root-relative paths (`/media/...`): a relative `url()` inside a CSS variable resolves against `css/`, not the page. Photos hydrated by `js/bucket-assets.js` pick 800px on phones automatically; only the full-screen photo viewer loads 1600px.
+- **Videos have a phone version.** Each film has a `-480p.mp4` copy (about a third of the size) chosen with `<source media="(max-width: 860px)">`. On a data-saver or 2G connection the About hero shows its poster only, and the home film waits for a tap.
+- **The map is a card on phones** with "Open in Maps" and "Show map here"; desktops get the live map.
+- **Touch and type**: controls are at least 44px on touch screens, small labels at least 12px, and form fields 16px so iPhones don't zoom in.
+- **Pop-ups** (menu, contact form, service details, photo viewer) move focus inside, keep Tab inside, close with Esc and return focus. On touch screens they open on the close button rather than a form field. The photo viewer swipes and takes arrow keys.
+- **The chat launcher** sits bottom-right on phones (thumb reach, clear of left-aligned text) and bottom-left on desktop.
+
 ## Structure
 ```
 ├── index.html, about.html, services.html, projects.html, contact.html

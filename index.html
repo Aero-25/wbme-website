@@ -17,7 +17,7 @@
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* Full loader on the first page of a visit and on every refresh; skipped when moving between pages. Decided here, before first paint, so skipped pages never flash it. */try{var n=performance.getEntriesByType('navigation')[0],r=n&&n.type==='reload';if(!r&&sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
-<link rel="stylesheet" href="css/experience.css?v=122">
+<link rel="stylesheet" href="css/experience.css?v=124">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://www.wbme.com.na/#business","name":"Walvis Bay Marine Engineering","alternateName":"WBME","description":"Marine engineering, ship repair and maintenance, rigging, fitting and turning, boiler making, fabrication, pipe works and welding in Walvis Bay, Namibia.","url":"https://www.wbme.com.na/","logo":"https://www.wbme.com.na/media/brand/logo-768.webp","image":"https://www.wbme.com.na/media/og/propulsion-cpp-complete-refit-2.jpg","telephone":"+264 64 285 700","faxNumber":"+264 64 209 350","email":"info@wbme.com.na","foundingDate":"1999","founder":{"@type":"Person","name":"Uwe Crüys"},"slogan":"No job too big, no job too small.","address":{"@type":"PostalAddress","streetAddress":"8th Street East, Industrial Area","addressLocality":"Walvis Bay","addressRegion":"Erongo","addressCountry":"NA"},"geo":{"@type":"GeoCoordinates","latitude":-22.95,"longitude":14.5},"areaServed":{"@type":"Country","name":"Namibia"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"07:00","closes":"17:00"}],"knowsAbout":["Ship repair","Rigging","Fitting and turning","Boiler making","Steel fabrication","Pipe works","Welding"]}</script>
 </head>
 <body data-page="home">
@@ -147,7 +147,7 @@
 </section>
 
 <section class="video-showcase" aria-label="WBME in motion">
-  <video class="video-showcase-media" id="wbmeVideo" src="media/video/wbme-metal-720p.mp4" poster="media/video/wbme-metal-poster.webp" muted loop playsinline preload="metadata"></video>
+  <video class="video-showcase-media" id="wbmeVideo" poster="media/video/wbme-metal-poster.webp" muted loop playsinline preload="metadata"><source src="media/video/wbme-metal-480p.mp4" type="video/mp4" media="(max-width: 860px)"><source src="media/video/wbme-metal-720p.mp4" type="video/mp4"></video>
   <div class="video-showcase-scrim" aria-hidden="true"></div>
   <div class="corner-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="video-showcase-content">
@@ -273,8 +273,8 @@
   </div>
 </footer>
 
-<div class="drawer" id="drawer">
-  <div class="top"><button class="x" data-drawer-close aria-label="Close">&times;</button></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="top"><button class="x" type="button" data-drawer-close aria-label="Close menu">&times;</button></div>
   <a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="#" data-contact-open>Contact</a>
   <div class="df"><a href="tel:+26464285700">+264 (0)64 285 700</a><a href="#" data-mail>Email us</a><span>8th Street East, Walvis Bay</span></div>
 </div>
@@ -308,7 +308,7 @@
         <div class="cm-d"><b>Fax</b><span>+264 (0)64 209 350</span></div>
         <div class="cm-d"><b>Email</b><span><a href="#" data-mail data-mail-text>Email us</a></span></div>
         <div class="cm-d"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00</span></div>
-        <div class="cm-map"><iframe title="WBME location map" loading="lazy" src="https://maps.google.com/maps?ll=-22.951,14.505&amp;z=15&amp;t=m&amp;output=embed"></iframe></div>
+        <div class="cm-map"><iframe title="WBME location map" loading="lazy" data-map-src="https://maps.google.com/maps?ll=-22.951,14.505&amp;z=15&amp;t=m&amp;output=embed"></iframe><noscript><iframe title="WBME location map" loading="lazy" src="https://maps.google.com/maps?ll=-22.951,14.505&amp;z=15&amp;t=m&amp;output=embed"></iframe></noscript></div>
         <div class="cm-side-foot"><span class="cm-status"><i></i>Workshop online</span><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
       </aside>
     </div>
@@ -339,10 +339,10 @@
   <p class="cb-foot">Automated assistant &middot; the team confirms every job</p>
 </div>
 
-<script src="js/bucket-assets.js?v=47"></script>
-<script src="js/experience.js?v=76"></script>
+<script src="js/bucket-assets.js?v=48"></script>
+<script src="js/experience.js?v=77"></script>
 <script src="js/glass-fx.js?v=11"></script>
 <script src="js/chatbot.js?v=5"></script>
-<script src="js/video-showcase.js?v=2"></script>
+<script src="js/video-showcase.js?v=3"></script>
 </body>
 </html>

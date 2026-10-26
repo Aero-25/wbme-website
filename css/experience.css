@@ -2129,3 +2129,111 @@ body.locked .cb-teaser,body.form-active .cb-teaser{opacity:0;pointer-events:none
   .admin-enq-body dl{grid-template-columns:1fr;gap:2px}
   .admin-enq-body dd{margin-bottom:6px}
 }
+
+/* ===========================================================
+   MOBILE COMFORT — phones and touch screens.
+   Every control at least 44px to the thumb, small labels no
+   smaller than 12px, form fields at 16px so iOS doesn't zoom,
+   phone-sized photos and video, the chat launcher in the
+   thumb's corner, and closed panels out of the tab order.
+   Desktop layouts are unchanged.
+   =========================================================== */
+
+/* clip sideways spill without making the page a scroll container */
+@supports (overflow:clip){html,body{overflow-x:clip}}
+
+/* a closed menu is invisible to taps, Tab and screen readers too */
+.drawer{visibility:hidden;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s linear .4s}
+.drawer.open{visibility:visible;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+
+/* photos that ship in two sizes: phones get the 800px file, wider screens the 1600px one */
+.rbg{background-image:var(--bg-lg)}
+@media(max-width:860px){.rbg{background-image:var(--bg-sm)}}
+
+/* the service pop-up's "Profile scope" label sat on the same line as its text */
+.spec-proof{margin-top:4px}
+.spec-proof b{display:block;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lt)}
+
+/* lightbox controls are real buttons now */
+.lightbox button.ln,.lightbox button.lc{font-family:inherit;line-height:1;padding:0;margin:0;-webkit-appearance:none;appearance:none}
+.lightbox img{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+
+/* readable dates on project cards (was #6f7d90, under 4.5:1 on navy) */
+.blog-card-date{color:#8a98ad}
+
+/* map on phones: a card that opens the Maps app, with the live map one tap away */
+.map-facade{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:100%;min-height:170px;padding:18px;
+  background:linear-gradient(160deg,rgba(15,44,82,.9),rgba(7,26,51,.95)),repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 32px),repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 1px,transparent 1px 32px);
+  background-blend-mode:normal}
+.map-facade:before{content:"";position:absolute;top:18px;left:18px;width:12px;height:12px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--gold-lt);box-shadow:0 0 0 6px rgba(227,195,114,.16)}
+.map-facade b{font-family:'Archivo';font-weight:700;font-size:.95rem;color:#fff}
+.map-facade span{font-size:.88rem;color:var(--mut)}
+.map-facade-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.map-facade-acts a,.map-facade-acts button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;cursor:pointer;
+  font-family:'Archivo';font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.map-facade-acts a{background:var(--gold);color:var(--ink);border:1px solid var(--gold)}
+.map-facade-acts button{background:rgba(255,255,255,.06);color:#e9eef5;border:1px solid rgba(255,255,255,.28)}
+.map-facade-acts a:focus-visible,.map-facade-acts button:focus-visible{outline:2px solid var(--gold-lt);outline-offset:2px}
+
+@media(max-width:860px),(pointer:coarse){
+  /* --- touch targets --- */
+  .sf-links{gap:0 4px}
+  .sf-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px}
+  .sf-links a:after{display:none}
+  .sf-actions a{display:inline-flex;align-items:center;min-height:44px;padding:0 6px}
+  .sf-top-btn{width:44px;height:44px}
+  .sf-brand-mark{min-height:44px}
+  .sf-bottom{gap:2px 14px}
+  .sf-bottom a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:0 6px}
+  .blog-filter{min-height:44px}
+  .spec-more{min-height:44px}
+  .about-link{min-height:44px}
+  .blog-back{min-height:44px}
+  .cm-d a{display:inline-flex;align-items:center;min-height:44px}
+  .drawer .df a{display:flex;align-items:center;min-height:44px;padding:0}
+  .ticket-field label{padding:4px 0}
+  /* moving marquee words: a taller hit area, same look */
+  .marquee-item{padding-top:14px;padding-bottom:14px;margin-top:-14px;margin-bottom:-14px}
+}
+
+@media(max-width:860px){
+  /* --- small labels no smaller than 12px on a phone --- */
+  .eyebrow,.copy .ey,.panel-hero .ey,.page-hero .ey,.about-copy .eyebrow{font-size:.75rem}
+  .ticket-field label{font-size:.75rem}
+  .cm-d b{font-size:.75rem}
+  .about-stats span{font-size:.75rem}
+  .stage-photo-tag{font-size:.75rem}
+  .svc-tile-num,.spec-num{font-size:.75rem}
+  .svc-tile-link{font-size:.78rem}
+  .founder-copy .founder-note{font-size:.82rem}
+  .verse span,.founder-portrait figcaption span{font-size:.75rem}
+  .cc-status,.cm-side-foot,.cm-side-foot span,.ss-item span{font-size:.75rem}
+  .blog-feature-kicker,.blog-card-tag,.blog-post-tag{font-size:.75rem}
+  .blog-card-date{font-size:.75rem}
+  .sf-hours{font-size:.8rem;gap:10px 18px}
+  .sf-hours-tag{font-size:.75rem}
+  .sf-bottom{font-size:.75rem}
+
+  /* --- form fields at 16px: iOS zooms the page into anything smaller --- */
+  input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]),select,textarea,
+  .ticket-field input,.ticket-field select,.ticket-field textarea,
+  .cm-panel .ticket-field input,.cm-panel .ticket-field select,.cm-panel .ticket-field textarea,
+  .contact-panel .ticket-field input,.contact-panel .ticket-field select,.contact-panel .ticket-field textarea,
+  .cb-bar textarea,.al-field input,.pf-field input,.pf-field textarea,.pf-field select{font-size:16px}
+
+  /* --- chat launcher in the thumb's corner, clear of left-aligned text and form labels --- */
+  .chatbot-fab{left:auto;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:64px;height:64px}
+  .chatbot-ring{width:52px;height:52px}
+  .chatbot-ring img{width:40px;height:40px}
+  .chatbot{transform-origin:bottom right}
+  .cb-teaser{left:auto;right:calc(16px + 64px + 10px + env(safe-area-inset-right,0px));bottom:calc(16px + 8px + env(safe-area-inset-bottom,0px));border-radius:14px 14px 4px 14px;max-width:calc(100vw - 16px - 64px - 10px - 16px)}
+
+  /* --- lightbox: controls kept clear of the photo and the screen edge --- */
+  .lightbox{padding:16px}
+  .lightbox img{max-width:100%;max-height:72vh;max-height:72svh}
+  .lightbox .ln{top:auto;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:none;width:52px;height:52px}
+  .lightbox .lp{left:16px}.lightbox .lnx{right:16px}
+  .lightbox .lc{top:calc(14px + env(safe-area-inset-top,0px));right:14px}
+  .lb-caption{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){.drawer{transition:visibility 0s linear .01s}.drawer.open{transition:none}}

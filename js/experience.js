@@ -125,6 +125,44 @@
 
   function lock () { document.body.classList.add('locked'); }
   function unlock () { document.body.classList.remove('locked'); }
+
+  /* ===== DIALOGS: focus goes in, stays in, and comes back =====
+     The menu, contact form, service details and photo viewer all use this.
+     On touch screens a dialog opens with focus on its close button, so the
+     keyboard doesn't jump up over a form the visitor hasn't read yet. */
+  var TOUCH = window.matchMedia('(pointer: coarse)').matches;
+  var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  var openDialogs = [];
+  function focusables (root) {
+    return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), function (n) { return n.getClientRects().length && getComputedStyle(n).visibility !== 'hidden'; });
+  }
+  function dialogOpened (root, first) {
+    openDialogs = openDialogs.filter(function (d) { return d.root !== root; });
+    openDialogs.push({ root: root, back: document.activeElement });
+    root.setAttribute('aria-hidden', 'false');
+    root.inert = false;
+    setTimeout(function () { var t = first || focusables(root)[0]; if (t) t.focus({ preventScroll: true }); }, 40);
+  }
+  function dialogClosed (root) {
+    if (root.hasAttribute('aria-hidden')) root.setAttribute('aria-hidden', 'true');
+    for (var i = openDialogs.length - 1; i >= 0; i--) {
+      if (openDialogs[i].root !== root) continue;
+      var back = openDialogs[i].back;
+      openDialogs.splice(i, 1);
+      if (back && back.focus && document.body.contains(back) && back.getClientRects().length) back.focus({ preventScroll: true });
+      return;
+    }
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !openDialogs.length) return;
+    var root = openDialogs[openDialogs.length - 1].root;
+    var f = focusables(root);
+    if (!f.length) return;
+    var a = document.activeElement;
+    if (!root.contains(a)) { e.preventDefault(); f[0].focus(); return; }
+    if (e.shiftKey && a === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && a === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  });
   function keyActivate (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }
   var ready = false;
 
@@ -147,8 +185,16 @@
   /* ===== DRAWER ===== */
   var drawer = document.getElementById('drawer');
   var burgerBtn = document.getElementById('burger');
-  function openDrawer () { drawer.classList.add('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'true'); lock(); }
-  function closeDrawer () { drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); unlock(); }
+  function openDrawer () {
+    drawer.classList.add('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'true'); lock();
+    dialogOpened(drawer, drawer.querySelector('[data-drawer-close]'));
+  }
+  function closeDrawer () {
+    var was = drawer.classList.contains('open');
+    drawer.classList.remove('open'); if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); unlock();
+    if (was) { dialogClosed(drawer); drawer.inert = true; }
+  }
+  drawer.inert = true;
   if (burgerBtn) burgerBtn.addEventListener('click', openDrawer);
   document.querySelector('[data-drawer-close]').addEventListener('click', closeDrawer);
 
@@ -162,9 +208,12 @@
     contactModal.classList.add('open');
     lock();
     var firstField = contactModal.querySelector('input,textarea,select');
-    if (firstField) firstField.focus();
+    dialogOpened(contactModal, TOUCH ? contactModal.querySelector('.cm-x') : firstField);
   }
-  function closeContactModal () { if (contactModal) { contactModal.classList.remove('open'); unlock(); } }
+  function closeContactModal () {
+    if (!contactModal || !contactModal.classList.contains('open')) return;
+    contactModal.classList.remove('open'); unlock(); dialogClosed(contactModal);
+  }
   document.addEventListener('click', function (e) {
     var opener = e.target.closest && e.target.closest('[data-contact-open]');
     if (opener) { e.preventDefault(); openContactModal(); return; }
@@ -243,10 +292,13 @@
       closeDrawer();
       serviceModal.classList.add('open');
       lock();
+      dialogOpened(serviceModal, serviceModal.querySelector('button[data-service-close]'));
     }
     function closeServiceModal () {
+      if (!serviceModal.classList.contains('open')) return;
       serviceModal.classList.remove('open');
       if (!(contactModal && contactModal.classList.contains('open'))) unlock();
+      dialogClosed(serviceModal);
     }
     document.addEventListener('click', function (e) {
       var opener = e.target.closest && e.target.closest('[data-service-open]');
@@ -279,6 +331,37 @@
   window.WBME_MAIL = mailHref;
   window.WBME_EMAIL = EMAIL;
 
+  /* ===== MAP: desktops get the live map; phones get a card that opens the
+     Maps app, with the live map one tap away (saves ~0.6 MB of map scripts and
+     avoids a map that traps the page scroll under a thumb) ===== */
+  var MAPS_APP = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('8th Street East, Industrial Area, Walvis Bay, Namibia');
+  Array.prototype.forEach.call(document.querySelectorAll('iframe[data-map-src]'), function (fr) {
+    if (!(TOUCH || window.matchMedia('(max-width:860px)').matches)) { fr.src = fr.getAttribute('data-map-src'); return; }
+    var card = document.createElement('div');
+    card.className = 'map-facade';
+    card.innerHTML = '<b>8th Street East, Industrial Area</b><span>Walvis Bay, Namibia</span>' +
+      '<div class="map-facade-acts"><a href="' + MAPS_APP + '" target="_blank" rel="noopener">Open in Maps</a><button type="button">Show map here</button></div>';
+    card.querySelector('button').addEventListener('click', function () {
+      fr.src = fr.getAttribute('data-map-src'); fr.hidden = false;
+      if (card.parentNode) card.parentNode.removeChild(card);
+      fr.focus();
+    });
+    fr.hidden = true;
+    fr.parentNode.insertBefore(card, fr);
+  });
+
+  /* ===== VIDEO on a data-saving or 2G connection: keep the poster frame and
+     skip the download; the home film still plays if the visitor taps for it ===== */
+  var conn = navigator.connection || {};
+  window.WBME_LIGHT_DATA = !!(conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ''));
+  if (window.WBME_LIGHT_DATA) {
+    Array.prototype.forEach.call(document.querySelectorAll('video[data-light-video]'), function (v) {
+      v.removeAttribute('autoplay'); v.pause();
+      Array.prototype.forEach.call(v.querySelectorAll('source'), function (src) { src.removeAttribute('src'); });
+      v.load();
+    });
+  }
+
   /* ===== LIGHTBOX ===== */
   var lb = document.getElementById('lightbox'), lbImg = lb ? lb.querySelector('img') : null, lbCaption = document.getElementById('lbCaption'), gThumbs = [], gIdx = 0;
   function refreshThumbs (scope) { gThumbs = Array.prototype.slice.call((scope || document).querySelectorAll('[data-lb]')); }
@@ -288,8 +371,8 @@
     lbImg.alt = gThumbs[gIdx].querySelector('img') ? gThumbs[gIdx].querySelector('img').alt : 'Selected project image';
     if (lbCaption) lbCaption.textContent = gThumbs[gIdx].getAttribute('data-caption') || lbImg.alt;
   }
-  function openLb (i) { showLb(i); lb.classList.add('open'); }
-  function closeLb () { if (lb) lb.classList.remove('open'); }
+  function openLb (i) { showLb(i); lb.classList.add('open'); lock(); dialogOpened(lb, lb.querySelector('.lc')); }
+  function closeLb () { if (lb && lb.classList.contains('open')) { lb.classList.remove('open'); unlock(); dialogClosed(lb); } }
   document.addEventListener('click', function (e) {
     var g = e.target.closest && e.target.closest('[data-lb]');
     if (g) { refreshThumbs(g.closest('[data-lb-scope]')); openLb(gThumbs.indexOf(g)); }
@@ -298,6 +381,20 @@
     lb.querySelector('.lc').addEventListener('click', closeLb);
     lb.querySelector('.lp').addEventListener('click', function () { showLb(gIdx - 1); });
     lb.querySelector('.lnx').addEventListener('click', function () { showLb(gIdx + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); showLb(gIdx - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); showLb(gIdx + 1); }
+    });
+    /* swipe through photos on a phone; a mostly vertical drag is left alone */
+    var swipeX = null, swipeY = 0;
+    lb.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { swipeX = e.touches[0].clientX; swipeY = e.touches[0].clientY; } }, { passive: true });
+    lb.addEventListener('touchend', function (e) {
+      if (swipeX === null) return;
+      var t = e.changedTouches[0], dx = t.clientX - swipeX, dy = t.clientY - swipeY;
+      swipeX = null;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3 && gThumbs.length > 1) showLb(gIdx + (dx < 0 ? 1 : -1));
+    }, { passive: true });
     lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
   }
 

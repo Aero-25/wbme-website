@@ -50,11 +50,15 @@
     return (options && options.width) || 1280;
   }
 
+  /* phones get the 800px photo for cards and headers; only the full-screen
+     photo viewer (which asks for 1600) loads the big one */
+  var NARROW = window.matchMedia('(max-width:860px)').matches;
   function localMedia (path, options) {
     var hit = LOCAL_MEDIA[path];
     if (!hit) return '';
     if (/\.[a-z0-9]+$/i.test(hit)) return hit;
-    return hit + (wantedWidth(options) <= 900 ? '-800.webp' : '-1600.webp');
+    var w = wantedWidth(options);
+    return hit + (w <= 900 || (NARROW && w < 1600) ? '-800.webp' : '-1600.webp');
   }
 
   function bucketObject (path) {

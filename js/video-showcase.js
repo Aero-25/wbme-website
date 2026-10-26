@@ -11,7 +11,10 @@
 
   function tryPlay () { vid.play().catch(function () {}); }
 
-  if ('IntersectionObserver' in window) {
+  /* on a data-saving connection, wait for the visitor to ask for the film */
+  if (window.WBME_LIGHT_DATA) {
+    vid.preload = 'none';
+  } else if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) tryPlay();
