@@ -702,10 +702,16 @@
   var SIDE_OK = {};
   'human hours where phone email about faith why industries safety timing onsite payment jobs projects video services materials'.split(' ').forEach(function (k) { SIDE_OK[k] = 1; });
   function looksLikeQuestion (q, text) { return /\?/.test(q) || /^(where|what|when|how|who|why|are|is|do|does|can|could|will|would)\b/.test(text); }
-  /* tidy a visitor's opening line into a job description for the card */
+  /* tidy a visitor's opening line into a job description for the card:
+     "Hi, how much would a new propeller shaft cost?" -> "a new propeller shaft" */
   function jobText (q) {
-    return String(q).replace(/[,.;!]?\s*(?:can|could|would) you (?:please )?(?:help|assist|do (?:it|this|that)|fix (?:it|this))(?: us| me)?(?: with (?:it|this|that))?\s*[?.!]*\s*$/i, '')
-      .replace(/^(?:hi|hello|hey|good (?:morning|afternoon|evening))[,!.\s]+/i, '').replace(/\s+/g, ' ').trim().slice(0, 600);
+    return String(q)
+      .replace(/^\s*(?:hi|hello|hey|hallo|good (?:morning|afternoon|evening))[,!.\s]+/i, '')
+      .replace(/^\s*(?:how much (?:would|does|will|is|for)(?: it cost(?: to)?)?|what (?:would|does|will) it cost(?: to)?|(?:can|could) (?:i|we) get a (?:quote|price) (?:for|on)|i need a (?:quote|price) (?:for|on))\s+/i, '')
+      .replace(/[,.;!]?\s*(?:can|could|would) you (?:please )?(?:help|assist|do (?:it|this|that)|fix (?:it|this))(?: us| me)?(?: with (?:it|this|that))?\s*[?.!]*\s*$/i, '')
+      .replace(/\s+(?:cost|be|run)\s*\?*\s*$/i, '')
+      .replace(/\s*\?+\s*$/, '')
+      .replace(/\s+/g, ' ').trim().slice(0, 600);
   }
 
   function flowAbsorb (f, q, text, toks) {
@@ -877,7 +883,8 @@
       if (best && best.id === 'quote') return { raw: startFlow(toks, text, q, svc ? SERVICES[svc].name : '') };
       state.topic = svc || 'ship';
       state.lastJob = jobText(q);
-      var react = /leak|crack|broken|damaged|failed|worn|seized|stuck/.test(text) ? pick(['That\'s a pain, but it\'s exactly the kind of job WBME handles. ', 'Not what anyone wants to hear, but you\'re in the right place. ']) : '';
+      var react = /leak|crack|broken|damaged|failed|worn|seized|stuck/.test(text) ? pick(['That\'s a pain, but it\'s exactly the kind of job WBME handles. ', 'Not what anyone wants to hear, but you\'re in the right place. '])
+        : /^(do|can|could|would) (you|wbme|u)\b|^are you able/.test(text) ? pick(['Yes, that\'s everyday work for WBME. ', 'Yes, definitely. ']) : '';
       var body = svc ? SERVICES[svc].say[0] : 'That\'s ship repair work, and WBME covers it in-house: rigging, fitting & turning, boiler making, fabrication, pipe works and welding, often several on one job.';
       var urg = urgencyFrom(text) === 'urgent' ? '\nIf the vessel is waiting, call **' + PHONE_DISPLAY + '** now.\n[[call]]' : '';
       return { raw: (learnedName ? 'Thanks, ' + first(learnedName) + '. ' : '') + react + body + '\nWant me to take down the details so the team can quote?' + urg + '\n[[chips:Yes, take my details | Call instead]]' };
