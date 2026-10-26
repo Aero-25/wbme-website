@@ -1,7 +1,9 @@
 // Makes an ADMIN_USERS entry for the WBME admin login.
 //   node scripts/hash-password.mjs <username> '<password>'   (e.g. admin)
-// Paste the printed "username": "pbkdf2$..." pair into the ADMIN_USERS secret
-// (a JSON object) in Cloudflare Pages -> wbme -> Settings -> Variables and Secrets.
+// Paste the printed "username": "pbkdf2$..." pair into the ADMIN_USERS_EXTRA
+// secret (a JSON object; put several logins in one object) in Cloudflare Pages ->
+// wbme -> Settings -> Variables and Secrets. Cloudflare can't show a secret's
+// current value, so adding to ADMIN_USERS would mean retyping every login in it.
 import { webcrypto as crypto } from 'node:crypto';
 
 const [email, password] = process.argv.slice(2);

@@ -7,7 +7,9 @@
      SESSION_SECRET  secret, long random string (signs admin cookies)
      ADMIN_USERS     secret, JSON {"username": "pbkdf2$<iter>$<salt>$<hash>"}
                      (usernames are lowercase; an email works as a username too)
-                     (generate entries with scripts/hash-password.mjs) */
+                     (generate entries with scripts/hash-password.mjs)
+     ADMIN_USERS_EXTRA  optional secret, same format; merged with ADMIN_USERS.
+                     Add new logins here so ADMIN_USERS never has to be retyped. */
 
 const enc = new TextEncoder();
 const COOKIE = 'wbme_admin';
@@ -75,10 +77,25 @@ async function pbkdf2 (password, salt, iterations) {
   return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, key, 256));
 }
 
+/* Admin logins come from two JSON secrets, merged: ADMIN_USERS (the original
+   list) and ADMIN_USERS_EXTRA (logins added later). Cloudflare never shows a
+   secret's value again, so adding a login to ADMIN_USERS would mean retyping
+   every existing one; new logins go in ADMIN_USERS_EXTRA instead. A username
+   present in both uses its ADMIN_USERS_EXTRA entry. */
+function adminUsers (env) {
+  const users = {};
+  for (const raw of [env.ADMIN_USERS, env.ADMIN_USERS_EXTRA]) {
+    let list = {};
+    try { list = JSON.parse(raw || '{}'); } catch (err) { list = {}; }
+    if (!list || typeof list !== 'object') continue;
+    for (const [name, hash] of Object.entries(list)) users[String(name).trim().toLowerCase()] = hash;
+  }
+  return users;
+}
+
 /* Constant-ish time: unknown emails still pay for a PBKDF2 round. */
 export async function checkPassword (env, email, password) {
-  let users = {};
-  try { users = JSON.parse(env.ADMIN_USERS || '{}'); } catch (err) { users = {}; }
+  const users = adminUsers(env);
   const record = users[String(email || '').trim().toLowerCase()];
   const [alg, iter, salt, hash] = (record || 'pbkdf2$100000$AAAAAAAAAAAAAAAAAAAAAA$').split('$');
   const derived = await pbkdf2(String(password || ''), fromB64u(salt), Number(iter) || 100000);

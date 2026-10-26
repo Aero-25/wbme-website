@@ -42,7 +42,7 @@ Live at **https://www.wbme.com.na** (custom domain on the Pages project; `wbme.p
 - **Site media** ships with the site in `/media` (pre-sized WebP, self-hosted fonts).
 - **Projects blog** lives in D1 (`wbme`, binding `DB`); schema in `migrations/`. Public API: `GET /api/projects` (`?slug=` for one post).
 - **Admin photos** go to R2 (`wbme-media`, binding `MEDIA`), resized to 1600px WebP in the browser, served at `/uploads/...`.
-- **Admin login** (`admin.html`) is checked by Pages Functions in `functions/`: passwords are PBKDF2 hashes in the `ADMIN_USERS` secret, sessions are HMAC-signed cookies (`SESSION_SECRET`). Add or change a login with `node scripts/hash-password.mjs <email> <password>` and update `ADMIN_USERS` in Pages → Settings → Variables and Secrets.
+- **Admin login** (`admin.html`) is checked by Pages Functions in `functions/`: passwords are PBKDF2 hashes in the `ADMIN_USERS` secret, sessions are HMAC-signed cookies (`SESSION_SECRET`). Add a login with `node scripts/hash-password.mjs <username> <password>` and put the printed entry in the `ADMIN_USERS_EXTRA` secret (Pages → Settings → Variables and Secrets), which is merged with `ADMIN_USERS`. Cloudflare can't display a secret's current value, so keep the full `ADMIN_USERS_EXTRA` JSON somewhere safe: replacing it replaces every login in it.
 - `js/projects-snapshot.js` is a fallback copy of the published posts, shown if the API is unreachable.
 - Supabase (`supabase/schema.sql`) is the previous backend, kept for reference only.
 
