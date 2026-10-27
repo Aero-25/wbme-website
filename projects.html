@@ -17,7 +17,7 @@
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* Full loader on the first page of a visit and on every refresh; skipped when moving between pages. Decided here, before first paint, so skipped pages never flash it. */try{var n=performance.getEntriesByType('navigation')[0],r=n&&n.type==='reload';if(!r&&sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
-<link rel="stylesheet" href="css/experience.css?v=125">
+<link rel="stylesheet" href="css/experience.css?v=126">
 </head>
 <body data-page="projects">
 
@@ -126,14 +126,15 @@
             <div class="ticket-field"><label for="mm-email">Email</label><input id="mm-email" name="email" type="email" required placeholder="you@example.com"><span class="err">Enter a valid email.</span></div>
           </div>
           <div class="frow">
-            <div class="ticket-field"><label for="mm-phone">Phone</label><input id="mm-phone" name="phone" placeholder="+264 &hellip;"></div>
+            <div class="ticket-field"><label for="mm-phone">Phone</label><input id="mm-phone" name="phone" type="tel" autocomplete="tel" placeholder="+264 &hellip;"><span class="err">Check the phone number.</span></div>
             <div class="ticket-field"><label for="mm-service">Service</label><select id="mm-service" name="service"><option>General enquiry</option><option>Rigging</option><option>Fitting &amp; Turning</option><option>Boiler Making</option><option>Fabrication</option><option>Pipe Works</option><option>Welding</option></select></div>
           </div>
-          <div class="ticket-field"><label for="mm-msg">Message</label><textarea id="mm-msg" name="message" required placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
+          <div class="ticket-field"><label for="mm-msg">Message</label><textarea id="mm-msg" name="message" required maxlength="2000" placeholder="Describe the work you need&hellip;"></textarea><span class="err">Please add a short message.</span></div>
+          <div class="hp-field" aria-hidden="true"><label for="mm-website">Leave this empty</label><input id="mm-website" name="website" tabindex="-1" autocomplete="off"></div>
           <button type="submit" class="btn-brass">Send request &rarr;</button>
-          <p class="form-note">Opens your email app with the request filled in.</p>
+          <p class="form-note">Goes straight to the WBME team.</p>
         </form>
-        <div class="form-ok">&check; Thanks! Your email app should open with your request ready to send.</div>
+        <div class="form-ok">&check; Sent. Your request is with the WBME team.</div>
       </div>
       <aside class="cm-side" aria-label="WBME contact details and location">
         <div class="cm-d"><b>Visit</b><span>8th Street East, Industrial Area, Walvis Bay, Namibia</span></div>
@@ -181,7 +182,7 @@
 </div>
 
 <script src="js/bucket-assets.js?v=48"></script>
-<script src="js/experience.js?v=77"></script>
+<script src="js/experience.js?v=78"></script>
 <script src="js/glass-fx.js?v=11"></script>
 <script src="js/chatbot.js?v=6"></script>
 <script src="js/projects-snapshot.js?v=2"></script>

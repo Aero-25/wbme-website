@@ -9,7 +9,9 @@
                      (usernames are lowercase; an email works as a username too)
                      (generate entries with scripts/hash-password.mjs)
      ADMIN_USERS_EXTRA  optional secret, same format; merged with ADMIN_USERS.
-                     Add new logins here so ADMIN_USERS never has to be retyped. */
+                     Add new logins here so ADMIN_USERS never has to be retyped.
+     RESEND_API_KEY  secret, sends enquiry alert emails (see _shared/mailer.js,
+                     which also lists the optional ENQUIRY_TO and MAIL_FROM). */
 
 const enc = new TextEncoder();
 const COOKIE = 'wbme_admin';

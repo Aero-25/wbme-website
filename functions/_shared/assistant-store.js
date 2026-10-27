@@ -79,9 +79,10 @@ export async function checkRate (request, env, { bucket, burst, daily, siteDaily
 const str = (v, max) => String(v == null ? '' : v).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, max);
 const EMAIL_RE = /^[^\s@<>()]+@[^\s@<>()]+\.[^\s@<>()]{2,}$/;
 
-/* Validates an enquiry from the assistant's enquiry flow.
-   Returns { value } or { error } with a message the visitor can act on. */
-export function cleanEnquiry (input) {
+/* Validates an enquiry from the assistant's enquiry flow or the contact form.
+   Returns { value } or { error } with a message the visitor can act on.
+   The contact form doesn't ask about urgency, so its enquiries have none. */
+export function cleanEnquiry (input, { source = 'assistant' } = {}) {
   const p = input && typeof input === 'object' ? input : {};
   const out = {
     name: str(p.name, 80),
@@ -90,7 +91,7 @@ export function cleanEnquiry (input) {
     email: str(p.email, 120).toLowerCase(),
     vessel: str(p.vessel_or_site != null ? p.vessel_or_site : p.vessel, 160),
     service: SERVICE_NAMES.includes(p.service) ? p.service : 'General',
-    urgency: URGENCY.includes(p.urgency) ? p.urgency : 'planned',
+    urgency: URGENCY.includes(p.urgency) ? p.urgency : (source === 'form' ? '' : 'planned'),
     job: str(p.job, 2000)
   };
   if (out.email && !EMAIL_RE.test(out.email)) return { error: 'The email address does not look complete. Ask the visitor to check it.' };
@@ -101,7 +102,7 @@ export function cleanEnquiry (input) {
   return { value: out };
 }
 
-function newRef () {
+export function newRef () {
   const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const bytes = crypto.getRandomValues(new Uint8Array(4));
   return 'WB-' + [...bytes].map((b) => abc[b % abc.length]).join('');
@@ -117,31 +118,35 @@ function cleanTranscript (transcript) {
   return json;
 }
 
+const FIELDS = ['name', 'company', 'phone', 'email', 'vessel', 'service', 'urgency', 'job'];
+const PREV = 'id, ref, ' + FIELDS.join(', ');
+
 /* Saves an enquiry. A correction names the reference it replaces (`updateRef`,
    only honoured for the same chat session), so a second, different job in the
    same chat gets its own record. The identical job sent twice within ten
-   minutes (a double tap) returns the first record. */
+   minutes (a double tap) returns the first record. `changed` is false when
+   an update left every field as it was, so no second alert goes out. */
 export async function saveEnquiry (env, e, { sid, page, source, transcript, updateRef }) {
-  if (!env.DB) return { ref: newRef(), stored: false };
+  if (!env.DB) return { ref: newRef(), stored: false, updated: false, changed: true };
   await ensureTables(env);
   const tx = cleanTranscript(transcript);
   if (sid) {
     const ref = /^WB-[A-Z0-9]{4}$/.test(String(updateRef || '')) ? updateRef : '';
     const prev = ref
-      ? await env.DB.prepare('SELECT id, ref FROM enquiries WHERE sid = ? AND ref = ? LIMIT 1').bind(sid, ref).first()
-      : await env.DB.prepare('SELECT id, ref FROM enquiries WHERE sid = ? AND job = ? AND created_at > ? LIMIT 1')
+      ? await env.DB.prepare(`SELECT ${PREV} FROM enquiries WHERE sid = ? AND ref = ? LIMIT 1`).bind(sid, ref).first()
+      : await env.DB.prepare(`SELECT ${PREV} FROM enquiries WHERE sid = ? AND job = ? AND created_at > ? LIMIT 1`)
         .bind(sid, e.job, new Date(Date.now() - 10 * 60e3).toISOString()).first();
     if (prev) {
       await env.DB.prepare(`UPDATE enquiries SET name=?, company=?, phone=?, email=?, vessel=?, service=?, urgency=?, job=?, page=?, transcript=?, status='new',
         updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?`)
         .bind(e.name, e.company, e.phone, e.email, e.vessel, e.service, e.urgency, e.job, page || '', tx, prev.id).run();
-      return { ref: prev.ref, stored: true, updated: true };
+      return { ref: prev.ref, stored: true, updated: true, changed: FIELDS.some((k) => prev[k] !== e[k]) };
     }
   }
   const ref = newRef();
   await env.DB.prepare('INSERT INTO enquiries (id, ref, sid, source, name, company, phone, email, vessel, service, urgency, job, page, transcript) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .bind(crypto.randomUUID(), ref, sid || null, source || 'assistant', e.name, e.company, e.phone, e.email, e.vessel, e.service, e.urgency, e.job, page || '', tx).run();
-  return { ref, stored: true, updated: false };
+  return { ref, stored: true, updated: false, changed: true };
 }
 
 export function cleanSid (v) {

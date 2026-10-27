@@ -38,6 +38,7 @@ Hosted on Cloudflare Pages (project `wbme`), deployed automatically from `main`.
 Live at **https://www.wbme.com.na** (custom domain on the Pages project; `wbme.pages.dev` stays as the preview address).
 
 - **DNS** for `wbme.com.na` is managed by Synapse in their own Cloudflare account, not ours: `www` is a CNAME to `wbme.pages.dev`, the root domain redirects to `www`, and the Microsoft 365 mail records (MX, SPF, autodiscover) live there too. Any DNS change goes through Synapse support.
+- **Email alerts** go out through Resend from the subdomain `enquiry.wbme.com.na` (verified, Ireland region). Its three records sit in Synapse's zone: `resend._domainkey.enquiry` (TXT, DKIM) and the CNAMEs `rsend.enquiry` and `send.enquiry`, both DNS only. Nothing on the root domain changed, so Microsoft 365 mail is unaffected.
 
 - **Site media** ships with the site in `/media` (pre-sized WebP, self-hosted fonts).
 - **Projects blog** lives in D1 (`wbme`, binding `DB`); schema in `migrations/`. Public API: `GET /api/projects` (`?slug=` for one post).
@@ -54,16 +55,25 @@ The propeller button opens the WBME assistant. It runs entirely on its own, in t
 - **Memory**: the conversation is kept for the browser tab (sessionStorage), so it follows the visitor across pages; the assistant can open a page and pick up again there, even halfway through an enquiry.
 - **Enquiries**: it takes down the job, vessel or site, urgency, name and contact one question at a time, reads them back, and saves the enquiry through `functions/api/enquiry.js` to D1 (`enquiries` table, created automatically; schema in `migrations/0002_assistant.sql`). The visitor gets a reference number and an "Email this to WBME" button that opens their email app with everything filled in, so photos can be attached. The team sees each enquiry at the top of `admin.html`, with the chat it came from, reply and call buttons, and *Mark handled*.
 
-Enquiries are rate limited per connection (8 per 10 minutes, 30 per day). There are no email alerts for new enquiries; check the admin page.
+Enquiries are rate limited per connection (8 per 10 minutes, 30 per day).
+
+## Contact form and email alerts
+The contact form (Contact page and the pop-up on every page) posts to the same `functions/api/enquiry.js` as the assistant, marked as a form enquiry. Every enquiry is saved to D1 and shows in `admin.html`, which says whether it came from the form or the assistant. Each new or changed enquiry is then emailed to the workshop by `functions/_shared/mailer.js`, with Reply-To set to the visitor's email so replying answers them directly. A hidden field that people never see catches simple spam bots.
+
+Pages settings (Settings → Variables and Secrets, Production):
+- `RESEND_API_KEY` (secret): a Resend API key with sending access. **Without it no alerts are sent**, and the form also opens the visitor's email app so WBME still gets the message.
+- `ENQUIRY_TO` (optional): comma-separated recipients, default `info@wbme.com.na`.
+- `MAIL_FROM` (optional): sender, default `WBME Website <website@enquiry.wbme.com.na>`.
+
+Secrets only reach new deployments: after adding or changing one, redeploy (Deployments → latest → Retry deployment). If the API can't be reached at all, the form falls back to the visitor's email app.
 
 ## Run locally
-Serve the folder (don't open via `file://` — the contact form's `fetch()` POST to Formspree can misbehave from a `file://` origin in some browsers):
+Serve the folder (don't open via `file://`). A plain static server has no `/api`, so the contact form falls back to opening your email app:
 ```bash
 python -m http.server 8000   # then http://localhost:8000
 ```
 
 ## Notes
-- Contact form opens the visitor's email client to `info@wbme.com.na` (swap for a hosted endpoint for in-page sending).
 - Placeholder logo lockup + demo photography; real brand assets to be dropped in.
 
 ---

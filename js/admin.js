@@ -144,7 +144,7 @@
     });
   }
 
-  /* ===== ENQUIRIES from the website assistant =====
+  /* ===== ENQUIRIES from the website assistant and the contact forms =====
      Newest first; each opens to show the details, the chat it came from,
      and quick reply / call / mark handled / delete. */
   var enqList = document.getElementById('adminEnqList');
@@ -170,13 +170,15 @@
   function renderEnquiries () {
     var fresh = enqRows.filter(function (r) { return r.status !== 'handled'; }).length;
     if (enqCount) enqCount.textContent = enqRows.length ? (fresh ? fresh + ' new' : 'All handled') : '';
-    if (!enqRows.length) { enqList.innerHTML = '<p class="admin-empty">No enquiries yet. When the assistant takes down a job, it shows up here.</p>'; return; }
+    if (!enqRows.length) { enqList.innerHTML = '<p class="admin-empty">No enquiries yet. When someone sends the contact form or the assistant takes down a job, it shows up here.</p>'; return; }
     enqList.innerHTML = enqRows.map(function (r) {
       var isNew = r.status !== 'handled';
       var reply = 'mailto:' + encodeURIComponent(r.email || '') + '?subject=' + encodeURIComponent('Your enquiry ' + r.ref + ' - Walvis Bay Marine Engineering');
       var rows = [
         ['Job', r.job], ['Vessel / site', r.vessel], ['Work', r.service !== 'General' ? r.service : ''],
-        ['Phone', r.phone], ['Email', r.email], ['Company', r.company], ['Asked from', r.page ? r.page + ' page' : '']
+        ['Phone', r.phone], ['Email', r.email], ['Company', r.company],
+        ['Came in through', (r.source === 'form' ? 'Contact form' : 'Website assistant') + (r.page ? ', ' + r.page + ' page' : '')],
+        ['Urgency', URG[r.urgency] || r.urgency]
       ].filter(function (x) { return x[1]; }).map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('');
       var chat = (r.transcript || []).map(function (m) {
         return '<p class="' + (m.r === 'a' ? 'is-bot' : 'is-visitor') + '"><span>' + (m.r === 'a' ? 'Assistant' : 'Visitor') + '</span>' + esc(String(m.t).replace(/\[\[[^\]]*\]\]/g, '').replace(/\*\*/g, '').trim()) + '</p>';
@@ -187,7 +189,7 @@
           '<span class="admin-enq-tags">' + (r.urgency === 'urgent' ? '<span class="admin-badge is-urgent">Urgent</span>' : '') +
           '<span class="admin-badge ' + (isNew ? 'is-new' : 'is-draft') + '">' + (isNew ? 'New' : 'Handled') + '</span>' +
           '<time datetime="' + esc(r.created_at) + '">' + esc(when(r.created_at)) + '</time></span></summary>' +
-        '<div class="admin-enq-body"><dl>' + rows + '<dt>Urgency</dt><dd>' + esc(URG[r.urgency] || r.urgency) + '</dd></dl>' +
+        '<div class="admin-enq-body"><dl>' + rows + '</dl>' +
           (chat ? '<div class="admin-enq-chat"><span class="admin-enq-chat-label">The conversation</span>' + chat + '</div>' : '') +
           '<div class="admin-row-actions">' +
             (r.email ? '<a class="btn-ghost-sm" href="' + reply + '">Reply by email</a>' : '') +

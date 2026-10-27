@@ -131,7 +131,7 @@
      On touch screens a dialog opens with focus on its close button, so the
      keyboard doesn't jump up over a form the visitor hasn't read yet. */
   var TOUCH = window.matchMedia('(pointer: coarse)').matches;
-  var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]):not([tabindex="-1"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   var openDialogs = [];
   function focusables (root) {
     return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), function (n) { return n.getClientRects().length && getComputedStyle(n).visibility !== 'hidden'; });
@@ -398,12 +398,15 @@
     lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
   }
 
-  /* ===== CONTACT FORM ===== */
-  // To send enquiries in-page: create a form at https://formspree.io (send to the address in EMAIL above)
-  // and paste its endpoint below. Until then, the form opens the visitor's email app.
-  var FORM_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_ID';
+  /* ===== CONTACT FORM =====
+     Sends to /api/enquiry (functions/api/enquiry.js): saved for the team in
+     admin and emailed to the workshop. If that can't be reached (offline,
+     local preview, server error) the visitor's email app opens instead with
+     everything filled in, so no enquiry is lost. */
+  var PHONE_DISPLAY = '+264 (0)64 285 700';
   function wireContactForm (form) {
     if (!form) return;
+    var okMsg = form.parentElement.querySelector('.form-ok');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var ok = true;
@@ -412,19 +415,47 @@
         if (inp.type === 'email' && v) v = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value.trim());
         f.classList.toggle('invalid', !v); if (!v) ok = false;
       });
-      if (!ok) return;
+      var phone = form.querySelector('[name=phone]');
+      if (phone && phone.value.trim()) {
+        var pv = phone.value.replace(/\D/g, '').length >= 6, pf = phone.closest('.ticket-field,.field');
+        if (pf) pf.classList.toggle('invalid', !pv); if (!pv) ok = false;
+      }
+      if (!ok) { var bad = form.querySelector('.invalid input, .invalid textarea'); if (bad) bad.focus(); return; }
       var g = function (n) { var el = form.querySelector('[name=' + n + ']'); return el ? el.value.trim() : ''; };
-      var done = function () { form.style.display = 'none'; var okMsg = form.parentElement.querySelector('.form-ok'); if (okMsg) okMsg.style.display = 'block'; };
+      var btn = form.querySelector('[type=submit]'), label = btn ? btn.innerHTML : '';
+      var done = function (text) {
+        form.style.display = 'none';
+        if (!okMsg) return;
+        okMsg.setAttribute('role', 'status');
+        okMsg.setAttribute('tabindex', '-1');
+        okMsg.style.display = 'block';
+        okMsg.textContent = text;
+        okMsg.focus();
+      };
       var mailto = function () {
+        if (btn) { btn.disabled = false; btn.innerHTML = label; }
         var body = encodeURIComponent('Name: ' + g('name') + '\nEmail: ' + g('email') + '\nPhone: ' + g('phone') + '\nService: ' + g('service') + '\n\n' + g('message'));
         window.location.href = mailHref('Quote request - ' + g('name')) + '&body=' + body;
-        done();
+        done('\u2713 Your email app should open with your request ready to send. If it doesn\u2019t, call ' + PHONE_DISPLAY + '.');
       };
-      if (FORM_ENDPOINT.indexOf('REPLACE_WITH_YOUR_ID') !== -1) { mailto(); return; }
-      var btn = form.querySelector('[type=submit]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-      fetch(FORM_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
-        .then(function (r) { r.ok ? done() : mailto(); })
-        .catch(mailto);
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending\u2026'; }
+      fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({
+          source: 'form',
+          name: g('name'), email: g('email'), phone: g('phone'),
+          service: g('service') === 'General enquiry' ? 'General' : g('service'),
+          job: g('message'),
+          page: document.body.getAttribute('data-page') || '',
+          website: g('website')
+        })
+      })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+        .then(function (d) {
+          if (d && d.notify === false) { mailto(); return; } // saved, but email alerts aren't switched on yet
+          done('\u2713 Sent. Your request is with the WBME team' + (d && d.ref ? ', reference ' + d.ref : '') + '. For anything urgent, call ' + PHONE_DISPLAY + '.');
+        }, mailto);
     });
     form.querySelectorAll('input,textarea').forEach(function (i) {
       i.addEventListener('input', function () { var f = i.closest('.ticket-field,.field'); if (f) f.classList.remove('invalid'); });
