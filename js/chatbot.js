@@ -136,9 +136,9 @@
     var s = { day: day, hour: h, open: open, onCall: day === 'Sunday' };
     if (open) { s.badge = 'Workshop open · until 17:00'; s.line = 'The workshop is open right now, until 17:00.'; }
     else if (weekday && mins < 420) { s.badge = 'Opens today at 07:00'; s.line = 'The workshop opens at 07:00 this morning.'; }
-    else if (day === 'Sunday') { s.badge = 'Sunday · on call for urgent work'; s.line = "It's Sunday, so the workshop is on call for urgent work by phone and opens Monday at 07:00."; }
-    else if (day === 'Saturday') { s.badge = 'Closed today · Sabbath'; s.line = "It's Saturday, the Sabbath, so the workshop is closed. It's on call tomorrow for urgent work and opens Monday at 07:00."; }
-    else if (day === 'Friday') { s.badge = 'Closed · opens Monday 07:00'; s.line = 'The workshop has closed for the week. Sunday it is on call for urgent work, and Monday it opens at 07:00.'; }
+    else if (day === 'Sunday') { s.badge = 'Sunday · on request'; s.line = "It's Sunday, so work is on request: call to arrange it. The workshop opens Monday at 07:00."; }
+    else if (day === 'Saturday') { s.badge = 'Closed today · Sabbath'; s.line = "It's Saturday, the Sabbath, so the workshop is closed. Tomorrow, Sunday, work is on request, and Monday it opens at 07:00."; }
+    else if (day === 'Friday') { s.badge = 'Closed · opens Monday 07:00'; s.line = 'The workshop has closed for the week. Sunday work is on request, and Monday it opens at 07:00.'; }
     else { s.badge = 'Closed · opens 07:00 tomorrow'; s.line = 'The workshop has closed for the day and opens at 07:00 tomorrow.'; }
     s.greet = h < 12 ? 'Good morning' : (h < 17 ? 'Good afternoon' : 'Good evening');
     return s;
@@ -521,8 +521,8 @@
     var d = dayAsked(text), t = timeAsked(text);
     if (!d) return '';
     var Day = cap(d.name);
-    if (d.rel === 'weekend' || d.name === 'saturday') return (d.rel === 'Tomorrow' ? "Tomorrow's Saturday, and " : '') + 'Saturdays the workshop is closed: WBME keeps the Sabbath. Sundays it\'s on call for urgent work by phone, and Monday to Friday it\'s open 07:00 to 17:00.';
-    if (d.name === 'sunday') return (d.rel === 'Tomorrow' ? "Tomorrow's Sunday, so " : 'On Sundays ') + 'the workshop is on call for urgent work only: call **' + PHONE_DISPLAY + '**. Monday to Friday it\'s open 07:00 to 17:00.';
+    if (d.rel === 'weekend' || d.name === 'saturday') return (d.rel === 'Tomorrow' ? "Tomorrow's Saturday, and " : '') + 'Saturdays the workshop is closed: WBME keeps the Sabbath. Sundays work is on request by phone, and Monday to Friday it\'s open 07:00 to 17:00.';
+    if (d.name === 'sunday') return (d.rel === 'Tomorrow' ? "Tomorrow's Sunday, so " : 'On Sundays ') + 'work is on request: call **' + PHONE_DISPLAY + '** to arrange it. Monday to Friday it\'s open 07:00 to 17:00.';
     if (d.rel === 'Today') {
       var s = workshopNow();
       return s.line + (t ? (t.h >= 7 && t.h < 17 ? ' ' + t.label + ' is within working hours.' : ' ' + t.label + ' is outside working hours (07:00 to 17:00).') : '');
@@ -532,11 +532,11 @@
   }
   function hoursReply (text) {
     if (/\b(public holiday|holidays?|christmas|easter|new year)\b/.test(text)) return "I don't have the public holiday hours, so it's worth calling ahead on **" + PHONE_DISPLAY + '**. Normally it\'s Monday to Friday, 07:00 to 17:00.\n[[call]]';
-    if (/\b(night|evening|after hours|afterhours|late)\b/.test(text)) return 'The workshop works Monday to Friday, 07:00 to 17:00, and Sundays it\'s on call for urgent work. I can\'t promise anything after hours, but calling **' + PHONE_DISPLAY + '** is your best bet.\n[[call]]';
+    if (/\b(night|evening|after hours|afterhours|late)\b/.test(text)) return 'The workshop works Monday to Friday, 07:00 to 17:00, and Sunday work is on request. I can\'t promise anything after hours, but calling **' + PHONE_DISPLAY + '** is your best bet.\n[[call]]';
     var line = dayLine(text);
     if (line) return line + '\n[[call]]';
     var s = workshopNow();
-    return s.line + ' Normal hours are **Monday to Friday, 07:00 to 17:00**. Saturday is closed (WBME keeps the Sabbath) and Sunday is on call for urgent work.\n[[call]]';
+    return s.line + ' Normal hours are **Monday to Friday, 07:00 to 17:00**. Saturday is closed (WBME keeps the Sabbath) and Sunday work is on request.\n[[call]]';
   }
   var PLACE_RE = /\b(swakopmund|arandis|henties|luderitz|lüderitz|windhoek|oranjemund|rosh pinah|usakos|karibib|omaruru|tsumeb|otjiwarongo|keetmanshoop|rundu|oshakati|ondangwa|rossing|rössing|husab|langer heinrich|mine site|on site|onsite)\b/;
   var SIZE_RE = /\b\d+(?:[.,]\d+)?\s*(?:m|mm|cm|metres?|meters?|tons?|tonnes?|t|kg|kgs|litres?|liters?|l|inch(?:es)?|ft|foot|feet)\b|\b\d+\s*x\s*\d+/;
@@ -669,8 +669,8 @@
       { id: 'urgent', s: (urgencyFrom(text) === 'urgent' ? 4 : 0) + c(['emergency', 'breakdown', 'urgent', 'asap', 'callout', 'call out', 'call-out']) * 2,
         r: function () {
           var s = workshopNow();
-          if (/\b(night|evening|after hours|afterhours|late|weekend)\b/.test(text)) return 'I can\'t promise after-hours callouts; that one\'s for the team. Calling **' + PHONE_DISPLAY + '** is your best bet, and on Sundays WBME is on call for urgent work. I can also take the details down now so they\'re ready.\n[[call]]\n[[chips:Take my details | Where are you?]]';
-          var now = s.open ? "The workshop's open right now, so call **" + PHONE_DISPLAY + '** and you\'ll get the team.' : (s.onCall ? "It's Sunday, but WBME is on call for urgent work: call **" + PHONE_DISPLAY + '**.' : s.line + ' For anything urgent, call **' + PHONE_DISPLAY + '** first thing.');
+          if (/\b(night|evening|after hours|afterhours|late|weekend)\b/.test(text)) return 'I can\'t promise after-hours callouts; that one\'s for the team. Calling **' + PHONE_DISPLAY + '** is your best bet, and on Sundays WBME works on request. I can also take the details down now so they\'re ready.\n[[call]]\n[[chips:Take my details | Where are you?]]';
+          var now = s.open ? "The workshop's open right now, so call **" + PHONE_DISPLAY + '** and you\'ll get the team.' : (s.onCall ? "It's Sunday, so work is on request: call **" + PHONE_DISPLAY + '** to arrange it.' : s.line + ' For anything urgent, call **' + PHONE_DISPLAY + '** first thing.');
           return 'Sounds like it can\'t wait. ' + now + ' I can also take the details down now so they\'re ready.\n[[call]]\n[[chips:Take my details | Where are you?]]';
         } },
       { id: 'quote', s: c(['quote', 'estimate', 'enquiry', 'inquiry', 'enquire', 'inquire', 'take my details', 'help me write', 'write it up', 'need a quote', 'get a quote']) * 3,
@@ -702,7 +702,7 @@
           return 'WBME was started in **1999** by the late Mr. Uwe Crüys and registered in October 2000, so over 25 years of serving vessels, mines and industry around Walvis Bay. His ethic still runs the place: value the customer, value the person, take pride in the small things. The motto says it best: **"No job too big, no job too small."**' + who + '\n[[page:about]]';
         } },
       { id: 'faith', s: c(['faith', 'christian', 'god', 'church', 'sabbath', 'religious', 'philippians', 'bible']) * 3,
-        r: function () { return "WBME is a faith-based company. Its verse is Philippians 4:13: \"I can do all things through Christ Jesus who strengthens me.\" It keeps the Sabbath, so it's closed on Saturdays, and it's on call on Sundays for urgent work."; } },
+        r: function () { return "WBME is a faith-based company. Its verse is Philippians 4:13: \"I can do all things through Christ Jesus who strengthens me.\" It keeps the Sabbath, so it's closed on Saturdays, and Sunday work is on request."; } },
       { id: 'why', s: c(['why', 'choose', 'different', 'better', 'trust', 'reputation', 'apart', 'good are you', 'reliable']) * 2,
         r: function () { return 'A few reasons people stick with WBME:\n- workmanship held to a high standard at competitive prices\n- work planned around your time frame and budget\n- practical repairs that keep the total job cost down\n- 25+ years of real experience in Walvis Bay\'s marine industry\nAnd you get treated as a long-term partner, not a once-off ticket.\n[[page:about]]'; } },
       { id: 'industries', s: c(['industries', 'industry', 'sector', 'sectors', 'fishing', 'seafood', 'mining', 'mine', 'mines', 'offshore', 'energy', 'port', 'ports', 'harbour', 'harbor', 'cargo', 'shipping', 'clients', 'customers', 'who do you work']) * 3,
@@ -1055,7 +1055,7 @@
     var s = workshopNow();
     var back = state.name ? 'Welcome back, ' + first(state.name) + '. ' : s.greet + '! ';
     var raw = back + "I'm the WBME assistant. " + (PAGE_GREETING[PAGE] || PAGE_GREETING.home);
-    if (!s.open) raw += '\n' + (s.onCall ? "It's Sunday, so the team is on call for urgent work only, but I can take your details now." : "The workshop's closed right now, but I can take your details so they're ready first thing.");
+    if (!s.open) raw += '\n' + (s.onCall ? "It's Sunday, so work is on request, but I can take your details now." : "The workshop's closed right now, but I can take your details so they're ready first thing.");
     raw += '\n[[chips:' + (PAGE_CHIPS[PAGE] || PAGE_CHIPS.home) + ']]';
     showTyping();
     setTimeout(function () {

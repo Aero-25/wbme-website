@@ -17,7 +17,7 @@
 <link rel="preload" href="media/fonts/archivo-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="media/fonts/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>/* Full loader on the first page of a visit and on every refresh; skipped when moving between pages. Decided here, before first paint, so skipped pages never flash it. */try{var n=performance.getEntriesByType('navigation')[0],r=n&&n.type==='reload';if(!r&&sessionStorage.getItem('wbme:loader-seen'))document.documentElement.classList.add('pl-seen');else sessionStorage.setItem('wbme:loader-seen','1')}catch(e){}</script>
-<link rel="stylesheet" href="css/experience.css?v=124">
+<link rel="stylesheet" href="css/experience.css?v=125">
 </head>
 <body data-page="services">
 
@@ -66,7 +66,7 @@
 </section>
 <div class="panel-body">
   <div class="spec-list">
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="rigging">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/pics-for-t/propulsion/cpp-complete-refit-2-800.webp');--bg-lg:url('/media/photos/pics-for-t/propulsion/cpp-complete-refit-2-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">01 / 06</span>
@@ -76,7 +76,7 @@
         <button class="spec-more" type="button" data-service-open="rigging">Learn more &rarr;</button>
       </div>
     </article>
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="fitting-and-turning">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/pics-for-t/machining/new-thordon-bushes-800.webp');--bg-lg:url('/media/photos/pics-for-t/machining/new-thordon-bushes-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">02 / 06</span>
@@ -86,7 +86,7 @@
         <button class="spec-more" type="button" data-service-open="fitting">Learn more &rarr;</button>
       </div>
     </article>
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="boiler-making">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/pics-for-t/boilermaking/bottom-hull-plate-replacement-1-800.webp');--bg-lg:url('/media/photos/pics-for-t/boilermaking/bottom-hull-plate-replacement-1-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">03 / 06</span>
@@ -96,7 +96,7 @@
         <button class="spec-more" type="button" data-service-open="boiler">Learn more &rarr;</button>
       </div>
     </article>
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="fabrication">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/pics-for-t/fabrication/stainless-steel-tank-1-800.webp');--bg-lg:url('/media/photos/pics-for-t/fabrication/stainless-steel-tank-1-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">04 / 06</span>
@@ -106,7 +106,7 @@
         <button class="spec-more" type="button" data-service-open="fabrication">Learn more &rarr;</button>
       </div>
     </article>
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="pipe-works">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/pics-for-t/pipe-works/sea-water-inlet-strainer-1-800.webp');--bg-lg:url('/media/photos/pics-for-t/pipe-works/sea-water-inlet-strainer-1-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">05 / 06</span>
@@ -116,7 +116,7 @@
         <button class="spec-more" type="button" data-service-open="pipework">Learn more &rarr;</button>
       </div>
     </article>
-    <article class="spec-row p-rv">
+    <article class="spec-row p-rv" id="welding">
       <div class="spec-row-media"><div class="spec-row-img rbg" style="--bg-sm:url('/media/photos/new-complete-ships-rudder/6-800.webp');--bg-lg:url('/media/photos/new-complete-ships-rudder/6-1600.webp')"></div></div>
       <div class="spec-row-body">
         <span class="spec-num">06 / 06</span>
@@ -160,7 +160,7 @@
     <span class="sf-hours-tag">Working hours</span>
     <span class="sf-hours-row">Mon&ndash;Fri <b>07:00&ndash;17:00</b></span>
     <span class="sf-hours-row">Sat <b>Closed</b></span>
-    <span class="sf-hours-row">Sun <b>Available*</b></span>
+    <span class="sf-hours-row">Sun <b>On request</b></span>
   </div>
   <div class="sf-bottom">
     <span>&copy; 2026 Walvis Bay Marine Engineering &middot; Est. 1999</span>
@@ -203,7 +203,7 @@
         <div class="cm-d"><b>Call</b><span><a href="tel:+26464285700">+264 (0)64 285 700</a></span></div>
         <div class="cm-d"><b>Fax</b><span>+264 (0)64 209 350</span></div>
         <div class="cm-d"><b>Email</b><span><a href="#" data-mail data-mail-text>Email us</a></span></div>
-        <div class="cm-d"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00</span></div>
+        <div class="cm-d"><b>Hours</b><span>Mon&ndash;Fri 07:00&ndash;17:00 &middot; Sat closed &middot; Sun on request</span></div>
         <div class="cm-map"><iframe title="WBME location map" loading="lazy" data-map-src="https://maps.google.com/maps?ll=-22.951,14.505&amp;z=15&amp;t=m&amp;output=embed"></iframe><noscript><iframe title="WBME location map" loading="lazy" src="https://maps.google.com/maps?ll=-22.951,14.505&amp;z=15&amp;t=m&amp;output=embed"></iframe></noscript></div>
         <div class="cm-side-foot"><span class="cm-status"><i></i>Workshop online</span><span>22&deg;57&prime;S &middot; 14&deg;30&prime;E</span></div>
       </aside>
@@ -256,6 +256,6 @@
 <script src="js/bucket-assets.js?v=48"></script>
 <script src="js/experience.js?v=77"></script>
 <script src="js/glass-fx.js?v=11"></script>
-<script src="js/chatbot.js?v=5"></script>
+<script src="js/chatbot.js?v=6"></script>
 </body>
 </html>

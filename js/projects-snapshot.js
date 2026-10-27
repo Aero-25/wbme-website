@@ -1,6 +1,6 @@
-/* Snapshot of the published Supabase "projects" rows, taken 2026-09-29.
-   Shown when Supabase is unreachable (e.g. the free project is paused) so the
-   Projects page never goes blank. Refresh it after publishing new posts. */
+/* Snapshot of the published project posts, taken 2026-09-29 (they now live in
+   Cloudflare D1). Shown when /api/projects is unreachable so the Projects page
+   never goes blank. Refresh it after publishing new posts. */
 window.WBME_PROJECTS_SNAPSHOT = [
  {
   "title": "Kort Nozzle & Shaft Conversion",
