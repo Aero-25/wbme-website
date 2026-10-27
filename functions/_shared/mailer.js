@@ -109,3 +109,111 @@ export async function sendEnquiryEmail (env, e, meta) {
   const data = await res.json().catch(() => ({}));
   return { sent: true, id: data.id || '' };
 }
+
+/* ===== Customer confirmation =====
+   A "we've got your request" email to the visitor, sent once per new
+   enquiry that has an email address. Replies go to the workshop inbox.
+   The logo is a PNG on white because Outlook can't show WebP and dark-mode
+   mail apps would lose a transparent navy logo. */
+const SITE = 'https://www.wbme.com.na';
+const WORKSHOP = { email: 'info@wbme.com.na', phone: '+264 (0)64 285 700', tel: 'tel:+26464285700' };
+
+export function confirmationEmail (e, { ref }) {
+  const name = firstName(e.name);
+  const work = e.service && e.service !== 'General' ? e.service : '';
+  const subject = 'We\'ve got your request, reference ' + ref + ' - Walvis Bay Marine Engineering';
+  const preheader = 'Thanks ' + name + ', your request is with the WBME team. Reference ' + ref + '.';
+  const reply = e.phone && e.email ? 'by phone or email' : e.phone ? 'by phone' : 'by email';
+  const summary = [['Work', work], ['Vessel / site', e.vessel], ['Phone', e.phone], ['Email', e.email]].filter((f) => f[1]);
+
+  const text = [
+    'Thanks, ' + name + '. We\'ve got your request.', '',
+    'Your reference: ' + ref, '',
+    'The team at our Walvis Bay workshop will look at it and get back to you ' + reply + ' during working hours (Monday to Friday, 07:00 to 17:00).', '',
+    'What you sent us:',
+    ...summary.map((f) => f[0] + ': ' + f[1]),
+    e.job, '',
+    'Something urgent? Call the workshop on ' + WORKSHOP.phone + ' and quote ' + ref + '.',
+    'To add details or photos, reply to this email.', '',
+    'Walvis Bay Marine Engineering',
+    '8th Street East, Industrial Area, Walvis Bay, Namibia',
+    WORKSHOP.email + ' | ' + SITE.replace('https://', '')
+  ].join('\n');
+
+  const f = 'font-family:Arial,Helvetica,sans-serif';
+  const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>' + esc(subject) + '</title></head>' +
+    '<body style="margin:0;padding:0;background:#e9eef5">' +
+    '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#e9eef5">' + esc(preheader) + '</div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e9eef5"><tr><td align="center" style="padding:28px 12px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d6dee9">' +
+
+    /* logo */
+    '<tr><td align="center" style="padding:26px 24px 20px;background:#ffffff">' +
+    '<a href="' + SITE + '" style="text-decoration:none"><img src="' + SITE + '/media/brand/email-logo-608.png" width="232" height="84" alt="Walvis Bay Marine Engineering" style="display:block;width:232px;max-width:100%;height:auto;border:0"></a></td></tr>' +
+    '<tr><td style="height:4px;line-height:4px;font-size:0;background:#c79a3e">&nbsp;</td></tr>' +
+
+    /* headline + reference */
+    '<tr><td style="background:#0f2c52;padding:34px 32px 32px">' +
+    '<p style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.16em;color:#e3c372">REQUEST RECEIVED</p>' +
+    '<h1 style="margin:0 0 22px;' + f + ';font-size:28px;line-height:1.2;font-weight:bold;color:#ffffff">Thanks, ' + esc(name) + '.<br>We\'ve got your request.</h1>' +
+    '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border:1px solid #c79a3e;border-radius:10px;padding:12px 18px;background:#163a66">' +
+    '<p style="margin:0 0 2px;' + f + ';font-size:11px;letter-spacing:.14em;color:#9fb0c6">YOUR REFERENCE</p>' +
+    '<p style="margin:0;font-family:\'Courier New\',Courier,monospace;font-size:24px;font-weight:bold;letter-spacing:.08em;color:#e3c372">' + esc(ref) + '</p>' +
+    '</td></tr></table></td></tr>' +
+
+    /* body */
+    '<tr><td style="padding:30px 32px 6px">' +
+    '<p style="margin:0 0 24px;' + f + ';font-size:16px;line-height:1.6;color:#163a66">The team at our Walvis Bay workshop will look at it and get back to you ' + reply + ' during working hours, Monday to Friday, 07:00 to 17:00. Quote <b>' + esc(ref) + '</b> if you call.</p>' +
+    '<p style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.14em;color:#8a6a24">WHAT YOU SENT US</p>' +
+    (summary.length ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 14px">' +
+      summary.map((r) => '<tr><td style="padding:4px 16px 4px 0;' + f + ';font-size:14px;color:#5b6b82;white-space:nowrap;vertical-align:top">' + esc(r[0]) + '</td>' +
+        '<td style="padding:4px 0;' + f + ';font-size:14px;color:#0f2c52;font-weight:bold">' + esc(r[1]) + '</td></tr>').join('') +
+      '</table>' : '') +
+    '<div style="margin:0 0 28px;padding:16px 18px;background:#f4f7fb;border-left:4px solid #c79a3e;border-radius:0 10px 10px 0;' + f + ';font-size:15px;line-height:1.6;color:#0f2c52;white-space:pre-wrap">' + esc(e.job) + '</div>' +
+    '</td></tr>' +
+
+    /* urgent */
+    '<tr><td style="padding:0 32px 32px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fbf6ea;border:1px solid #ecdcb4;border-radius:12px"><tr><td style="padding:20px 22px">' +
+    '<p style="margin:0 0 4px;' + f + ';font-size:16px;font-weight:bold;color:#0f2c52">Something urgent?</p>' +
+    '<p style="margin:0 0 16px;' + f + ';font-size:14px;line-height:1.5;color:#5b6b82">If a vessel is waiting or a plant is down, call the workshop. To add details or photos, just reply to this email.</p>' +
+    '<a href="' + WORKSHOP.tel + '" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#c79a3e;' + f + ';font-size:15px;font-weight:bold;color:#0f2c52;text-decoration:none">Call ' + WORKSHOP.phone + '</a>' +
+    '</td></tr></table></td></tr>' +
+
+    /* footer */
+    '<tr><td style="background:#071a33;padding:26px 32px">' +
+    '<p style="margin:0 0 6px;' + f + ';font-size:14px;font-weight:bold;color:#ffffff">Walvis Bay Marine Engineering</p>' +
+    '<p style="margin:0 0 12px;' + f + ';font-size:13px;line-height:1.6;color:#9fb0c6">8th Street East, Industrial Area, Walvis Bay, Namibia<br>' +
+    '<a href="mailto:' + WORKSHOP.email + '" style="color:#e3c372;text-decoration:none">' + WORKSHOP.email + '</a> &nbsp;|&nbsp; ' +
+    '<a href="' + SITE + '" style="color:#e3c372;text-decoration:none">www.wbme.com.na</a></p>' +
+    '<p style="margin:0;' + f + ';font-size:13px;font-style:italic;color:#c79a3e">No job too big, no job too small.</p>' +
+    '</td></tr></table>' +
+    '<p style="margin:16px 0 0;' + f + ';font-size:12px;line-height:1.5;color:#7a889c">You\'re getting this because you sent an enquiry on wbme.com.na.</p>' +
+    '</td></tr></table></body></html>';
+
+  return { subject, text, html };
+}
+
+/* Sends the confirmation. Resolves { sent: false } without a key or an
+   email address; the idempotency key means one confirmation per reference. */
+export async function sendConfirmationEmail (env, e, meta) {
+  if (!env.RESEND_API_KEY) return { sent: false, reason: 'RESEND_API_KEY is not set' };
+  if (!e.email) return { sent: false, reason: 'no email address' };
+  const { subject, text, html } = confirmationEmail(e, meta);
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      authorization: 'Bearer ' + env.RESEND_API_KEY,
+      'content-type': 'application/json',
+      'user-agent': 'wbme-website',
+      'idempotency-key': 'confirm-' + meta.ref
+    },
+    body: JSON.stringify({ from: env.MAIL_FROM || DEFAULT_FROM, to: [e.email], reply_to: WORKSHOP.email, subject, text, html })
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error('Resend ' + res.status + ': ' + detail.slice(0, 300));
+  }
+  const data = await res.json().catch(() => ({}));
+  return { sent: true, id: data.id || '' };
+}

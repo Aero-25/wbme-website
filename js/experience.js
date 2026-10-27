@@ -454,7 +454,8 @@
         .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
         .then(function (d) {
           if (d && d.notify === false) { mailto(); return; } // saved, but email alerts aren't switched on yet
-          done('\u2713 Sent. Your request is with the WBME team' + (d && d.ref ? ', reference ' + d.ref : '') + '. For anything urgent, call ' + PHONE_DISPLAY + '.');
+          done('\u2713 Sent. Your request is with the WBME team' + (d && d.ref ? ', reference ' + d.ref : '') + '.' +
+            (d && d.confirm ? ' We\u2019ve emailed a confirmation to ' + g('email') + '.' : '') + ' For anything urgent, call ' + PHONE_DISPLAY + '.');
         }, mailto);
     });
     form.querySelectorAll('input,textarea').forEach(function (i) {

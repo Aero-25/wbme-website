@@ -58,7 +58,7 @@ The propeller button opens the WBME assistant. It runs entirely on its own, in t
 Enquiries are rate limited per connection (8 per 10 minutes, 30 per day).
 
 ## Contact form and email alerts
-The contact form (Contact page and the pop-up on every page) posts to the same `functions/api/enquiry.js` as the assistant, marked as a form enquiry. Every enquiry is saved to D1 and shows in `admin.html`, which says whether it came from the form or the assistant. Each new or changed enquiry is then emailed to the workshop by `functions/_shared/mailer.js`, with Reply-To set to the visitor's email so replying answers them directly. A hidden field that people never see catches simple spam bots.
+The contact form (Contact page and the pop-up on every page) posts to the same `functions/api/enquiry.js` as the assistant, marked as a form enquiry. Every enquiry is saved to D1 and shows in `admin.html`, which says whether it came from the form or the assistant. Each new or changed enquiry is then emailed to the workshop by `functions/_shared/mailer.js`, with Reply-To set to the visitor's email so replying answers them directly. When a new enquiry includes an email address, the visitor also gets a branded "we've got your request" confirmation with their reference and the workshop number (logo: `media/brand/email-logo-608.png`, PNG because Outlook can't show WebP); replying to it reaches info@wbme.com.na. A hidden field that people never see catches simple spam bots.
 
 Pages settings (Settings → Variables and Secrets, Production):
 - `RESEND_API_KEY` (secret): a Resend API key with sending access. **Without it no alerts are sent**, and the form also opens the visitor's email app so WBME still gets the message.

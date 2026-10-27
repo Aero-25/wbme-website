@@ -1,10 +1,11 @@
 /* POST /api/enquiry: saves an enquiry for the team to see in admin, then
-   emails them a heads-up (functions/_shared/mailer.js). Two senders:
+   emails them a heads-up and, for a new enquiry with an email address, sends
+   the visitor a confirmation (functions/_shared/mailer.js). Two senders:
    the website assistant (js/chatbot.js) and the contact forms
    (js/experience.js, body.source = 'form'). Same-origin and rate limited. */
 import { json } from '../_shared/util.js';
 import { checkRate, cleanEnquiry, saveEnquiry, cleanSid, sameOrigin, newRef, PAGES } from '../_shared/assistant-store.js';
-import { sendEnquiryEmail } from '../_shared/mailer.js';
+import { sendEnquiryEmail, sendConfirmationEmail } from '../_shared/mailer.js';
 
 export async function onRequestPost (context) {
   const { request, env } = context;
@@ -34,9 +35,18 @@ export async function onRequestPost (context) {
         .catch((err) => console.error('enquiry: email failed', err));
       if (typeof context.waitUntil === 'function') context.waitUntil(mail); else await mail;
     }
+    /* the visitor's "we've got your request" email: new enquiries only, so a
+       correction in the chat doesn't send a second one */
+    const confirm = !saved.updated && !!value.email && !!env.RESEND_API_KEY;
+    if (confirm) {
+      const sent = sendConfirmationEmail(env, value, { ref: saved.ref })
+        .catch((err) => console.error('enquiry: confirmation failed', err));
+      if (typeof context.waitUntil === 'function') context.waitUntil(sent); else await sent;
+    }
     /* notify: whether an email alert goes out. Until RESEND_API_KEY is set the
-       contact form also opens the visitor's email app, so WBME still gets it. */
-    return json({ ref: saved.ref, updated: !!saved.updated, notify: !!env.RESEND_API_KEY }, 201);
+       contact form also opens the visitor's email app, so WBME still gets it.
+       confirm: whether the visitor is being emailed a confirmation. */
+    return json({ ref: saved.ref, updated: !!saved.updated, notify: !!env.RESEND_API_KEY, confirm }, 201);
   } catch (err) {
     console.error('enquiry: save failed', err);
     return json({ error: 'Could not save right now.' }, 500);

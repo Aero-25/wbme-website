@@ -888,19 +888,19 @@
       raw: 'Sending it through now...',
       after: function () {
         showTyping();
-        var done = function (ref) {
+        var done = function (ref, confirm) {
           hideTyping();
           addCard({ ref: ref || '', name: d.name, phone: d.phone, email: d.email, vessel: d.vessel, service: d.service, urgency: d.urgency, job: d.job });
           var s = workshopNow();
           addBot(ref
-            ? 'Done' + hi() + '. Your reference is **' + ref + '**, and the team will get back to you ' + (s.open ? 'shortly' : 'during working hours') + '. To be sure it lands in their inbox with any photos, tap **Email this to WBME** on the card.'
+            ? 'Done' + hi() + '. Your reference is **' + ref + '**, and the team will get back to you ' + (s.open ? 'shortly' : 'during working hours') + '.' + (confirm ? ' A confirmation is on its way to **' + d.email + '**.' : '') + ' To send photos as well, tap **Email this to WBME** on the card.'
             : 'I couldn\'t log it on our side just now, but tap **Email this to WBME** on the card and it goes straight to the workshop inbox, all filled in.');
           setBusy(false);
         };
         if (location.protocol === 'file:' || !window.fetch) { done(''); return; }
         fetch('/api/enquiry', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) })
           .then(function (r) { return r.ok ? r.json() : {}; })
-          .then(function (j) { done(j && j.ref); }, function () { done(''); });
+          .then(function (j) { done(j && j.ref, j && j.confirm); }, function () { done(''); });
       }
     };
   }
