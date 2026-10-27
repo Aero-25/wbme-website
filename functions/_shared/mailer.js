@@ -113,8 +113,9 @@ export async function sendEnquiryEmail (env, e, meta) {
 /* ===== Customer confirmation =====
    A "we've got your request" email to the visitor, sent once per new
    enquiry that has an email address. Replies go to the workshop inbox.
-   The logo is a PNG on white because Outlook can't show WebP and dark-mode
-   mail apps would lose a transparent navy logo. */
+   It is dark by design (WBME navy), so dark-mode mail apps have little to
+   recolour, and the logo is a PNG (Outlook can't show WebP) with a clear
+   background and a white wordmark, so it never sits in a white box. */
 const SITE = 'https://www.wbme.com.na';
 const WORKSHOP = { email: 'info@wbme.com.na', phone: '+264 (0)64 285 700', tel: 'tel:+26464285700' };
 
@@ -140,55 +141,65 @@ export function confirmationEmail (e, { ref }) {
     WORKSHOP.email + ' | ' + SITE.replace('https://', '')
   ].join('\n');
 
+  /* Colours sit in classes as well as inline: Outlook.com's dark mode
+     recolours inline styles, and the [data-ogsb]/[data-ogsc] rules put the
+     originals back. */
   const f = 'font-family:Arial,Helvetica,sans-serif';
+  const css = '.bg-page{background-color:#071a33!important}.bg-card{background-color:#0f2c52!important}.bg-box{background-color:#163a66!important}' +
+    '.bg-gold{background-color:#c79a3e!important}.c-white{color:#ffffff!important}.c-body{color:#d5deea!important}.c-mut{color:#9fb0c6!important}' +
+    '.c-gold{color:#e3c372!important}.c-ink{color:#0f2c52!important}';
+  const ogs = css.replace(/\.(bg-[a-z]+)\{/g, '[data-ogsb] .$1{').replace(/\.(c-[a-z]+)\{/g, '[data-ogsc] .$1{');
   const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>' + esc(subject) + '</title></head>' +
-    '<body style="margin:0;padding:0;background:#e9eef5">' +
-    '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#e9eef5">' + esc(preheader) + '</div>' +
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e9eef5"><tr><td align="center" style="padding:28px 12px">' +
-    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #d6dee9">' +
+    '<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>' + esc(subject) + '</title>' +
+    '<style>:root{color-scheme:light dark;supported-color-schemes:light dark}' + ogs + '@media (prefers-color-scheme:dark){' + css + '}' +
+    '@media (max-width:480px){.pad{padding-left:22px!important;padding-right:22px!important}.h1{font-size:25px!important}}</style></head>' +
+    '<body class="bg-page" style="margin:0;padding:0;background:#071a33">' +
+    '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#071a33">' + esc(preheader) + '</div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#071a33" class="bg-page" style="background:#071a33"><tr><td align="center" style="padding:28px 12px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#0f2c52" class="bg-card" style="max-width:600px;background:#0f2c52;border-radius:16px;overflow:hidden;border:1px solid #22477a">' +
 
     /* logo */
-    '<tr><td align="center" style="padding:26px 24px 20px;background:#ffffff">' +
-    '<a href="' + SITE + '" style="text-decoration:none"><img src="' + SITE + '/media/brand/email-logo-608.png" width="232" height="84" alt="Walvis Bay Marine Engineering" style="display:block;width:232px;max-width:100%;height:auto;border:0"></a></td></tr>' +
-    '<tr><td style="height:4px;line-height:4px;font-size:0;background:#c79a3e">&nbsp;</td></tr>' +
+    '<tr><td align="center" class="bg-card" style="padding:30px 24px 26px;background:#0f2c52">' +
+    '<a href="' + SITE + '" style="text-decoration:none"><img src="' + SITE + '/media/brand/email-logo-dark-608.png" width="240" height="87" alt="Walvis Bay Marine Engineering" style="display:block;width:240px;max-width:100%;height:auto;border:0;color:#ffffff;font:bold 20px Arial,sans-serif"></a></td></tr>' +
+    '<tr><td class="bg-gold" style="height:3px;line-height:3px;font-size:0;background:#c79a3e">&nbsp;</td></tr>' +
 
     /* headline + reference */
-    '<tr><td style="background:#0f2c52;padding:34px 32px 32px">' +
-    '<p style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.16em;color:#e3c372">REQUEST RECEIVED</p>' +
-    '<h1 style="margin:0 0 22px;' + f + ';font-size:28px;line-height:1.2;font-weight:bold;color:#ffffff">Thanks, ' + esc(name) + '.<br>We\'ve got your request.</h1>' +
-    '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border:1px solid #c79a3e;border-radius:10px;padding:12px 18px;background:#163a66">' +
-    '<p style="margin:0 0 2px;' + f + ';font-size:11px;letter-spacing:.14em;color:#9fb0c6">YOUR REFERENCE</p>' +
-    '<p style="margin:0;font-family:\'Courier New\',Courier,monospace;font-size:24px;font-weight:bold;letter-spacing:.08em;color:#e3c372">' + esc(ref) + '</p>' +
-    '</td></tr></table></td></tr>' +
-
-    /* body */
-    '<tr><td style="padding:30px 32px 6px">' +
-    '<p style="margin:0 0 24px;' + f + ';font-size:16px;line-height:1.6;color:#163a66">The team at our Walvis Bay workshop will look at it and get back to you ' + reply + ' during working hours, Monday to Friday, 07:00 to 17:00. Quote <b>' + esc(ref) + '</b> if you call.</p>' +
-    '<p style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.14em;color:#8a6a24">WHAT YOU SENT US</p>' +
-    (summary.length ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 14px">' +
-      summary.map((r) => '<tr><td style="padding:4px 16px 4px 0;' + f + ';font-size:14px;color:#5b6b82;white-space:nowrap;vertical-align:top">' + esc(r[0]) + '</td>' +
-        '<td style="padding:4px 0;' + f + ';font-size:14px;color:#0f2c52;font-weight:bold">' + esc(r[1]) + '</td></tr>').join('') +
-      '</table>' : '') +
-    '<div style="margin:0 0 28px;padding:16px 18px;background:#f4f7fb;border-left:4px solid #c79a3e;border-radius:0 10px 10px 0;' + f + ';font-size:15px;line-height:1.6;color:#0f2c52;white-space:pre-wrap">' + esc(e.job) + '</div>' +
+    '<tr><td class="pad bg-card" style="background:#0f2c52;padding:34px 34px 30px">' +
+    '<p class="c-gold" style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.16em;color:#e3c372">REQUEST RECEIVED</p>' +
+    '<h1 class="h1 c-white" style="margin:0 0 22px;' + f + ';font-size:28px;line-height:1.2;font-weight:bold;color:#ffffff">Thanks, ' + esc(name) + '.<br>We\'ve got your request.</h1>' +
+    '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td class="bg-box" bgcolor="#163a66" style="border:1px solid #c79a3e;border-radius:10px;padding:12px 18px;background:#163a66">' +
+    '<p class="c-mut" style="margin:0 0 2px;' + f + ';font-size:11px;letter-spacing:.14em;color:#9fb0c6">YOUR REFERENCE</p>' +
+    '<p class="c-gold" style="margin:0;font-family:\'Courier New\',Courier,monospace;font-size:24px;font-weight:bold;letter-spacing:.08em;color:#e3c372">' + esc(ref) + '</p>' +
+    '</td></tr></table>' +
+    '<p class="c-body" style="margin:26px 0 0;' + f + ';font-size:16px;line-height:1.6;color:#d5deea">The team at our Walvis Bay workshop will look at it and get back to you ' + reply + ' during working hours, Monday to Friday, 07:00 to 17:00. Quote <b class="c-white" style="color:#ffffff">' + esc(ref) + '</b> if you call.</p>' +
     '</td></tr>' +
 
+    /* what they sent */
+    '<tr><td class="pad bg-card" style="background:#0f2c52;padding:0 34px 8px"><div style="border-top:1px solid #22477a;padding-top:24px">' +
+    '<p class="c-gold" style="margin:0 0 10px;' + f + ';font-size:12px;font-weight:bold;letter-spacing:.14em;color:#e3c372">WHAT YOU SENT US</p>' +
+    (summary.length ? '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 14px">' +
+      summary.map((r) => '<tr><td class="c-mut" style="padding:4px 16px 4px 0;' + f + ';font-size:14px;color:#9fb0c6;white-space:nowrap;vertical-align:top">' + esc(r[0]) + '</td>' +
+        '<td class="c-white" style="padding:4px 0;' + f + ';font-size:14px;color:#ffffff;font-weight:bold">' + esc(r[1]) + '</td></tr>').join('') +
+      '</table>' : '') +
+    '<div class="bg-box c-body" style="margin:0 0 28px;padding:16px 18px;background:#163a66;border-left:3px solid #c79a3e;border-radius:0 10px 10px 0;' + f + ';font-size:15px;line-height:1.6;color:#d5deea;white-space:pre-wrap">' + esc(e.job) + '</div>' +
+    '</div></td></tr>' +
+
     /* urgent */
-    '<tr><td style="padding:0 32px 32px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fbf6ea;border:1px solid #ecdcb4;border-radius:12px"><tr><td style="padding:20px 22px">' +
-    '<p style="margin:0 0 4px;' + f + ';font-size:16px;font-weight:bold;color:#0f2c52">Something urgent?</p>' +
-    '<p style="margin:0 0 16px;' + f + ';font-size:14px;line-height:1.5;color:#5b6b82">If a vessel is waiting or a plant is down, call the workshop. To add details or photos, just reply to this email.</p>' +
-    '<a href="' + WORKSHOP.tel + '" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#c79a3e;' + f + ';font-size:15px;font-weight:bold;color:#0f2c52;text-decoration:none">Call ' + WORKSHOP.phone + '</a>' +
+    '<tr><td class="pad bg-card" style="background:#0f2c52;padding:0 34px 34px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#163a66" class="bg-box" style="background:#163a66;border:1px solid #c79a3e;border-radius:12px"><tr><td style="padding:20px 22px">' +
+    '<p class="c-white" style="margin:0 0 4px;' + f + ';font-size:16px;font-weight:bold;color:#ffffff">Something urgent?</p>' +
+    '<p class="c-mut" style="margin:0 0 16px;' + f + ';font-size:14px;line-height:1.5;color:#9fb0c6">If a vessel is waiting or a plant is down, call the workshop. To add details or photos, just reply to this email.</p>' +
+    '<a href="' + WORKSHOP.tel + '" class="bg-gold c-ink" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#c79a3e;' + f + ';font-size:15px;font-weight:bold;color:#0f2c52;text-decoration:none">Call ' + WORKSHOP.phone + '</a>' +
     '</td></tr></table></td></tr>' +
 
     /* footer */
-    '<tr><td style="background:#071a33;padding:26px 32px">' +
-    '<p style="margin:0 0 6px;' + f + ';font-size:14px;font-weight:bold;color:#ffffff">Walvis Bay Marine Engineering</p>' +
-    '<p style="margin:0 0 12px;' + f + ';font-size:13px;line-height:1.6;color:#9fb0c6">8th Street East, Industrial Area, Walvis Bay, Namibia<br>' +
-    '<a href="mailto:' + WORKSHOP.email + '" style="color:#e3c372;text-decoration:none">' + WORKSHOP.email + '</a> &nbsp;|&nbsp; ' +
-    '<a href="' + SITE + '" style="color:#e3c372;text-decoration:none">www.wbme.com.na</a></p>' +
-    '<p style="margin:0;' + f + ';font-size:13px;font-style:italic;color:#c79a3e">No job too big, no job too small.</p>' +
+    '<tr><td class="pad bg-page" style="background:#071a33;padding:26px 34px;border-top:1px solid #22477a">' +
+    '<p class="c-white" style="margin:0 0 6px;' + f + ';font-size:14px;font-weight:bold;color:#ffffff">Walvis Bay Marine Engineering</p>' +
+    '<p class="c-mut" style="margin:0 0 12px;' + f + ';font-size:13px;line-height:1.6;color:#9fb0c6">8th Street East, Industrial Area, Walvis Bay, Namibia<br>' +
+    '<a href="mailto:' + WORKSHOP.email + '" class="c-gold" style="color:#e3c372;text-decoration:none">' + WORKSHOP.email + '</a> &nbsp;|&nbsp; ' +
+    '<a href="' + SITE + '" class="c-gold" style="color:#e3c372;text-decoration:none">www.wbme.com.na</a></p>' +
+    '<p class="c-gold" style="margin:0;' + f + ';font-size:13px;font-style:italic;color:#c79a3e">No job too big, no job too small.</p>' +
     '</td></tr></table>' +
-    '<p style="margin:16px 0 0;' + f + ';font-size:12px;line-height:1.5;color:#7a889c">You\'re getting this because you sent an enquiry on wbme.com.na.</p>' +
+    '<p class="c-mut" style="margin:16px 0 0;' + f + ';font-size:12px;line-height:1.5;color:#7a8ba3">You\'re getting this because you sent an enquiry on wbme.com.na.</p>' +
     '</td></tr></table></body></html>';
 
   return { subject, text, html };
