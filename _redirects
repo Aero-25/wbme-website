@@ -1,0 +1,66 @@
+# Old website addresses -> new pages (301 = moved for good, so Google
+# swaps the old result for the new page). Anything not listed and not a
+# real file gets 404.html, which links to every page.
+# Add exact old URLs here as they turn up (Search Console > Pages > Not found).
+
+/home                   /           301
+/home/                  /           301
+/index.php              /           301
+/index.htm              /           301
+/default.aspx           /           301
+/default.htm            /           301
+
+/about-us               /about      301
+/about-us/              /about      301
+/about-us.html          /about      301
+/about-us.php           /about      301
+/aboutus                /about      301
+/about.php              /about      301
+/about.htm              /about      301
+/who-we-are             /about      301
+/who-we-are/            /about      301
+/company                /about      301
+/history                /about      301
+
+/our-services           /services   301
+/our-services/          /services   301
+/service                /services   301
+/services.php           /services   301
+/services.htm           /services   301
+/what-we-do             /services   301
+/what-we-do/            /services   301
+/capabilities           /services   301
+
+/gallery                /projects   301
+/gallery/               /projects   301
+/gallery.html           /projects   301
+/gallery.php            /projects   301
+/our-work               /projects   301
+/our-work/              /projects   301
+/portfolio              /projects   301
+/portfolio/             /projects   301
+/projects.php           /projects   301
+/news                   /projects   301
+/news/                  /projects   301
+/blog                   /projects   301
+/blog/                  /projects   301
+
+/contact-us             /contact    301
+/contact-us/            /contact    301
+/contact-us.html        /contact    301
+/contact-us.php         /contact    301
+/contactus              /contact    301
+/contact.php            /contact    301
+/contact.htm            /contact    301
+/enquiry                /contact    301
+/enquiries              /contact    301
+/get-in-touch           /contact    301
+/location               /contact    301
+
+# Common service-worker paths an old site may have registered: serve the
+# kill switch so those workers remove themselves.
+/service-worker.js      /sw.js      200
+/serviceworker.js       /sw.js      200
+/sw.min.js              /sw.js      200
+/pwa-sw.js              /sw.js      200
+/superpwa-sw.js         /sw.js      200

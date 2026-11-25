@@ -67,6 +67,13 @@ Pages settings (Settings → Variables and Secrets, Production):
 
 Secrets only reach new deployments: after adding or changing one, redeploy (Deployments → latest → Retry deployment). If the API can't be reached at all, the form falls back to the visitor's email app.
 
+## Replacing the old website in Google
+The old WBME site lived on this same domain, so Google and some browsers still hold its pages.
+- **`_redirects`** sends old-style addresses (`/about-us`, `/contact-us`, `/index.php`, `/gallery`...) to the new pages with a 301. Add exact old URLs as they turn up in Search Console (Pages → Not found).
+- **`404.html`** is served, with a real 404 status, for any other address that isn't a file. Before it existed, Pages showed the home page for every address, so Google treated old pages as still alive.
+- **`js/site-refresh.js`** runs once per browser: it removes any service worker and Cache Storage the old site left behind, and clears the browser's cached copies of the domain (`/cache-reset.txt` answers with `Clear-Site-Data: "cache"`). Bump `VER` in the file to run it again for everyone. `sw.js` is a kill switch served at common worker paths, so an old worker that still controls a returning visitor's browser replaces itself and reloads the page from the network.
+- **Google Search Console** needs no DNS access: add a *URL prefix* property for `https://www.wbme.com.na/`, verify with the *HTML tag* method (a `<meta name="google-site-verification">` in `index.html`), then submit `sitemap.xml` and request indexing for the five pages.
+
 ## Run locally
 Serve the folder (don't open via `file://`). A plain static server has no `/api`, so the contact form falls back to opening your email app:
 ```bash

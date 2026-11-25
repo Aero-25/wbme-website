@@ -17,3 +17,16 @@
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# One-time cleanup of the old website's leftovers (js/site-refresh.js
+# fetches this once per browser). Only the HTTP cache is cleared.
+/cache-reset.txt
+  Clear-Site-Data: "cache"
+  Cache-Control: no-store
+  X-Robots-Tag: noindex
+
+# Service-worker kill switch: must never be cached, so browsers always
+# pick it up when they re-check an old worker.
+/sw.js
+  Cache-Control: no-store
+  X-Robots-Tag: noindex
